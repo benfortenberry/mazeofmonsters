@@ -1,0 +1,23 @@
+{
+    "id": 999,
+    "routes": [
+        {
+            "direction": "e",
+            "routes": [
+                {
+                    "id": 999,
+                    "direction": "f"
+                }
+            ]
+        },
+        {
+            "direction": "w",
+            "routes": [
+                {
+                    "id": 999,
+                    "direction": "f"
+                }
+            ]
+        }
+    ]
+}
