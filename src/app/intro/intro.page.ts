@@ -11,6 +11,6 @@ export class IntroPage implements OnInit {
     ngOnInit() {}
 
     beginMaze() {
-        this.navCtrl.navigateForward('home');
+        this.navCtrl.navigateForward('maze');
     }
 }

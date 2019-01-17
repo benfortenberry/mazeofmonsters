@@ -1,0 +1,14 @@
+<ion-header>
+    <ion-toolbar color="dark">
+        <ion-title float-left padding-top>Map</ion-title>
+        <ion-button float-right button color="dark" (click)="closeModal()">
+            <ion-icon name="close"></ion-icon>
+        </ion-button>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content color="dark" padding style="overflow-x:auto;">
+    <div style="overflow-x:auto;">
+        <table id="maze" style="width:800px; border-collapse: collapse" [innerHtml]="safeHtml"></table>
+    </div>
+</ion-content>

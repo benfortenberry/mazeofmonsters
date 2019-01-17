@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { MazeProvider } from '../..//providers/maze-service';
 import { AlertController, NavController, IonRouterOutlet } from '@ionic/angular';
 import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
@@ -41,9 +41,9 @@ import { Observable, interval } from 'rxjs';
                     '500ms linear',
                     keyframes([
                         style({ transform: 'translateX(0)' }),
-                        style({ transform: 'translateX(-25%)' }),
-                        style({ transform: 'translateX(-50%)' }),
-                        style({ transform: 'translateX(-75%)' })
+                        style({ transform: 'translateX(25%)' }),
+                        style({ transform: 'translateX(50%)' }),
+                        style({ transform: 'translateX(75%)' })
                     ])
                 )
             ),
@@ -88,12 +88,16 @@ export class HomePage {
     hasLeft: Boolean = false;
     hasRight: Boolean = false;
     hasForward: Boolean = false;
-    wallReady;
+    wallReady = false;
     state: String = 'small';
     currentDirection = 'n';
     monsterPresent = false;
     monsterQuotes = [];
     wallClass;
+    monsterImageUrl;
+    monsterImageList;
+    alerts = [];
+    timerM = 600;
 
     constructor(
         public mazeProvider: MazeProvider,
@@ -103,25 +107,26 @@ export class HomePage {
     ) {
         this.getRoute(1641);
         this.getQuotes();
+        this.getImages();
         this.wallClass = 'sandstone';
     }
 
     ionViewDidEnter() {
         // console.log('init');
-        let timerM = 600;
+
         let minutes;
         let seconds;
         interval(1000).subscribe(x => {
-            minutes = Math.floor(timerM / 60);
-            seconds = Math.floor(timerM % 60);
+            minutes = Math.floor(this.timerM / 60);
+            seconds = Math.floor(this.timerM % 60);
 
             minutes = minutes < 10 ? '0' + minutes : minutes;
             seconds = seconds < 10 ? '0' + seconds : seconds;
 
             // console.log(minutes + ':' + seconds);
 
-            --timerM;
-            if (--timerM < 0) {
+            --this.timerM;
+            if (--this.timerM < 0) {
                 this.showDeath();
                 // console.log('timeup');
             }
@@ -131,6 +136,12 @@ export class HomePage {
     async getQuotes() {
         this.mazeProvider.getQuotes().then(response => {
             this.monsterQuotes = response['quotes'];
+        });
+    }
+
+    async getImages() {
+        this.mazeProvider.getImages().then(response => {
+            this.monsterImageList = response['monsters'];
         });
     }
 
@@ -225,25 +236,6 @@ export class HomePage {
     updateWalls() {
         console.log(this.currentRoute['id']);
         const routeId = this.currentRoute['id'];
-
-        // switch (true) {
-        //     case routeId > 1518: {
-        //         this.wallClass = 'sandstone';
-        //         console.log('sandstone');
-        //         break;
-        //     }
-        //     case routeId < 1518: {
-        //         console.log('something');
-        //         this.wallClass = 'something';
-        //         break;
-        //     }
-        // }
-
-        // if (this.currentRoute['id'] > 1518) {
-        // this.wallClass = 'sandstone';
-        // } else {
-        //     this.wallClass = 'something';
-        // }
     }
 
     async showWin() {
@@ -251,6 +243,7 @@ export class HomePage {
     }
 
     async showDeath() {
+        this.clearAlerts();
         this.navCtrl.navigateForward('death');
     }
 
@@ -270,17 +263,64 @@ export class HomePage {
             });
         }
 
-        this.wallReady = true;
+        // this.wallReady = true;
     }
 
     async getMonster() {
         const alert = await this.alertController.create({
-            header: 'Squirtle Says',
+            // header: 'Squirtle Says',
 
             message: this.monsterQuotes[Math.floor(Math.random() * this.monsterQuotes.length)],
-            buttons: ['OK']
+            buttons: ['close']
         });
 
+        this.monsterImageUrl =
+            '../../assets/' + this.monsterImageList[Math.floor(Math.random() * this.monsterImageList.length)];
+
+        console.log(this.monsterImageUrl);
+        this.alerts.push(alert);
         await alert.present();
+    }
+
+    clearAlerts() {
+        if (this.alerts.length) {
+            this.alerts.forEach(e => {
+                e.dismiss();
+            });
+        }
+        this.alerts = [];
+    }
+
+    onKey(event: any) {
+        // without type info
+        console.log(event.keycode);
+    }
+
+    @HostListener('document:keyup', ['$event'])
+    handleKeyboardEvent(event: KeyboardEvent) {
+        this.wallReady = false;
+        console.log(event.key);
+        const key = event.key;
+
+        if (key === 'ArrowUp' && this.hasForward) {
+            this.move('f');
+        }
+
+        if (key === 'ArrowLeft' && this.hasLeft) {
+            this.move('l');
+        }
+
+        if (key === 'Enter') {
+            this.clearAlerts();
+        }
+
+        if (key === 'ArrowRight' && this.hasRight) {
+            this.move('r');
+        }
+
+        if (key === 'ArrowDown') {
+            this.clearAlerts();
+            this.move('back');
+        }
     }
 }

@@ -192,36 +192,37 @@ a {
 
 .monster {
     z-index: 99998;
-    left: calc(50vw - 15vw);
-    top: calc(45vh - 60px);
-    width: 30vw;
+    left: calc(50vw - 20vw);
+    bottom: 0;
+    width: 40vw;
+    margin-bottom: 50px;
     position: absolute;
-    animation: float 3s ease-in-out infinite;
+    animation-name: floating;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
 }
 
-@keyframes float {
-    0% {
-        // box-shadow: 0 5px 15px 0px rgba(0, 0, 0, 0.6);
-        transform: translatex(0px);
+@keyframes floating {
+    from {
+        transform: translate(0, 0px);
+        // filter: drop-shadow(5px 15px 5px black);
     }
-    25% {
-        // box-shadow: 0 25px 15px 0px rgba(0, 0, 0, 0.2);
-        transform: translatex(-30px);
+    65% {
+        transform: translate(0, 15px);
+        // filter: drop-shadow(5px 15px 5px black);
     }
-    50% {
-        // box-shadow: 0 5px 15px 0px rgba(0, 0, 0, 0.6);
-        transform: translatex(0px);
-    }
-    75% {
-        // box-shadow: 0 5px 15-3px 0px rgba(0, 0, 0, 0.6);
-        transform: translatex(-30px);
-    }
-    100% {
-        // box-shadow: 0 5px 15px 0px rgba(0, 0, 0, 0.6);
-        transform: translatex(0px);
+    to {
+        transform: translate(0, -0px);
+        // filter: drop-shadow(5px 15px 5px black);
     }
 }
 
+.radial {
+    background-image: radial-gradient(red, green, blue);
+    width: 100%;
+    height: 100%;
+}
 // @keyframes move {
 //     from {
 //         transform: translateX(-50px);

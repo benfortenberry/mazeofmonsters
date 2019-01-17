@@ -1,0 +1,28 @@
+// #maze {
+//     border-collapse: collapse;
+// }
+#maze td {
+    width: 20px;
+    height: 20px;
+}
+
+tr {
+    background-color: red;
+}
+table {
+    .top {
+        border-top: solid 1px black;
+    }
+
+    .left {
+        border-left: solid 1px black;
+    }
+
+    .right {
+        border-right: solid 1px black;
+    }
+
+    .bottom {
+        border-bottom: solid 1px black;
+    }
+}

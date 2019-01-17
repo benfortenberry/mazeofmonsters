@@ -9,8 +9,9 @@ import { Injectable } from '@angular/core';
 */
 @Injectable()
 export class MazeProvider {
-    apiUrl = './assets/maze.json';
+    apiUrl = './assets/newmaze.json';
     quoteUrl = './assets/monster-quotes.json';
+    imageUrl = './assets/monster-list.json';
     constructor(public http: HttpClient) {
         // console.log('Hello TimeDateServiceProvider Provider');
     }
@@ -28,6 +29,8 @@ export class MazeProvider {
     //         );
     //     });
     // }
+
+
 
     getRoute(id) {
         return new Promise(resolve => {
@@ -54,14 +57,32 @@ export class MazeProvider {
         return new Promise(resolve => {
             this.http.get(this.quoteUrl).subscribe(
                 data => {
-                    //  console.log(data['paths']);
-                    // const filteredData = [];
-                    // data['paths'].forEach(element => {
-                    //     if (element.id == id) {
-                    //         filteredData.push(element);
-                    //     }
-                    // });
-                    // console.log(filteredData);
+                    resolve(data);
+                },
+                err => {
+                    console.log(err);
+                }
+            );
+        });
+    }
+
+    getRoutes() {
+        return new Promise(resolve => {
+            this.http.get(this.apiUrl).subscribe(
+                data => {
+                    resolve(data);
+                },
+                err => {
+                    console.log(err);
+                }
+            );
+        });
+    }
+
+    getImages() {
+        return new Promise(resolve => {
+            this.http.get(this.imageUrl).subscribe(
+                data => {
                     resolve(data);
                 },
                 err => {
