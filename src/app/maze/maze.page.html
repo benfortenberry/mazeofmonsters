@@ -1,18 +1,8 @@
-<!-- <ion-header>
-    <h1>Up: {{ hasUp }}</h1>
-    <ion-toolbar>
-        <ion-title>
-            <h1>Right: {{ hasRight }}</h1>
-            <h1>Left: {{ hasLeft }}</h1>
-            <h1>Up: {{ hasUp }}</h1>
-            <h1>wallReady: {{ wallReady }}</h1>
-        </ion-title>
-    </ion-toolbar>
-</ion-header> -->
-
 <ion-content (keyup)="onKey($event)" no-bounce [ngClass]="[hasRight ? 'has-right' : '', hasLeft ? 'has-left' : '']">
     <div *ngIf="hasLeft && wallReady" class="left-door"></div>
+
     <div *ngIf="hasRight && wallReady" class="right-door"></div>
+
     <ion-fab *ngIf="wallReady && !monsterPresent" vertical="center" horizontal="end" edge slot="fixed">
         <ion-fab-button *ngIf="hasRight" [disabled]="!hasRight" size="small" color="dark" (click)="moveRight()">
             <ion-icon name="arrow-forward"></ion-icon>
@@ -24,35 +14,31 @@
             <ion-icon name="arrow-back"></ion-icon>
         </ion-fab-button>
     </ion-fab>
+
     <ion-fab *ngIf="wallReady && !monsterPresent" vertical="top" horizontal="center" slot="fixed">
         <ion-fab-button *ngIf="hasForward" [disabled]="!hasForward" size="small" color="dark" (click)="moveForward()">
             <ion-icon name="arrow-up"></ion-icon>
         </ion-fab-button>
     </ion-fab>
+
     <ion-fab *ngIf="wallReady && !monsterPresent" vertical="bottom" horizontal="center" slot="fixed">
         <ion-fab-button class="backButton" size="small" color="dark" (click)="turnAround()">
             <ion-icon name="refresh"></ion-icon>
         </ion-fab-button>
     </ion-fab>
+
     <ion-fab vertical="bottom" horizontal="left" slot="fixed">
         <ion-fab-button size="small" color="dark" (click)="openMap()"><ion-icon name="map"></ion-icon></ion-fab-button>
     </ion-fab>
+
     <ion-fab vertical="top" horizontal="left" slot="fixed">
         <ion-fab-button size="small" color="dark">
-            <!-- {{ currentRoute.id }} -->
-            <!-- {{ wallReady }} -->
             <strong>{{ currentDirection | uppercase }}</strong>
         </ion-fab-button>
     </ion-fab>
+
     <ion-fab vertical="top" horizontal="end" slot="fixed">
-        <ion-fab-button size="small" color="dark">
-            <div class="radial"></div>
-            <!-- <div class="wrapper">
-                <div class="spinner pie" [ngClass]="{ 'close-to-end': timerM < 100 }"></div>
-                <div class="filler pie" [ngClass]="{ 'close-to-end': timerM < 100 }"></div>
-                <div class="mask"></div>
-            </div> -->
-        </ion-fab-button>
+        <ion-fab-button size="small" color="dark"><div class="radial"></div></ion-fab-button>
     </ion-fab>
 
     <ion-img *ngIf="monsterPresent" class="monster" src="{{ monsterImageUrl }}"></ion-img>

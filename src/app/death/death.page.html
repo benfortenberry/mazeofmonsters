@@ -1,18 +1,34 @@
-<!-- <ion-header>
-    <ion-toolbar><ion-title>Maze of Monsters</ion-title></ion-toolbar>
-</ion-header> -->
+<ion-content>
+    <div id="row1">
+        <div id="column1" class="left">
+            <p class="text">
+                <span *ngIf="firstLine">What a hideous creature you've become!</span>
 
-<ion-content padding>
-    <ion-grid>
-        <ion-row>
-            <ion-col size="6">
-                <p class="text">
-                    This is wonderful! What a hideous creature you've become. Be sure to give good advice to the next
-                    poor soul trying to navigate the maze. As if anyone could ever find the way out, ha, ha ha...
-                </p>
+                <span class="text" *ngIf="secondLine">
+                    <br />
+                    <br />
+                    Be sure to give good advice to the next poor soul trying to navigate the maze.
+                </span>
 
-                <ion-button shape="round" expand="block" (click)="tryAgain()" color="light" fill="outline">Try Again</ion-button>
-            </ion-col>
-        </ion-row>
-    </ion-grid>
+                <span class="text" *ngIf="thirdLine">
+                    <br />
+                    <br />
+                    As if anyone could ever find the way out, ha, ha ha...
+                </span>
+            </p>
+
+            <ion-button
+                *ngIf="buttonReady"
+                class="fade"
+                shape="round"
+                expand="block"
+                (click)="tryAgain()"
+                color="light"
+                fill="outline"
+            >
+                Try Again
+            </ion-button>
+        </div>
+        <div id="column2" class="intro long-fade" [ngStyle]="{ 'background-image': monsterImageUrl }"></div>
+    </div>
 </ion-content>

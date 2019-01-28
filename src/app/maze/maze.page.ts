@@ -11,6 +11,7 @@ import { SimonPage } from '../simon/simon.page';
 import { TictactoePage } from '../tictactoe/tictactoe.page';
 import { ShellPage } from '../shell/shell.page';
 import { ToastController } from '@ionic/angular';
+// import { NativeAudio, NativeAudioOriginal } from '@ionic-native/native-audio';
 
 @Component({
     selector: 'app-maze',
@@ -103,7 +104,7 @@ export class MazePage {
     state: String = 'small';
     currentDirection = 's';
     monsterPresent = false;
-    monsterCoolDown = 200;
+    monsterCoolDown = 400;
     monsterQuotes = [];
     wallClass;
     monsterImageUrl;
@@ -115,6 +116,17 @@ export class MazePage {
     currentY = 0;
     mazeData;
     mazeTimer;
+    timerSub;
+
+    backgroundAudio = new Audio();
+
+    clickAudio = new Audio();
+
+    winAudio = new Audio();
+
+    loseAudio = new Audio();
+
+    monsterAudio = new Audio();
 
     constructor(
         public mazeProvider: MazeProvider,
@@ -126,12 +138,38 @@ export class MazePage {
     ) {
         this.generate();
         this.currentRoom = '0-0';
-        this.getQuotes();
+        // this.getQuotes();
         this.getImages();
         this.wallClass = 'sandstone';
+
+        // this.nativeAudio.preloadSimple('uniqueId1', 'path/to/file.mp3');
+
+        this.backgroundAudio.src = '../../assets/audio/theme.ogg';
+        this.backgroundAudio.load();
+        this.backgroundAudio.volume = 0.1;
+        this.backgroundAudio.play();
+        this.backgroundAudio.loop = true;
+
+        this.winAudio.src = '../../assets/audio/win sound 2-3.wav';
+        this.backgroundAudio.volume = 0.1;
+        this.winAudio.load();
+
+        this.loseAudio.src = '../../assets/audio/lose sound 1-2.wav';
+        this.backgroundAudio.volume = 0.1;
+        this.loseAudio.load();
+
+        this.clickAudio.src = '../../assets/audio/ui click 11 [2018-10-13 162315].wav';
+
+        this.clickAudio.load();
     }
 
     ionViewDidEnter() {
+        // if (this.timerSub) {
+        //     this.timerSub.unsubscribe();
+        // }
+        // this.timerSub = Observable.timer(60 * 60 * 1000)
+        //     .take(1)
+        //     .subscribe(this.showPopup.bind(this));
         // let minutes;
         // let seconds;
         // this.mazeTimer = interval(1000).subscribe(x => {
@@ -148,77 +186,11 @@ export class MazePage {
         // });
     }
 
-    async getQuotes() {
-        this.mazeProvider.getQuotes().then(response => {
-            this.monsterQuotes = response['quotes'];
-        });
-    }
-
-    async getRoutes() {
-        this.mazeProvider.getRoutes().then(response => {
-            this.routes = response['routes'];
-            this.getRoute('0-0');
-        });
-    }
-
     async getImages() {
         this.mazeProvider.getImages().then(response => {
             this.monsterImageList = response['monsters'];
         });
     }
-
-    // move(id) {
-    //     if (id !== 'back') {
-    //         //  this.routeHistory.push(this.currentRoute);
-
-    //         this.currentRoute['routes'].forEach(route => {
-    //             if (route.direction === this.currentDirection) {
-    //                 // console.log('matched direction in move', route.direction, this.currentDirection);
-    //                 route['routes'].forEach(child => {
-    //                     if (child.direction === id) {
-    //                         this.state = id;
-    //                         this.getRoute(child.id);
-    //                     }
-    //                 });
-    //             }
-    //         });
-
-    //         if (this.currentDirection === 'n' && id === 'r') {
-    //             this.currentDirection = 'e';
-    //         } else if (this.currentDirection === 'n' && id === 'l') {
-    //             this.currentDirection = 'w';
-    //         } else if (this.currentDirection === 's' && id === 'r') {
-    //             this.currentDirection = 'w';
-    //         } else if (this.currentDirection === 's' && id === 'l') {
-    //             this.currentDirection = 'e';
-    //         } else if (this.currentDirection === 'e' && id === 'r') {
-    //             this.currentDirection = 's';
-    //         } else if (this.currentDirection === 'e' && id === 'l') {
-    //             this.currentDirection = 'n';
-    //         } else if (this.currentDirection === 'w' && id === 'r') {
-    //             this.currentDirection = 'n';
-    //         } else if (this.currentDirection === 'w' && id === 'l') {
-    //             this.currentDirection = 's';
-    //         }
-    //     } else {
-    //         this.state = 'back';
-    //         this.monsterPresent = false;
-
-    //         if (this.currentDirection === 'n') {
-    //             this.currentDirection = 's';
-    //         } else if (this.currentDirection === 's') {
-    //             this.currentDirection = 'n';
-    //         } else if (this.currentDirection === 'e') {
-    //             this.currentDirection = 'w';
-    //         } else if (this.currentDirection === 'w') {
-    //             this.currentDirection = 'e';
-    //         }
-
-    //         this.getRoute(this.currentRoute['id']);
-    //     }
-
-    //     this.updateWalls();
-    // }
 
     updateWalls() {
         // console.log(this.currentRoute['id']);
@@ -243,7 +215,7 @@ export class MazePage {
 
         if (this.monsterCoolDown === 0) {
             this.monsterPresent = true;
-            this.monsterCoolDown = 200;
+            this.monsterCoolDown = 400;
             this.getMonster();
         } else {
             this.monsterCoolDown = this.monsterCoolDown - 25;
@@ -253,16 +225,19 @@ export class MazePage {
     }
 
     async launchMiniGame() {
+        // this.backgroundAudio.pause();
+        // console.log('launch mini game');
         // list of mini games
 
-        const miniGames = ['rps', 'simon', 'memory', 'shell', 'tictactoe'];
+        const miniGames = ['tictactoe', 'rps', 'simon', 'shell', 'memory'];
 
         // get a random game
-        const selectedMinigame = miniGames[Math.floor(Math.random() * this.monsterImageList.length)];
+        const selectedMinigame = miniGames[Math.floor(Math.random() * miniGames.length)];
 
         if (selectedMinigame === 'rps') {
             const modal = await this.modalController.create({
                 component: RpsPage,
+                backdropDismiss: false,
                 componentProps: {}
             });
 
@@ -271,7 +246,9 @@ export class MazePage {
             await modal.present();
 
             const { data } = await modal.onDidDismiss();
-            console.log(data);
+            // console.log(data);
+
+            // this.backgroundAudio.play();
 
             if (data.result === true) {
                 this.showWinMiniGame();
@@ -283,6 +260,7 @@ export class MazePage {
         if (selectedMinigame === 'simon') {
             const modal = await this.modalController.create({
                 component: SimonPage,
+                backdropDismiss: false,
                 componentProps: {}
             });
 
@@ -291,7 +269,9 @@ export class MazePage {
             await modal.present();
 
             const { data } = await modal.onDidDismiss();
-            console.log(data);
+            // console.log(data);
+
+            // this.backgroundAudio.play();
 
             if (data.result === true) {
                 this.showWinMiniGame();
@@ -303,6 +283,7 @@ export class MazePage {
         if (selectedMinigame === 'memory') {
             const modal = await this.modalController.create({
                 component: MemoryPage,
+                backdropDismiss: false,
                 componentProps: {}
             });
 
@@ -311,7 +292,9 @@ export class MazePage {
             await modal.present();
 
             const { data } = await modal.onDidDismiss();
-            console.log(data);
+            // console.log(data);
+
+            // this.backgroundAudio.play();
 
             if (data.result === true) {
                 this.showWinMiniGame();
@@ -323,6 +306,7 @@ export class MazePage {
         if (selectedMinigame === 'shell') {
             const modal = await this.modalController.create({
                 component: ShellPage,
+                backdropDismiss: false,
                 componentProps: {}
             });
 
@@ -331,7 +315,9 @@ export class MazePage {
             await modal.present();
 
             const { data } = await modal.onDidDismiss();
-            console.log(data);
+            // console.log(data);
+
+            // this.backgroundAudio.play();
 
             if (data.result === true) {
                 this.showWinMiniGame();
@@ -343,6 +329,7 @@ export class MazePage {
         if (selectedMinigame === 'tictactoe') {
             const modal = await this.modalController.create({
                 component: TictactoePage,
+                backdropDismiss: false,
                 componentProps: {}
             });
 
@@ -351,7 +338,9 @@ export class MazePage {
             await modal.present();
 
             const { data } = await modal.onDidDismiss();
-            console.log(data);
+            // console.log(data);
+
+            // this.backgroundAudio.play();
 
             if (data.result === true) {
                 this.showWinMiniGame();
@@ -363,22 +352,34 @@ export class MazePage {
 
     addRoomsToMap() {
         // start a counter at 5
-        // pick a random 'row'
-        // pick a random 'cell
-        // if not, add and increment
+        let roomCount = 0;
+
+        // console.log(this.routes);
+
+        for (roomCount; roomCount < 6; roomCount++) {
+            const randRow = this.routes[Math.floor(Math.random() * this.routes.length)];
+
+            // console.log(randRow);
+            this.routeHistory.push(randRow.id);
+            // pick a random 'row'
+            //  let
+            // pick a random 'cell
+            // add to route history
+        }
     }
 
     async showWinMiniGame() {
         const alert = await this.alertController.create({
             // header: 'Squirtle Says',
 
-            message: 'You won! I will add 5 rooms to your map.',
+            message: "You won! I'll add rooms to your map.",
             buttons: [
                 {
                     text: 'OK',
                     handler: () => {
                         this.monsterPresent = false;
-                        //add five rooms to map
+                        // add five rooms to map
+                        this.addRoomsToMap();
                     }
                 }
             ]
@@ -387,10 +388,12 @@ export class MazePage {
         // setTimeout(() => {
         this.alerts.push(alert);
         alert.present();
+        this.winAudio.play();
         // }, 1000);
     }
 
     async showLostMiniGame() {
+        // this.loseAudio.play();
         const alert = await this.alertController.create({
             // header: 'Squirtle Says',
 
@@ -400,7 +403,7 @@ export class MazePage {
                     text: 'OK',
                     handler: () => {
                         this.monsterPresent = false;
-                        //add five rooms to map
+                        // add five rooms to map
                     }
                 }
             ]
@@ -413,8 +416,14 @@ export class MazePage {
     }
 
     async getMonster() {
-        this.monsterImageUrl =
-            '../../assets/' + this.monsterImageList[Math.floor(Math.random() * this.monsterImageList.length)];
+        const selectedMonster = Math.floor(Math.random() * this.monsterImageList.length);
+        this.monsterImageUrl = '../../assets/monsters/' + this.monsterImageList[selectedMonster].img;
+
+        this.monsterAudio.src = this.monsterImageList[selectedMonster].audio;
+        this.monsterAudio.load();
+        this.monsterAudio.volume = 0.1;
+        this.monsterAudio.play();
+
         const alert = await this.alertController.create({
             // header: 'Squirtle Says',
 
@@ -423,7 +432,7 @@ export class MazePage {
                 {
                     text: 'Yes',
                     handler: () => {
-                        console.log('I want some help');
+                        //
 
                         // pause timer
 
@@ -436,8 +445,8 @@ export class MazePage {
                     cssClass: 'secondary',
                     handler: () => {
                         this.monsterPresent = false;
-                        this.monsterCoolDown = 400;
-                        console.log('Confirm Cancel');
+                        this.monsterCoolDown = 800;
+                        //  console.log('Confirm Cancel');
                     }
                 }
             ]
@@ -551,7 +560,7 @@ export class MazePage {
             }
         }
 
-        console.log(this.routes);
+        // console.log(this.routes);
         this.getRoute('0-0');
     }
 
@@ -665,6 +674,7 @@ export class MazePage {
     }
 
     moveForward() {
+        // this.clickAudio.play();
         this.wallReady = false;
         if (this.currentDirection === 's') {
             this.currentY++;
@@ -688,6 +698,7 @@ export class MazePage {
     }
 
     moveLeft() {
+        // this.clickAudio.play();
         this.wallReady = false;
 
         if (this.currentDirection === 'n') {
@@ -709,6 +720,8 @@ export class MazePage {
     }
 
     moveRight() {
+        // this.clickAudio.play();
+        //  this.roomChange.play();
         this.wallReady = false;
         if (this.currentDirection === 'n') {
             this.currentX++;
@@ -730,6 +743,7 @@ export class MazePage {
     }
 
     turnAround() {
+        // this.clickAudio.play();
         this.wallReady = false;
         if (this.currentDirection === 'n') {
             this.currentDirection = 's';
@@ -745,10 +759,12 @@ export class MazePage {
     }
 
     async openMap() {
+        this.clickAudio.play();
         // console.log(this.currentRoom);
         // console.log(this.mazeData);
         const modal = await this.modalController.create({
             component: MapPage,
+            backdropDismiss: false,
             componentProps: { routeHistory: this.routeHistory, mazeData: this.mazeData, currentRoom: this.currentRoom }
         });
 

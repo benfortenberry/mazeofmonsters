@@ -105,8 +105,8 @@ export class HomePage {
         public rtCtrl: IonRouterOutlet,
         public alertController: AlertController
     ) {
-        this.getRoute(1641);
-        this.getQuotes();
+        // this.getRoute(1641);
+        // this.getQuotes();
         this.getImages();
         this.wallClass = 'sandstone';
     }
@@ -133,11 +133,11 @@ export class HomePage {
         });
     }
 
-    async getQuotes() {
-        this.mazeProvider.getQuotes().then(response => {
-            this.monsterQuotes = response['quotes'];
-        });
-    }
+    // async getQuotes() {
+    //     this.mazeProvider.getQuotes().then(response => {
+    //         this.monsterQuotes = response['quotes'];
+    //     });
+    // }
 
     async getImages() {
         this.mazeProvider.getImages().then(response => {
@@ -145,93 +145,93 @@ export class HomePage {
         });
     }
 
-    getRoute(id) {
-        // console.log(id);
-        this.hasLeft = false;
-        this.hasRight = false;
-        this.hasForward = false;
-        this.wallReady = false;
-        this.mazeProvider.getRoute(id).then(response => {
-            // console.log(response);
-            this.currentRoute = response[0];
+    // getRoute(id) {
+    //     // console.log(id);
+    //     this.hasLeft = false;
+    //     this.hasRight = false;
+    //     this.hasForward = false;
+    //     this.wallReady = false;
+    //     this.mazeProvider.getRoute(id).then(response => {
+    //         // console.log(response);
+    //         this.currentRoute = response[0];
 
-            this.currentRoute['routes'].forEach(route => {
-                // console.log(route);
-                if (route.direction === this.currentDirection) {
-                    route['routes'].forEach(child => {
-                        if (child.direction === 'r') {
-                            this.hasRight = true;
-                        }
-                        if (child.direction === 'l') {
-                            this.hasLeft = true;
-                        }
-                        if (child.direction === 'f') {
-                            this.hasForward = true;
-                        }
-                        if (child.direction === 'win') {
-                            this.showWin();
-                        }
-                    });
-                }
-            });
-            // console.log(this.hasRight);
+    //         this.currentRoute['routes'].forEach(route => {
+    //             // console.log(route);
+    //             if (route.direction === this.currentDirection) {
+    //                 route['routes'].forEach(child => {
+    //                     if (child.direction === 'r') {
+    //                         this.hasRight = true;
+    //                     }
+    //                     if (child.direction === 'l') {
+    //                         this.hasLeft = true;
+    //                     }
+    //                     if (child.direction === 'f') {
+    //                         this.hasForward = true;
+    //                     }
+    //                     if (child.direction === 'win') {
+    //                         this.showWin();
+    //                     }
+    //                 });
+    //             }
+    //         });
+    //         // console.log(this.hasRight);
 
-            return response;
-        });
-    }
+    //         return response;
+    //     });
+    // }
 
-    move(id) {
-        if (id !== 'back') {
-            this.routeHistory.push(this.currentRoute);
+    // move(id) {
+    //     if (id !== 'back') {
+    //         this.routeHistory.push(this.currentRoute);
 
-            this.currentRoute['routes'].forEach(route => {
-                if (route.direction === this.currentDirection) {
-                    // console.log('matched direction in move', route.direction, this.currentDirection);
-                    route['routes'].forEach(child => {
-                        if (child.direction === id) {
-                            this.state = id;
-                            this.getRoute(child.id);
-                        }
-                    });
-                }
-            });
+    //         this.currentRoute['routes'].forEach(route => {
+    //             if (route.direction === this.currentDirection) {
+    //                 // console.log('matched direction in move', route.direction, this.currentDirection);
+    //                 route['routes'].forEach(child => {
+    //                     if (child.direction === id) {
+    //                         this.state = id;
+    //                         this.getRoute(child.id);
+    //                     }
+    //                 });
+    //             }
+    //         });
 
-            if (this.currentDirection === 'n' && id === 'r') {
-                this.currentDirection = 'e';
-            } else if (this.currentDirection === 'n' && id === 'l') {
-                this.currentDirection = 'w';
-            } else if (this.currentDirection === 's' && id === 'r') {
-                this.currentDirection = 'w';
-            } else if (this.currentDirection === 's' && id === 'l') {
-                this.currentDirection = 'e';
-            } else if (this.currentDirection === 'e' && id === 'r') {
-                this.currentDirection = 's';
-            } else if (this.currentDirection === 'e' && id === 'l') {
-                this.currentDirection = 'n';
-            } else if (this.currentDirection === 'w' && id === 'r') {
-                this.currentDirection = 'n';
-            } else if (this.currentDirection === 'w' && id === 'l') {
-                this.currentDirection = 's';
-            }
-        } else {
-            this.state = 'back';
-            this.monsterPresent = false;
+    //         if (this.currentDirection === 'n' && id === 'r') {
+    //             this.currentDirection = 'e';
+    //         } else if (this.currentDirection === 'n' && id === 'l') {
+    //             this.currentDirection = 'w';
+    //         } else if (this.currentDirection === 's' && id === 'r') {
+    //             this.currentDirection = 'w';
+    //         } else if (this.currentDirection === 's' && id === 'l') {
+    //             this.currentDirection = 'e';
+    //         } else if (this.currentDirection === 'e' && id === 'r') {
+    //             this.currentDirection = 's';
+    //         } else if (this.currentDirection === 'e' && id === 'l') {
+    //             this.currentDirection = 'n';
+    //         } else if (this.currentDirection === 'w' && id === 'r') {
+    //             this.currentDirection = 'n';
+    //         } else if (this.currentDirection === 'w' && id === 'l') {
+    //             this.currentDirection = 's';
+    //         }
+    //     } else {
+    //         this.state = 'back';
+    //         this.monsterPresent = false;
 
-            if (this.currentDirection === 'n') {
-                this.currentDirection = 's';
-            } else if (this.currentDirection === 's') {
-                this.currentDirection = 'n';
-            } else if (this.currentDirection === 'e') {
-                this.currentDirection = 'w';
-            } else if (this.currentDirection === 'w') {
-                this.currentDirection = 'e';
-            }
+    //         if (this.currentDirection === 'n') {
+    //             this.currentDirection = 's';
+    //         } else if (this.currentDirection === 's') {
+    //             this.currentDirection = 'n';
+    //         } else if (this.currentDirection === 'e') {
+    //             this.currentDirection = 'w';
+    //         } else if (this.currentDirection === 'w') {
+    //             this.currentDirection = 'e';
+    //         }
 
-            this.getRoute(this.currentRoute['id']);
-        }
+    //         this.getRoute(this.currentRoute['id']);
+    //     }
 
-        this.updateWalls();
-    }
+    //     this.updateWalls();
+    // }
 
     updateWalls() {
         console.log(this.currentRoute['id']);
@@ -296,31 +296,31 @@ export class HomePage {
         console.log(event.keycode);
     }
 
-    @HostListener('document:keyup', ['$event'])
-    handleKeyboardEvent(event: KeyboardEvent) {
-        this.wallReady = false;
-        console.log(event.key);
-        const key = event.key;
+    // @HostListener('document:keyup', ['$event'])
+    // handleKeyboardEvent(event: KeyboardEvent) {
+    //     this.wallReady = false;
+    //     console.log(event.key);
+    //     const key = event.key;
 
-        if (key === 'ArrowUp' && this.hasForward) {
-            this.move('f');
-        }
+    //     if (key === 'ArrowUp' && this.hasForward) {
+    //         this.move('f');
+    //     }
 
-        if (key === 'ArrowLeft' && this.hasLeft) {
-            this.move('l');
-        }
+    //     if (key === 'ArrowLeft' && this.hasLeft) {
+    //         this.move('l');
+    //     }
 
-        if (key === 'Enter') {
-            this.clearAlerts();
-        }
+    //     if (key === 'Enter') {
+    //         this.clearAlerts();
+    //     }
 
-        if (key === 'ArrowRight' && this.hasRight) {
-            this.move('r');
-        }
+    //     if (key === 'ArrowRight' && this.hasRight) {
+    //         this.move('r');
+    //     }
 
-        if (key === 'ArrowDown') {
-            this.clearAlerts();
-            this.move('back');
-        }
-    }
+    //     if (key === 'ArrowDown') {
+    //         this.clearAlerts();
+    //         this.move('back');
+    //     }
+    // }
 }

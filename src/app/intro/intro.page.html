@@ -2,21 +2,38 @@
     <ion-toolbar color="danger"><ion-title>Maze of Monsters</ion-title></ion-toolbar>
 </ion-header> -->
 
-<ion-content padding class="main">
-    <ion-grid>
-        <ion-row>
-            <ion-col size="6">
-              
-                <p class="text">
-                    What a nice looking person! Unfortunately, you have 10 minutes to reach the end of my maze to avoid
-                    being turned into one of my monsters. It's a wonderful collection.
-                </p>
-           
+<ion-content class="main">
+    <div id="row1">
+        <div id="column1" class="left">
+            <p class="text">
+                <span *ngIf="firstLine">What a nice looking person!</span>
 
-                <ion-button (click)="beginMaze()" shape="round" expand="block" color="light" fill="outline">
-                    Begin Maze
-                </ion-button>
-            </ion-col>
-        </ion-row>
-    </ion-grid>
+                <span class="text" *ngIf="secondLine">
+                    <br />
+                    <br />
+                    Unfortunately, you have 10 minutes to reach the end of my maze to avoid being turned into one of my
+                    monsters.
+                </span>
+
+                <span class="text" *ngIf="thirdLine">
+                    <br />
+                    <br />
+                    It's a wonderful collection.
+                </span>
+            </p>
+            <ion-button
+                *ngIf="buttonReady"
+                (click)="beginMaze()"
+                shape="round"
+                expand="block"
+                color="light"
+                fill="outline"
+                class="fade"
+            >
+                Begin Maze
+            </ion-button>
+        </div>
+
+        <div id="column2" class="intro"></div>
+    </div>
 </ion-content>

@@ -1,12 +1,94 @@
 <ion-header>
     <ion-toolbar color="dark">
-        <ion-title float-left padding-top>Eyeball Shuffle</ion-title>
-        <ion-button float-right button color="dark" (click)="closeModal()">
+        <ion-title float-left padding-top></ion-title>
+        <ion-button float-right button color="dark" (click)="closeModal(null)">
             <ion-icon name="close"></ion-icon>
         </ion-button>
     </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
-Follow the eye ball, then pick the right card to reveal 5 rooms;
+<ion-content padding color="dark">
+    Follow the eyeball, then pick the right slot for help:
+
+    <ion-grid>
+        <ion-row id="shuffleRow">
+            <ion-col
+                class="tile"
+                [ngClass]="getAniClass(0)"
+                [@my1stAnimation]="oneSlot"
+                (@my1stAnimation.done)="onAnimationEvent($event)"
+                (click)="guessShell(0)"
+                [class.voted]="flipped"
+            >
+                <div
+                    *ngIf="
+                        (rightAnswer == 0 && shuffleCount == 0) || (!gameStart && possibleAnswers[0].id == rightAnswer)
+                    "
+                    class="eye"
+                ></div>
+
+                <!-- {{ possibleAnswers[0].id }} -->
+            </ion-col>
+            <ion-col
+                [@my2ndAnimation]="twoSlot"
+                [class.voted]="flipped"
+                class="tile"
+                [ngClass]="getAniClass(1)"
+                (click)="guessShell(1)"
+            >
+                <div
+                    *ngIf="
+                        (rightAnswer == 1 && shuffleCount == 0) || (!gameStart && possibleAnswers[1].id == rightAnswer)
+                    "
+                    class="eye"
+                ></div>
+            </ion-col>
+            <ion-col
+                [@my3rdAnimation]="threeSlot"
+                [class.voted]="flipped"
+                class="tile"
+                [ngClass]="getAniClass(2)"
+                (click)="guessShell(2)"
+            >
+                <div
+                    *ngIf="
+                        (rightAnswer == 2 && shuffleCount == 0) || (!gameStart && possibleAnswers[2].id == rightAnswer)
+                    "
+                    class="eye"
+                ></div>
+            </ion-col>
+            <ion-col
+                [@my4thAnimation]="fourSlot"
+                [class.voted]="flipped"
+                class="tile"
+                [ngClass]="getAniClass(3)"
+                (click)="guessShell(3)"
+            >
+                <div
+                    *ngIf="
+                        (rightAnswer == 3 && shuffleCount == 0) || (!gameStart && possibleAnswers[3].id == rightAnswer)
+                    "
+                    class="eye"
+                ></div>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+    <!-- right answer: {{ rightAnswer }} -->
+    <!-- right answer: {{ rightAnswer }}
+    <br />
+    one slot: {{ oneSlot }}
+    <br />
+    two slot: {{ twoSlot }}
+    <br />
+    three slot: {{ threeSlot }}
+    <br />
+    four slot: {{ fourSlot }}
+    <br />
+
+    current : {{ possibleAnswers | json }}
+    <br />
+    last: {{ lastAnswers | json }}
+    <br /> -->
+
+    <!-- <a ion-button (click)="shuffle()">shuffle!</a> -->
 </ion-content>

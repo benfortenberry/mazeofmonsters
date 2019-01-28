@@ -1,19 +1,36 @@
 <ion-header>
     <ion-toolbar color="dark">
-        <ion-title float-left padding-top>Pincer, Web & Fang</ion-title>
-        <ion-button float-right button color="dark" (click)="closeModal()">
+        <ion-title float-left padding-top>Sword, Shield, & Bow</ion-title>
+        <ion-button float-right button color="dark" (click)="closeModal(null)">
             <ion-icon name="close"></ion-icon>
         </ion-button>
     </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
-    <p>Win this game Pincer, Web or Claw to reveal 5 rooms:</p>
-    <ion-grid>
-        <ion-row>
-            <ion-col><ion-button>1</ion-button></ion-col>
-            <ion-col><ion-button>2</ion-button></ion-col>
-            <ion-col><ion-button>3</ion-button></ion-col>
-        </ion-row>
-    </ion-grid>
+<ion-content padding color="dark">
+    <p *ngIf="goAgain">We tied! Let's play again...</p>
+
+    <div *ngIf="!goAgain">
+        <p *ngIf="humanTurn">
+            Beat me in this game of Sword, Shield, & Bow for help. Shield beats bow, bow beats sword, and sword beats
+            shield.
+        </p>
+        <ion-grid *ngIf="humanTurn">
+            <ion-row>
+                <ion-col class="sword hover pointer tile" (click)="makeChoice('sword')"><br /></ion-col>
+                <ion-col class="shield hover pointer tile" (click)="makeChoice('shield')"><br /></ion-col>
+                <ion-col class="bow hover pointer tile" (click)="makeChoice('bow')"><br /></ion-col>
+            </ion-row>
+        </ion-grid>
+
+        <p *ngIf="!humanTurn">I picked {{ cpuChoice }}!</p>
+
+        <ion-grid *ngIf="!humanTurn">
+            <ion-row>
+                <ion-col class="tile" [ngClass]="{ sword: isSword() }"><br /></ion-col>
+                <ion-col class="tile" [ngClass]="{ shield: isShield() }"><br /></ion-col>
+                <ion-col class="tile" [ngClass]="{ bow: isBow() }"><br /></ion-col>
+            </ion-row>
+        </ion-grid>
+    </div>
 </ion-content>

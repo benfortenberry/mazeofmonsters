@@ -8,19 +8,14 @@ import { IonicModule } from '@ionic/angular';
 import { DeathPage } from './death.page';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: DeathPage
-  }
+    {
+        path: '',
+        component: DeathPage
+    }
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    RouterModule.forChild(routes)
-  ],
-  declarations: [DeathPage]
+    imports: [CommonModule, FormsModule, IonicModule, RouterModule.forChild(routes)],
+    declarations: [DeathPage]
 })
 export class DeathPageModule {}

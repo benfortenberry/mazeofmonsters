@@ -1,12 +1,143 @@
 <ion-header>
     <ion-toolbar color="dark">
-        <ion-title float-left padding-top>Monster Match</ion-title>
+        <ion-title float-left padding-top>Gems</ion-title>
         <ion-button float-right button color="dark" (click)="closeModal()">
             <ion-icon name="close"></ion-icon>
         </ion-button>
     </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
-<p>Match the monsters under the time limit to reveal 5 rooms:</p>
+<ion-content padding color="dark">
+    <p>
+        Match the gems in under {{ guessesLeft }}
+        <span *ngIf="guessesLeft != 1">turns</span>
+
+        <span *ngIf="guessesLeft == 1">turn</span>
+        to get help:
+    </p>
+    <ion-grid>
+        <ion-row>
+            <ion-col class="contain">
+                <div
+                    *ngIf="tiles[0].show"
+                    class="tile"
+                    [ngStyle]="{ 'background-image': img0 }"
+                    [class.voted]="tiles[0].flipped"
+                    (click)="flip(0)"
+                ></div>
+            </ion-col>
+            <ion-col>
+                <div
+                    *ngIf="tiles[1].show"
+                    class="tile"
+                    [ngStyle]="{ 'background-image': img1 }"
+                    [class.voted]="tiles[1].flipped"
+                    (click)="flip(1)"
+                ></div>
+            </ion-col>
+            <ion-col>
+                <div
+                    *ngIf="tiles[2].show"
+                    class="tile"
+                    [ngStyle]="{ 'background-image': img2 }"
+                    [class.voted]="tiles[2].flipped"
+                    (click)="flip(2)"
+                ></div>
+            </ion-col>
+            <ion-col>
+                <div
+                    *ngIf="tiles[3].show"
+                    class="tile"
+                    [ngStyle]="{ 'background-image': img3 }"
+                    [class.voted]="tiles[3].flipped"
+                    (click)="flip(3)"
+                ></div>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col class="contain">
+                <div
+                    *ngIf="tiles[4].show"
+                    class="tile"
+                    [ngStyle]="{ 'background-image': img4 }"
+                    [class.voted]="tiles[4].flipped"
+                    (click)="flip(4)"
+                ></div>
+            </ion-col>
+            <ion-col>
+                <div
+                    [class.voted]="tiles[5].flipped"
+                    (click)="flip(5)"
+                    *ngIf="tiles[5].show"
+                    class="tile"
+                    [ngStyle]="{ 'background-image': img5 }"
+                ></div>
+            </ion-col>
+            <ion-col>
+                <div
+                    *ngIf="tiles[6].show"
+                    class="tile"
+                    [ngStyle]="{ 'background-image': img6 }"
+                    [class.voted]="tiles[6].flipped"
+                    (click)="flip(6)"
+                ></div>
+            </ion-col>
+            <ion-col>
+                <div
+                    *ngIf="tiles[7].show"
+                    class="tile"
+                    [ngStyle]="{ 'background-image': img7 }"
+                    [class.voted]="tiles[7].flipped"
+                    (click)="flip(7)"
+                ></div>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col class="contain">
+                <div
+                    *ngIf="tiles[8].show"
+                    class="tile"
+                    [ngStyle]="{ 'background-image': img8 }"
+                    [class.voted]="tiles[8].flipped"
+                    (click)="flip(8)"
+                ></div>
+            </ion-col>
+            <ion-col>
+                <div
+                    *ngIf="tiles[9].show"
+                    class="tile"
+                    [ngStyle]="{ 'background-image': img9 }"
+                    [class.voted]="tiles[9].flipped"
+                    (click)="flip(9)"
+                ></div>
+            </ion-col>
+            <ion-col>
+                <div
+                    *ngIf="tiles[10].show"
+                    class="tile"
+                    [ngStyle]="{ 'background-image': img10 }"
+                    [class.voted]="tiles[10].flipped"
+                    (click)="flip(10)"
+                ></div>
+            </ion-col>
+            <ion-col>
+                <div
+                    *ngIf="tiles[11].show"
+                    class="tile"
+                    [ngStyle]="{ 'background-image': img11 }"
+                    [class.voted]="tiles[11].flipped"
+                    (click)="flip(11)"
+                ></div>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+    <!-- 
+    {{ guessOne | json }}
+    <br />
+    {{ guessTwo | json }}
+    <br />
+    {{ correctCount }}
+    <br />
+    -->
+    <!-- {{ guessCount }} -->
 </ion-content>

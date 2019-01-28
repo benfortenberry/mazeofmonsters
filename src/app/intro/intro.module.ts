@@ -8,19 +8,14 @@ import { IonicModule } from '@ionic/angular';
 import { IntroPage } from './intro.page';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: IntroPage
-  }
+    {
+        path: '',
+        component: IntroPage
+    }
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    RouterModule.forChild(routes)
-  ],
-  declarations: [IntroPage]
+    imports: [CommonModule, FormsModule, IonicModule, RouterModule.forChild(routes)],
+    declarations: [IntroPage]
 })
 export class IntroPageModule {}

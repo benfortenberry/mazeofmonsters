@@ -1,8 +1,51 @@
+.intro {
+    background: url(../../assets/monsters/intro.jpg) no-repeat center center / cover;
+    height: 100vh;
+    width: 50%;
+}
+
 ion-content {
-    --background: #000 url(../../assets/grunge23.png) no-repeat center center / cover;
+    --background: #5f6d53 !important;
 }
 
 .text {
     color: #f7f7f7;
     font-size: 5.5vh;
+    animation: fadein 2s;
+}
+
+.fade {
+    animation: fadein 3s;
+}
+
+.left {
+    width: 50%;
+    // background-image: url(../../assets/sandstone-large.jpg);
+    background-color: #5f6d53;
+    padding: 20px;
+}
+
+#row1 {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+#column1 {
+    display: flex;
+    flex-direction: column;
+}
+
+#column2 {
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes fadein {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }

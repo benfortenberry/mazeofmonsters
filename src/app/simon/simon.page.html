@@ -1,13 +1,34 @@
 <ion-header>
     <ion-toolbar color="dark">
-        <ion-title float-left padding-top>Yabdib</ion-title>
-        <ion-button float-right button color="dark" (click)="closeModal()">
+        <ion-title float-left padding-top>Orb</ion-title>
+        <ion-button float-right button color="dark" (click)="closeModal(null)">
             <ion-icon name="close"></ion-icon>
         </ion-button>
     </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
-  Follow Yapdib's pattern 3 times to reveal 5 rooms:
+<ion-content padding color="dark">
+    <p>Follow the pattern for 7 turns for help:</p>
 
+    <div [ngClass]="{ shake: error }">
+        <ion-grid>
+            <ion-row>
+                <ion-col class="tile zero" [ngClass]="{ active: tileList[0].active }" (click)="storePattern(0)">
+                    <br />
+                </ion-col>
+                <ion-col class="tile one" [ngClass]="{ active: tileList[1].active }" (click)="storePattern(1)">
+                    <br />
+                </ion-col>
+                <ion-col class="tile two" [ngClass]="{ active: tileList[2].active }" (click)="storePattern(2)">
+                    <br />
+                </ion-col>
+                <ion-col class="tile three" [ngClass]="{ active: tileList[3].active }" (click)="storePattern(3)">
+                    <br />
+                </ion-col>
+                <ion-col class="tile four" [ngClass]="{ active: tileList[4].active }" (click)="storePattern(4)">
+                    <br />
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </div>
 </ion-content>

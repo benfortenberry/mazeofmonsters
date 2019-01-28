@@ -5,7 +5,7 @@
 .inner-scroll,
 .scroll-y,
 .overscroll {
-    overflow-y: hidden !important;
+    overflow: hidden !important;
 }
 .grid {
     perspective: 600px;
@@ -129,22 +129,6 @@ a {
         url(../../assets/new-sandstone-3.jpg);
 }
 
-.something:before {
-    height: 200px;
-    width: 1600px;
-    margin: -100px -800px;
-    background-image: linear-gradient(90deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75) 50%, rgba(0, 0, 0, 1)),
-        url(../../assets/neon-mask.jpg);
-}
-
-.something:after {
-    height: 200px;
-    width: 1600px;
-    margin: -100px -800px;
-    background-image: linear-gradient(90deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75) 50%, rgba(0, 0, 0, 1)),
-        url(../../assets/neon-mask.jpg);
-}
-
 /* ceiling */
 .maze:before {
     transform: translateY(-100px) rotateX(-90deg);
@@ -190,17 +174,25 @@ a {
     z-index: 99999;
 }
 
+.pointer {
+    cursor: pointer;
+}
+
 .monster {
     z-index: 99998;
     left: calc(50vw - 20vw);
     bottom: 0;
     width: 40vw;
-    margin-bottom: 50px;
+    max-height: 90vh;
+    // max-width:450px;
+    // margin-bottom: 50px;
     position: absolute;
-    animation-name: floating;
-    animation-duration: 3s;
-    animation-iteration-count: infinite;
-    animation-timing-function: ease-in-out;
+    // animation-name: floating;
+    // animation-duration: 3s;
+    // animation-iteration-count: infinite;
+    // animation-timing-function: ease-in-out;
+    // perspective: 600px;
+    // transform-style: preserve-3d;
 }
 
 @keyframes floating {

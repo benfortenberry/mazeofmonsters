@@ -15,11 +15,16 @@ export class MapPage implements OnInit {
     routeHistory = null;
     mazeData = null;
 
+    clickAudio = new Audio();
+
     constructor(
         private navParams: NavParams,
         private sanitizer: DomSanitizer,
         private modalController: ModalController
-    ) {}
+    ) {
+        this.clickAudio.src = '../../assets/audio/ui click 11 [2018-10-13 162315].wav';
+        this.clickAudio.load();
+    }
 
     ionViewWillEnter() {
         this.generate();
@@ -46,23 +51,23 @@ export class MapPage implements OnInit {
                     showRoute = true;
                 }
 
-                //showRoute = true;
+                // showRoute = true;
 
                 this.htmlToAdd = this.htmlToAdd + '<td style="text-align:center; height:20px; width:20px;';
                 if (disp[i][j][0] === 0 && showRoute) {
-                    this.htmlToAdd = this.htmlToAdd + 'border-top:solid 1px #939393;';
+                    this.htmlToAdd = this.htmlToAdd + 'border-top:solid 2px #f7f7f7;';
                 } else {
                 }
                 if (disp[i][j][1] === 0 && showRoute) {
-                    this.htmlToAdd = this.htmlToAdd + 'border-right:solid 1px #b7b7939393b7;';
+                    this.htmlToAdd = this.htmlToAdd + 'border-right:solid 2px #f7f7f7;';
                 } else {
                 }
                 if (disp[i][j][2] === 0 && showRoute) {
-                    this.htmlToAdd = this.htmlToAdd + 'border-bottom:solid 1px #939393;';
+                    this.htmlToAdd = this.htmlToAdd + 'border-bottom:solid 2px #f7f7f7;';
                 } else {
                 }
                 if (disp[i][j][3] === 0 && showRoute) {
-                    this.htmlToAdd = this.htmlToAdd + 'border-left:solid 1px #939393;';
+                    this.htmlToAdd = this.htmlToAdd + 'border-left:solid 2px #f7f7f7;';
                 } else {
                 }
 
@@ -74,10 +79,10 @@ export class MapPage implements OnInit {
         // console.log(this.routes);
 
         setTimeout(() => {
-            document.getElementById('39-39').innerHTML = '<ion-icon style="color:yellow" name="home"></ion-icon>';
+            document.getElementById('39-39').innerHTML = '<ion-icon style="color:#ffd400" name="home"></ion-icon>';
             document.getElementById(this.currentRoom).innerHTML =
-                '<ion-icon style="color:yellow" name="star"></ion-icon>';
-        }, 500);
+                '<ion-icon style="color:#ffd400" name="star"></ion-icon>';
+        }, 100);
     }
 
     ngOnInit() {
@@ -87,6 +92,7 @@ export class MapPage implements OnInit {
     }
 
     closeModal() {
+        this.clickAudio.play();
         this.modalController.dismiss();
     }
 }

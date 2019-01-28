@@ -7,8 +7,12 @@
     </ion-toolbar>
 </ion-header>
 
-<ion-content color="dark" padding style="overflow-x:auto;">
-    <div style="overflow-x:auto;">
-        <table id="maze" style="width:800px; border-collapse: collapse" [innerHtml]="safeHtml"></table>
+<ion-content color="dark" no-padding>
+    <div>
+        <table
+            id="maze"
+            style="padding-bottom: 10px; padding-left: 2px; padding-right: 2px; border-collapse: collapse"
+            [innerHtml]="safeHtml"
+        ></table>
     </div>
 </ion-content>

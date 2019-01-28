@@ -1,0 +1,20 @@
+{
+    "monsters": [
+        "boss_goblinbigboss.png",
+        "boss_thenightmother.png",
+        "boss_voidelemental.png",
+        "monster_crystalgolem.png",
+        "monster_deepelf.png",
+        "monster_demilich.png",
+        "monster_devilkin.png",
+        "monster_dragonwhelp.png",
+        "monster_fireelemental.png",
+        "monster_goblinveteran.png",
+        "monster_imp.png",
+        "monster_minotaur.png",
+        "monster_ooze.png",
+        "monster_ratling.png",
+        "monster_treefolk.png",
+        "monster_werewolfcub.png"
+    ]
+}
