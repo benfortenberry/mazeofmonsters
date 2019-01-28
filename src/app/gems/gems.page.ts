@@ -80,7 +80,7 @@ export class GemPage implements OnInit {
                 this.guessCount++;
 
                 if (this.guesses[0].img === this.guesses[1].img) {
-                    console.log('match');
+                    // console.log('match');
 
                     const firstSpot = this.findWithAttr(this.tiles, 'id', this.guesses[0].id);
                     const secondSpot = this.findWithAttr(this.tiles, 'id', this.guesses[1].id);
@@ -116,7 +116,7 @@ export class GemPage implements OnInit {
                         this.img11 = '';
                     }, 1500);
 
-                    console.log('no match');
+                    // console.log('no match');
                 }
             }
 

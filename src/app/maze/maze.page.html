@@ -38,7 +38,9 @@
     </ion-fab>
 
     <ion-fab vertical="top" horizontal="end" slot="fixed">
-        <ion-fab-button size="small" color="dark"><div class="radial"></div></ion-fab-button>
+        {{ timeLeft }}
+
+        <!-- <ion-fab-button size="small" color="dark"><div class="radial"></div></ion-fab-button> -->
     </ion-fab>
 
     <ion-img *ngIf="monsterPresent" class="monster" src="{{ monsterImageUrl }}"></ion-img>

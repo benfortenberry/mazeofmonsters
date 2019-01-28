@@ -2,7 +2,8 @@ import { Component, HostListener } from '@angular/core';
 import { MazeProvider } from '../..//providers/maze-service';
 import { AlertController, NavController, IonRouterOutlet } from '@ionic/angular';
 import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
-import { Observable, interval } from 'rxjs';
+
+import { CountdownService } from '../../providers/countdown-service';
 import { ModalController } from '@ionic/angular';
 import { MapPage } from '../map/map.page';
 import { SsbPage } from '../ssb/ssb.page';
@@ -11,7 +12,6 @@ import { OrbPage } from '../orb/orb';
 import { XandoPage } from '../xando/xando.page';
 import { EyeballPage } from '../eyeball/eyeball.page';
 import { ToastController } from '@ionic/angular';
-// import { NativeAudio, NativeAudioOriginal } from '@ionic-native/native-audio';
 
 @Component({
     selector: 'app-maze',
@@ -128,13 +128,16 @@ export class MazePage {
 
     monsterAudio = new Audio();
 
+    timeLeft;
+
     constructor(
         public mazeProvider: MazeProvider,
         public navCtrl: NavController,
         public rtCtrl: IonRouterOutlet,
         public alertController: AlertController,
         public modalController: ModalController,
-        public toastController: ToastController
+        public toastController: ToastController,
+        public countdownService: CountdownService
     ) {
         this.generate();
         this.currentRoom = '0-0';
@@ -164,6 +167,10 @@ export class MazePage {
     }
 
     ionViewDidEnter() {
+        this.countdownService.start(600);
+
+        this.countdownService.countdown().subscribe(t => (this.timeLeft = t));
+
         // if (this.timerSub) {
         //     this.timerSub.unsubscribe();
         // }
