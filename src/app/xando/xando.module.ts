@@ -5,12 +5,12 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { MapPage } from './map.page';
+import { XandoPage } from './xando.page';
 
 const routes: Routes = [
     {
         path: '',
-        component: MapPage
+        component: XandoPage
     }
 ];
 
@@ -18,4 +18,4 @@ const routes: Routes = [
     imports: [CommonModule, FormsModule, IonicModule, RouterModule.forChild(routes)],
     declarations: []
 })
-export class MapPageModule {}
+export class XandoPageModule {}

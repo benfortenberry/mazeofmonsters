@@ -7,11 +7,11 @@ import { IonicModule } from '@ionic/angular';
 
 import { MazePage } from './maze.page';
 import { MapPage } from '../map/map.page';
-import { RpsPage } from '../rps/rps.page';
-import { SimonPage } from '../simon/simon.page';
-import { MemoryPage } from '../memory/memory.page';
-import { ShellPage } from '../shell/shell.page';
-import { TictactoePage } from '../tictactoe/tictactoe.page';
+import { SsbPage } from '../ssb/ssb.page';
+import { OrbPage } from '../orb/orb';
+import { GemPage } from '../gems/gems.page';
+import { EyeballPage } from '../eyeball/eyeball.page';
+import { XandoPage } from '../xando/xando.page';
 const routes: Routes = [
     {
         path: '',
@@ -21,7 +21,7 @@ const routes: Routes = [
 
 @NgModule({
     imports: [CommonModule, FormsModule, IonicModule, RouterModule.forChild(routes)],
-    declarations: [MazePage, MapPage, RpsPage, SimonPage, TictactoePage, MemoryPage, ShellPage],
-    entryComponents: [MapPage, RpsPage, SimonPage, ShellPage, MemoryPage, TictactoePage]
+    declarations: [MazePage, MapPage, SsbPage, OrbPage, XandoPage, GemPage, EyeballPage],
+    entryComponents: [MapPage, SsbPage, OrbPage, EyeballPage, GemPage, XandoPage]
 })
 export class MazePageModule {}

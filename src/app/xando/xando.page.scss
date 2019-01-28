@@ -1,0 +1,29 @@
+.tile {
+    width: 33%;
+    height: calc(33vh - 60px);
+    max-height: 100px;
+    background-color: #754c2e;
+    line-height: calc(33vh - 60px);
+
+    border: solid 1px #111;
+    text-align: center;
+    font-size: calc(33vh - 60px);
+}
+
+.picked {
+    background-color: #bb9e7c;
+}
+
+.x {
+    background-image: url(../../assets/xando/frame1.png);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.o {
+    background-image: url(../../assets/xando/x.png);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}

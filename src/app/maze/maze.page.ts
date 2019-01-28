@@ -5,11 +5,11 @@ import { trigger, state, style, transition, animate, keyframes } from '@angular/
 import { Observable, interval } from 'rxjs';
 import { ModalController } from '@ionic/angular';
 import { MapPage } from '../map/map.page';
-import { RpsPage } from '../rps/rps.page';
-import { MemoryPage } from '../memory/memory.page';
-import { SimonPage } from '../simon/simon.page';
-import { TictactoePage } from '../tictactoe/tictactoe.page';
-import { ShellPage } from '../shell/shell.page';
+import { SsbPage } from '../ssb/ssb.page';
+import { GemPage } from '../gems/gems.page';
+import { OrbPage } from '../orb/orb';
+import { XandoPage } from '../xando/xando.page';
+import { EyeballPage } from '../eyeball/eyeball.page';
 import { ToastController } from '@ionic/angular';
 // import { NativeAudio, NativeAudioOriginal } from '@ionic-native/native-audio';
 
@@ -214,9 +214,9 @@ export class MazePage {
         this.state = null;
 
         if (this.monsterCoolDown === 0) {
-            this.monsterPresent = true;
             this.monsterCoolDown = 400;
-            this.getMonster();
+            await this.getMonster();
+            this.monsterPresent = true;
         } else {
             this.monsterCoolDown = this.monsterCoolDown - 25;
         }
@@ -229,14 +229,14 @@ export class MazePage {
         // console.log('launch mini game');
         // list of mini games
 
-        const miniGames = ['tictactoe', 'rps', 'simon', 'shell', 'memory'];
+        const miniGames = ['xando', 'ssb', 'orb', 'eyeball', 'gems'];
 
         // get a random game
         const selectedMinigame = miniGames[Math.floor(Math.random() * miniGames.length)];
 
-        if (selectedMinigame === 'rps') {
+        if (selectedMinigame === 'ssb') {
             const modal = await this.modalController.create({
-                component: RpsPage,
+                component: SsbPage,
                 backdropDismiss: false,
                 componentProps: {}
             });
@@ -257,9 +257,9 @@ export class MazePage {
             }
         }
 
-        if (selectedMinigame === 'simon') {
+        if (selectedMinigame === 'orb') {
             const modal = await this.modalController.create({
-                component: SimonPage,
+                component: OrbPage,
                 backdropDismiss: false,
                 componentProps: {}
             });
@@ -280,9 +280,9 @@ export class MazePage {
             }
         }
 
-        if (selectedMinigame === 'memory') {
+        if (selectedMinigame === 'gems') {
             const modal = await this.modalController.create({
-                component: MemoryPage,
+                component: GemPage,
                 backdropDismiss: false,
                 componentProps: {}
             });
@@ -303,9 +303,9 @@ export class MazePage {
             }
         }
 
-        if (selectedMinigame === 'shell') {
+        if (selectedMinigame === 'eyeball') {
             const modal = await this.modalController.create({
-                component: ShellPage,
+                component: EyeballPage,
                 backdropDismiss: false,
                 componentProps: {}
             });
@@ -326,9 +326,9 @@ export class MazePage {
             }
         }
 
-        if (selectedMinigame === 'tictactoe') {
+        if (selectedMinigame === 'xando') {
             const modal = await this.modalController.create({
-                component: TictactoePage,
+                component: XandoPage,
                 backdropDismiss: false,
                 componentProps: {}
             });
@@ -372,6 +372,7 @@ export class MazePage {
         const alert = await this.alertController.create({
             // header: 'Squirtle Says',
 
+            // tslint:disable-next-line:quotemark
             message: "You won! I'll add rooms to your map.",
             buttons: [
                 {
@@ -397,6 +398,7 @@ export class MazePage {
         const alert = await this.alertController.create({
             // header: 'Squirtle Says',
 
+            // tslint:disable-next-line:quotemark
             message: "Too bad... I can't add any rooms to your map.",
             buttons: [
                 {
