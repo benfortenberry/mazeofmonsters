@@ -92,55 +92,35 @@ export class XandoPage implements OnInit {
     checkForWinner() {
         if (this.tileList[0].value === 'X' && this.tileList[1].value === 'X' && this.tileList[2].value === 'X') {
             this.closeModal(true);
-        }
-        if (this.tileList[3].value === 'X' && this.tileList[4].value === 'X' && this.tileList[5].value === 'X') {
+        } else if (this.tileList[3].value === 'X' && this.tileList[4].value === 'X' && this.tileList[5].value === 'X') {
             this.closeModal(true);
-        }
-        if (this.tileList[6].value === 'X' && this.tileList[7].value === 'X' && this.tileList[8].value === 'X') {
+        } else if (this.tileList[6].value === 'X' && this.tileList[7].value === 'X' && this.tileList[8].value === 'X') {
             this.closeModal(true);
-        }
-        if (this.tileList[0].value === 'X' && this.tileList[3].value === 'X' && this.tileList[6].value === 'X') {
+        } else if (this.tileList[0].value === 'X' && this.tileList[3].value === 'X' && this.tileList[6].value === 'X') {
             this.closeModal(true);
-        }
-        if (this.tileList[1].value === 'X' && this.tileList[4].value === 'X' && this.tileList[7].value === 'X') {
+        } else if (this.tileList[1].value === 'X' && this.tileList[4].value === 'X' && this.tileList[7].value === 'X') {
             this.closeModal(true);
-        }
-        if (this.tileList[2].value === 'X' && this.tileList[5].value === 'X' && this.tileList[8].value === 'X') {
+        } else if (this.tileList[2].value === 'X' && this.tileList[5].value === 'X' && this.tileList[8].value === 'X') {
             this.closeModal(true);
-        }
-
-        if (this.tileList[0].value === 'X' && this.tileList[4].value === 'X' && this.tileList[8].value === 'X') {
+        } else if (this.tileList[0].value === 'X' && this.tileList[4].value === 'X' && this.tileList[8].value === 'X') {
             this.closeModal(true);
-        }
-
-        if (this.tileList[2].value === 'X' && this.tileList[4].value === 'X' && this.tileList[6].value === 'X') {
+        } else if (this.tileList[2].value === 'X' && this.tileList[4].value === 'X' && this.tileList[6].value === 'X') {
             this.closeModal(true);
-        }
-
-        if (this.tileList[0].value === 'O' && this.tileList[1].value === 'O' && this.tileList[2].value === 'O') {
+        } else if (this.tileList[0].value === 'O' && this.tileList[1].value === 'O' && this.tileList[2].value === 'O') {
             this.closeModal(false);
-        }
-        if (this.tileList[3].value === 'O' && this.tileList[4].value === 'O' && this.tileList[5].value === 'O') {
+        } else if (this.tileList[3].value === 'O' && this.tileList[4].value === 'O' && this.tileList[5].value === 'O') {
             this.closeModal(false);
-        }
-        if (this.tileList[6].value === 'O' && this.tileList[7].value === 'O' && this.tileList[8].value === 'O') {
+        } else if (this.tileList[6].value === 'O' && this.tileList[7].value === 'O' && this.tileList[8].value === 'O') {
             this.closeModal(false);
-        }
-        if (this.tileList[0].value === 'O' && this.tileList[3].value === 'O' && this.tileList[6].value === 'O') {
+        } else if (this.tileList[0].value === 'O' && this.tileList[3].value === 'O' && this.tileList[6].value === 'O') {
             this.closeModal(false);
-        }
-        if (this.tileList[1].value === 'O' && this.tileList[4].value === 'O' && this.tileList[7].value === 'O') {
+        } else if (this.tileList[1].value === 'O' && this.tileList[4].value === 'O' && this.tileList[7].value === 'O') {
             this.closeModal(false);
-        }
-        if (this.tileList[2].value === 'O' && this.tileList[5].value === 'O' && this.tileList[8].value === 'O') {
+        } else if (this.tileList[2].value === 'O' && this.tileList[5].value === 'O' && this.tileList[8].value === 'O') {
             this.closeModal(false);
-        }
-
-        if (this.tileList[0].value === 'O' && this.tileList[4].value === 'O' && this.tileList[8].value === 'O') {
+        } else if (this.tileList[0].value === 'O' && this.tileList[4].value === 'O' && this.tileList[8].value === 'O') {
             this.closeModal(false);
-        }
-
-        if (this.tileList[2].value === 'O' && this.tileList[4].value === 'O' && this.tileList[6].value === 'O') {
+        } else if (this.tileList[2].value === 'O' && this.tileList[4].value === 'O' && this.tileList[6].value === 'O') {
             this.closeModal(false);
         }
     }
@@ -156,6 +136,7 @@ export class XandoPage implements OnInit {
     ngOnInit() {}
 
     closeModal(status) {
+        // console.log('close modal');
         if (status == null) {
             this.clickAudio.play();
         }

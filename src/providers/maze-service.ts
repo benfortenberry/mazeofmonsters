@@ -9,7 +9,7 @@ import { Injectable } from '@angular/core';
 */
 @Injectable()
 export class MazeProvider {
-    // apiUrl = './assets/newmaze.json';
+    apiUrl = '../assets/maze-routes.json';
     // quoteUrl = './assets/monster-quotes.json';
     imageUrl = './assets/monster-list.json';
     deathList = './assets/death.monster.list.json';
@@ -65,18 +65,18 @@ export class MazeProvider {
     //     });
     // }
 
-    // getRoutes() {
-    //     return new Promise(resolve => {
-    //         this.http.get(this.apiUrl).subscribe(
-    //             data => {
-    //                 resolve(data);
-    //             },
-    //             err => {
-    //                 console.log(err);
-    //             }
-    //         );
-    //     });
-    // }
+    getRoutes() {
+        return new Promise(resolve => {
+            this.http.get(this.apiUrl).subscribe(
+                data => {
+                    resolve(data);
+                },
+                err => {
+                    console.log(err);
+                }
+            );
+        });
+    }
 
     getImages() {
         return new Promise(resolve => {

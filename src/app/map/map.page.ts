@@ -51,7 +51,7 @@ export class MapPage implements OnInit {
                     showRoute = true;
                 }
 
-                // showRoute = true;
+                showRoute = true;
 
                 this.htmlToAdd = this.htmlToAdd + '<td style="text-align:center;  height:20px; width:20px;';
                 if (disp[i][j][0] === 0 && showRoute) {

@@ -23,8 +23,8 @@ export class Generator2Page implements OnInit {
     generate() {
         this.currentRoom = '0-0';
         this.routes = [];
-        const disp = this.newMaze(40, 40);
-        // console.log(disp);
+        const disp = this.newMaze(30, 30);
+        console.log(disp);
         // console.log(disp.length);
         for (let i = 0; i < disp.length; i++) {
             this.htmlToAdd = this.htmlToAdd + '<tr>';
@@ -94,12 +94,12 @@ export class Generator2Page implements OnInit {
         }
         // console.log(this.routes);
         this.safeHtml = this.sanitizer.bypassSecurityTrustHtml(this.htmlToAdd);
-        // console.log(this.routes);
+        console.log(this.routes);
         this.getRoute('0-0');
     }
 
     getRoute(routeId) {
-        if (routeId == '2-2') {
+        if (routeId === '2-2') {
             alert('win');
         } else {
             this.currentRoute = this.routes.find(x => x.id === routeId);

@@ -23,12 +23,14 @@ import { ToastController } from '@ionic/angular';
             state(
                 'back',
                 style({
+                    willChange: 'transform'
                     // transform: 'scale(1)'
                 })
             ),
             state(
                 'f',
                 style({
+                    willChange: 'transform'
                     // backgroundPosition: '5000px'
                     // transform: 'scale(1.2)'
                 })
@@ -36,55 +38,60 @@ import { ToastController } from '@ionic/angular';
             state(
                 'l',
                 style({
+                    willChange: 'transform'
                     // transform: 'scale(1.2)'
                 })
             ),
             state(
                 'r',
                 style({
+                    willChange: 'transform'
                     // transform: 'scale(1.2)'
                 })
             ),
-            transition('* => f', animate('500ms linear', keyframes([style({ transform: 'scale(1.75)' })]))),
+            transition(
+                '* => f',
+                animate('500ms ease-in-out', keyframes([style({ transform: 'scale(1.75)', willChange: 'transform' })]))
+            ),
             transition(
                 '* => l',
                 animate(
-                    '500ms linear',
+                    '500ms ease-in-out',
                     keyframes([
-                        style({ transform: 'translateX(0)' }),
-                        style({ transform: 'translateX(25%)' }),
-                        style({ transform: 'translateX(50%)' }),
-                        style({ transform: 'translateX(75%)' })
+                        style({ transform: 'translateX(0)', willChange: 'transform' }),
+                        style({ transform: 'translateX(25%)', willChange: 'transform' }),
+                        style({ transform: 'translateX(50%)', willChange: 'transform' }),
+                        style({ transform: 'translateX(75%)', willChange: 'transform' })
                     ])
                 )
             ),
             transition(
                 '* => r',
                 animate(
-                    '500ms linear',
+                    '500ms ease-in-out',
                     keyframes([
-                        style({ transform: 'translateX(0)' }),
-                        style({ transform: 'translateX(-25%)' }),
-                        style({ transform: 'translateX(-50%)' }),
-                        style({ transform: 'translateX(-75%)' })
+                        style({ transform: 'translateX(0)', willChange: 'transform' }),
+                        style({ transform: 'translateX(-25%)', willChange: 'transform' }),
+                        style({ transform: 'translateX(-50%)', willChange: 'transform' }),
+                        style({ transform: 'translateX(-75%)', willChange: 'transform' })
                     ])
                 )
             ),
             transition(
                 '* => back',
                 animate(
-                    '500ms linear',
+                    '500ms ease-in-out',
                     keyframes([
-                        style({ transform: 'translateX(0)' }),
-                        style({ transform: 'translateX(-105%)' }),
-                        style({ transform: 'translateX(-200%)' }),
-                        style({ transform: 'translateX(-305%)' }),
-                        style({ transform: 'translateX(-400%)' }),
-                        style({ transform: 'translateX(-100%)' }),
-                        style({ transform: 'translateX(-75%)' }),
-                        style({ transform: 'translateX(-50%)' }),
-                        style({ transform: 'translateX(-25%)' }),
-                        style({ transform: 'translateX(0)' })
+                        style({ transform: 'translateX(0)', willChange: 'transform' }),
+                        style({ transform: 'translateX(-105%)', willChange: 'transform' }),
+                        style({ transform: 'translateX(-200%)', willChange: 'transform' }),
+                        style({ transform: 'translateX(-305%)', willChange: 'transform' }),
+                        style({ transform: 'translateX(-400%)', willChange: 'transform' }),
+                        style({ transform: 'translateX(-100%)', willChange: 'transform' }),
+                        style({ transform: 'translateX(-75%)', willChange: 'transform' }),
+                        style({ transform: 'translateX(-50%)', willChange: 'transform' }),
+                        style({ transform: 'translateX(-25%)', willChange: 'transform' }),
+                        style({ transform: 'translateX(0)', willChange: 'transform' })
                     ])
                 )
             )
@@ -118,6 +125,9 @@ export class MazePage {
     mazeData;
     mazeTimer;
     timerSub;
+    availMiniGames = [];
+    availMonsterList = [];
+    usedMonster = [];
 
     backgroundAudio = new Audio();
 
@@ -143,7 +153,10 @@ export class MazePage {
         public toastController: ToastController,
         private countdownService: CountdownService
     ) {
-        this.generate();
+        // this.generate();
+
+        this.getRoutes();
+
         this.currentRoom = '0-0';
         // this.getQuotes();
         this.getImages();
@@ -194,6 +207,15 @@ export class MazePage {
         });
     }
 
+    async getRoutes() {
+        this.mazeProvider.getRoutes().then(response => {
+            this.routes = response['routes'];
+            console.log(this.routes);
+            this.mazeData = response['data'];
+            this.getRoute('0-0');
+        });
+    }
+
     updateWalls() {
         // console.log(this.currentRoute['id']);
         const routeId = this.currentRoute['id'];
@@ -230,15 +252,31 @@ export class MazePage {
         this.wallReady = true;
     }
 
+    shuffleList(a) {
+        let j, x, i;
+        for (i = a.length - 1; i > 0; i--) {
+            j = Math.floor(Math.random() * (i + 1));
+            x = a[i];
+            a[i] = a[j];
+            a[j] = x;
+        }
+        return a;
+    }
+
     async launchMiniGame() {
         // this.backgroundAudio.pause();
         // console.log('launch mini game');
         // list of mini games
 
-        const miniGames = ['xando', 'ssb', 'orb', 'eyeball', 'gems'];
+        if (this.availMiniGames.length === 0) {
+            let miniGames = ['xando', 'ssb', 'orb', 'eyeball', 'gems'];
+            miniGames = this.shuffleList(miniGames);
+            this.availMiniGames = miniGames;
+        }
 
-        // get a random game
-        const selectedMinigame = miniGames[Math.floor(Math.random() * miniGames.length)];
+        const selectedMinigame = this.availMiniGames[this.availMiniGames.length - 1];
+        this.availMiniGames.pop();
+        // const miniGames = ['xando', 'ssb', 'orb', 'eyeball', 'gems'];
 
         if (selectedMinigame === 'ssb') {
             const modal = await this.modalController.create({
@@ -473,10 +511,15 @@ export class MazePage {
     }
 
     async getMonster() {
-        const selectedMonster = Math.floor(Math.random() * this.monsterImageList.length);
-        this.monsterImageUrl = '../../assets/monsters/' + this.monsterImageList[selectedMonster].img;
+        if (this.availMonsterList.length === 0) {
+            this.availMonsterList = this.shuffleList(this.monsterImageList);
+        }
 
-        this.monsterAudio.src = this.monsterImageList[selectedMonster].audio;
+        const selectedMonster = this.availMonsterList[this.availMonsterList.length - 1];
+        this.availMonsterList.pop();
+        this.monsterImageUrl = '../../assets/monsters/' + selectedMonster.img;
+
+        this.monsterAudio.src = selectedMonster.audio;
         this.monsterAudio.load();
         this.monsterAudio.volume = 0.1;
         this.monsterAudio.play();
