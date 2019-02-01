@@ -97,3 +97,12 @@ body {
 //     box-shadow: none;
 //     -webkit-box-shadow: none;
 // }
+
+@font-face {
+    font-family: 'Metal Mania';
+    src: url('../assets/MetalMania-Regular.ttf');
+}
+
+* {
+    font-family: 'Metal Mania';
+}
