@@ -1,12 +1,10 @@
 <ion-header>
     <ion-toolbar color="danger">
-        <ion-title float-left padding-top>Map</ion-title>
+        <ion-title float-left padding-top>Compass</ion-title>
         <ion-button float-right button color="danger" mode="ios" (click)="closeModal()">
             <ion-icon name="close"></ion-icon>
         </ion-button>
     </ion-toolbar>
 </ion-header>
 
-<ion-content color="dark" padding>
-    <div><table id="maze" style="border-collapse: collapse" [innerHtml]="safeHtml"></table></div>
-</ion-content>
+<ion-content color="dark" padding><p>You are currently headed SOUTH.</p></ion-content>

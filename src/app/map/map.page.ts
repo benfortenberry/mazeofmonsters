@@ -11,7 +11,7 @@ export class MapPage implements OnInit {
     routes;
     htmlToAdd = '';
     safeHtml;
-
+    currentDirection;
     routeHistory = null;
     mazeData = null;
 
@@ -53,21 +53,21 @@ export class MapPage implements OnInit {
 
                 // showRoute = true;
 
-                this.htmlToAdd = this.htmlToAdd + '<td style="text-align:center; height:20px; width:20px;';
+                this.htmlToAdd = this.htmlToAdd + '<td style="text-align:center;  height:20px; width:20px;';
                 if (disp[i][j][0] === 0 && showRoute) {
-                    this.htmlToAdd = this.htmlToAdd + 'border-top:solid 2px #f7f7f7;';
+                    this.htmlToAdd = this.htmlToAdd + 'background-color:#754c2e;border-top:solid 2px #fff;';
                 } else {
                 }
                 if (disp[i][j][1] === 0 && showRoute) {
-                    this.htmlToAdd = this.htmlToAdd + 'border-right:solid 2px #f7f7f7;';
+                    this.htmlToAdd = this.htmlToAdd + 'background-color:#754c2e;border-right:solid 2px #fff;';
                 } else {
                 }
                 if (disp[i][j][2] === 0 && showRoute) {
-                    this.htmlToAdd = this.htmlToAdd + 'border-bottom:solid 2px #f7f7f7;';
+                    this.htmlToAdd = this.htmlToAdd + 'background-color:#754c2e;border-bottom:solid 2px #fff;';
                 } else {
                 }
                 if (disp[i][j][3] === 0 && showRoute) {
-                    this.htmlToAdd = this.htmlToAdd + 'border-left:solid 2px #f7f7f7;';
+                    this.htmlToAdd = this.htmlToAdd + 'background-color:#754c2e;border-left:solid 2px #fff;';
                 } else {
                 }
 
@@ -79,9 +79,27 @@ export class MapPage implements OnInit {
         // console.log(this.routes);
 
         setTimeout(() => {
-            document.getElementById('39-39').innerHTML = '<ion-icon style="color:#ffd400" name="home"></ion-icon>';
-            document.getElementById(this.currentRoom).innerHTML =
-                '<ion-icon style="color:#ffd400" name="star"></ion-icon>';
+            document.getElementById('29-29').innerHTML = '<ion-icon style="color:#fff" name="star"></ion-icon>';
+
+            if (this.currentDirection === 's') {
+                document.getElementById(this.currentRoom).innerHTML =
+                    '<ion-icon style="color:#fff" name="person"></ion-icon>';
+            }
+
+            if (this.currentDirection === 'n') {
+                document.getElementById(this.currentRoom).innerHTML =
+                    '<ion-icon style="color:#fff;   transform: rotate(-180deg);" name="person"></ion-icon>';
+            }
+
+            if (this.currentDirection === 'w') {
+                document.getElementById(this.currentRoom).innerHTML =
+                    '<ion-icon style="color:#fff; transform: rotate(90deg);" name="person"></ion-icon>';
+            }
+
+            if (this.currentDirection === 'e') {
+                document.getElementById(this.currentRoom).innerHTML =
+                    '<ion-icon style="color:#fff; transform: rotate(-90deg);" name="person"></ion-icon>';
+            }
         }, 100);
     }
 

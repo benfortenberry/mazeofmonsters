@@ -3,7 +3,7 @@
         { "img": "DivineGuardian.png", "audio": "../../assets/audio/Fire.mp3" },
         { "img": "Dragon.png", "audio": "../../assets/audio/grunt1.wav" },
         { "img": "Goblin.png", "audio": "../../assets/audio/deathd.wav" },
-        { "img": "Lichlord.png", "audio": "../../assets/audio/Magic Smit.wav" },
+        { "img": "Lichlord.png", "audio": "../../assets/audio/Magic Smite.wav" },
         { "img": "Naga.png", "audio": "../../assets/audio/painb.wav" },
         { "img": "Orc.png", "audio": "../../assets/audio/deathb.wav" },
         { "img": "Ratman.png", "audio": "../../assets/audio/MonsterCreaturesVoiceSound005.mp3" },

@@ -1,8 +1,4 @@
 <ion-content (keyup)="onKey($event)" no-bounce [ngClass]="[hasRight ? 'has-right' : '', hasLeft ? 'has-left' : '']">
-    <div *ngIf="hasLeft && wallReady" class="left-door"></div>
-
-    <div *ngIf="hasRight && wallReady" class="right-door"></div>
-
     <ion-fab *ngIf="wallReady && !monsterPresent" vertical="center" horizontal="end" edge slot="fixed">
         <ion-fab-button *ngIf="hasRight" [disabled]="!hasRight" size="small" color="dark" (click)="moveRight()">
             <ion-icon name="arrow-forward"></ion-icon>
@@ -32,19 +28,30 @@
     </ion-fab>
 
     <ion-fab vertical="top" horizontal="left" slot="fixed">
-        <ion-fab-button size="small" color="dark">
+        <ion-fab-button (click)="showDirection()" size="small" color="dark">
             <strong>{{ currentDirection | uppercase }}</strong>
         </ion-fab-button>
     </ion-fab>
 
     <ion-fab vertical="top" horizontal="end" slot="fixed">
-        {{ timeLeft }}
-
-        <!-- <ion-fab-button size="small" color="dark"><div class="radial"></div></ion-fab-button> -->
+        <ng-container *ngIf="showTime">
+            <!-- {{ subscription | async }} {{ timeLeft }} -->
+            <ion-fab-button (click)="showTimer()" size="small" color="dark">
+                <app-progress [value]="subscription | async"></app-progress>
+            </ion-fab-button>
+        </ng-container>
     </ion-fab>
 
-    <ion-img *ngIf="monsterPresent" class="monster" src="{{ monsterImageUrl }}"></ion-img>
+    <span [hidden]="!monsterPresent">
+        <img *ngIf="monsterPresent" class="monster" src="{{ monsterImageUrl }}" />
+    </span>
 
+    <!-- <div *ngIf="hasRight && wallReady" class="right-door"></div>
+    <div *ngIf="hasLeft && wallReady" class="left-door"></div> -->
+
+    <div *ngIf="hasLeft && wallReady" class="door-overlay sandstone-door-left"></div>
+    <div *ngIf="hasRight && wallReady" class="door-overlay sandstone-door-right"></div>
+    <div *ngIf="hasLeft && hasRight && wallReady" class="door-overlay sandstone-door-both"></div>
     <div
         (keyup)="onKey($event)"
         slot="fixed"

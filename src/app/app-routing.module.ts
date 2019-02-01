@@ -13,7 +13,10 @@ const routes: Routes = [
     { path: 'eyeball', loadChildren: './eyeball/eyeball.module#EyeballPageModule' },
     { path: 'gems', loadChildren: './gems/gems.module#MemoryPageModule' },
     { path: 'xando', loadChildren: './xando/xando.module#XandoPageModule' },
-    { path: 'orb', loadChildren: './orb/orb.module#OrbPageModule' }
+    { path: 'orb', loadChildren: './orb/orb.module#OrbPageModule' },
+  { path: 'compass', loadChildren: './compass/compass.module#CompassPageModule' },
+  { path: 'time', loadChildren: './time/time.module#TimePageModule' },
+  { path: 'generator3', loadChildren: './generator3/generator3.module#Generator3PageModule' }
 ];
 
 @NgModule({

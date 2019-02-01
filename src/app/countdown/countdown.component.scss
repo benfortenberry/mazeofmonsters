@@ -1,0 +1,32 @@
+.progress {
+    position: relative;
+}
+
+// .progress__value-text {
+//     position: absolute;
+//     top: 48px;
+//     left: 45px;
+//     font-size: 20px;
+// }
+
+.progress__svg {
+    transform: rotate(-90deg);
+}
+
+.danger {
+    stroke: crimson !important;
+}
+
+.progress__meter,
+.progress__value {
+    fill: none;
+}
+
+.progress__meter {
+    stroke: #472b15;
+}
+
+.progress__value {
+    stroke: #fff;
+    transition: all 100ms;
+}

@@ -14,6 +14,13 @@
     transform-style: preserve-3d;
 }
 
+.door-overlay {
+    perspective: 1000px;
+    // background: #000;
+
+    transform-style: preserve-3d;
+}
+
 .solid-wall {
     background-image: linear-gradient(0deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.75)),
         url(../../assets/sandstone-large.jpg) !important;
@@ -47,11 +54,16 @@ a {
     left: 8vw;
     width: 10vw;
     background-color: #080402;
-    height: 100vw;
+    height: 90vw;
     top: 10vw;
     z-index: 999;
     border-radius: 15px;
     transform: skew(0deg, -155deg);
+    transform-style: none;
+    perspective: 0;
+    perspective: 600px;
+    transform-style: preserve-3d;
+    // clip-path: inset(10px 20px 30px 40px);
     // border-image: linear-gradient(to left, #000, #888) 30 round;
     // border-left: 20px solid red;
     background-image: linear-gradient(to right, #584a39, #050301 10%);
@@ -64,7 +76,6 @@ a {
     background-color: #080402;
     height: 100vw;
     top: 10vw;
-    z-index: 999;
     border-radius: 15px;
     transform: skew(0deg, 155deg);
     background-image: linear-gradient(to left, #584a39, #050301 10%);
@@ -81,6 +92,18 @@ a {
     perspective: 600px;
     background: #080402;
 }
+
+.door-overlay {
+    position: absolute;
+    top: 10vh;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    transform-style: preserve-3d;
+    z-index: 998;
+}
+
 .maze,
 .grid {
     position: absolute;
@@ -88,6 +111,7 @@ a {
     left: 0;
     right: 0;
     bottom: 0;
+
     transform-style: preserve-3d;
 }
 
@@ -101,6 +125,15 @@ a {
     content: '';
     background-size: 100% 100%, 400px 400px;
     animation: 10s move3 linear infinite;
+}
+
+.door-overlay:before,
+.door-overlay:after {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    content: '';
+    background-size: 200% 200%, 200px 200px;
 }
 
 /* ceiling */
@@ -129,6 +162,22 @@ a {
         url(../../assets/new-sandstone-3.jpg);
 }
 
+.sandstone-door-left:before,
+.sandstone-door-both:before {
+    height: 350px;
+    width: 400px;
+    margin: -160.5px -240px;
+    background: black;
+}
+
+.sandstone-door-right:after,
+.sandstone-door-both:after {
+    height: 350px;
+    width: 400px;
+    margin: -160.5px -181px;
+    background: black;
+}
+
 /* ceiling */
 .maze:before {
     transform: translateY(-100px) rotateX(-90deg);
@@ -138,6 +187,7 @@ a {
 
 /* floor */
 .maze:after {
+    position: absolute;
     transform: translateY(100px) rotateX(-90deg);
     background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75) 50%, rgba(0, 0, 0, 1)),
         url(../../assets/stone.jpg);
@@ -153,11 +203,30 @@ a {
     transform: translateX(100px) rotateY(90deg);
 }
 
-.grid {
-    animation: 2s move3 linear infinite;
+.door-overlay:before {
+    background-image: linear-gradient(to left, #584a39, #050301 10%);
+    z-index: 994;
+    transform: translateX(-200px) rotateY(93deg);
+    border-right: solid 20px #584a39;
+    border-top-left-radius: 30px;
 }
+
+/* right wall */
+
+.door-overlay:after {
+    z-index: 997;
+    transform: translateX(200px) rotateY(87.5deg);
+    border-right: solid 20px #584a39;
+    border-top-left-radius: 30px;
+    background-image: linear-gradient(to left, #584a39, #050301 10%);
+}
+
+// .grid,
+// .door-overlay {
+//     animation: 2s move3 linear infinite;
+// }
 .maze {
-    animation: 2s move2 linear infinite, 10s move ease-in-out alternate infinite;
+    // animation: 2s move2 linear infinite, 10s move ease-in-out alternate infinite;
 }
 
 .flipV {
@@ -482,6 +551,10 @@ a {
 .wrapper:hover .filler,
 .wrapper:hover .mask {
     animation-play-state: running;
+}
+
+[hidden] {
+    display: none !important;
 }
 
 .wrapper .filler {

@@ -2,10 +2,12 @@ import { Component, HostListener } from '@angular/core';
 import { MazeProvider } from '../..//providers/maze-service';
 import { AlertController, NavController, IonRouterOutlet } from '@ionic/angular';
 import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
-
+import { Subscription } from 'rxjs';
 import { CountdownService } from '../../providers/countdown-service';
 import { ModalController } from '@ionic/angular';
 import { MapPage } from '../map/map.page';
+import { CompassPage } from '../compass/compass.page';
+import { TimePage } from '../time/time.page';
 import { SsbPage } from '../ssb/ssb.page';
 import { GemPage } from '../gems/gems.page';
 import { OrbPage } from '../orb/orb';
@@ -104,14 +106,13 @@ export class MazePage {
     state: String = 'small';
     currentDirection = 's';
     monsterPresent = false;
-    monsterCoolDown = 400;
+    monsterCoolDown = 800;
     monsterQuotes = [];
     wallClass;
-    monsterImageUrl;
+    monsterImageUrl = '../../assets/monolith.png';
     monsterImageList;
     alerts = [];
     modals = [];
-    timerM = 600;
     currentX = 0;
     currentY = 0;
     mazeData;
@@ -128,6 +129,9 @@ export class MazePage {
 
     monsterAudio = new Audio();
 
+    subscription;
+
+    showTime;
     timeLeft;
 
     constructor(
@@ -137,7 +141,7 @@ export class MazePage {
         public alertController: AlertController,
         public modalController: ModalController,
         public toastController: ToastController,
-        public countdownService: CountdownService
+        private countdownService: CountdownService
     ) {
         this.generate();
         this.currentRoom = '0-0';
@@ -167,30 +171,21 @@ export class MazePage {
     }
 
     ionViewDidEnter() {
-        this.countdownService.start(600);
+        this.showTime = true;
+        this.countdownService.count = 1200;
+        this.countdownService.start();
+        this.subscription = this.countdownService.countdown();
+        this.subscription.subscribe(t => {
+            this.timeLeft = t;
+            if (this.timeLeft === 1) {
+                this.showDeath();
+            }
+        });
+    }
 
-        this.countdownService.countdown().subscribe(t => (this.timeLeft = t));
-
-        // if (this.timerSub) {
-        //     this.timerSub.unsubscribe();
-        // }
-        // this.timerSub = Observable.timer(60 * 60 * 1000)
-        //     .take(1)
-        //     .subscribe(this.showPopup.bind(this));
-        // let minutes;
-        // let seconds;
-        // this.mazeTimer = interval(1000).subscribe(x => {
-        //     minutes = Math.floor(this.timerM / 60);
-        //     seconds = Math.floor(this.timerM % 60);
-        //     minutes = minutes < 10 ? '0' + minutes : minutes;
-        //     seconds = seconds < 10 ? '0' + seconds : seconds;
-        //     // console.log(minutes + ':' + seconds);
-        //     --this.timerM;
-        //     if (--this.timerM < 0) {
-        //         this.showDeath();
-        //         // console.log('timeup');
-        //     }
-        // });
+    ionViewWillLeave() {
+        // this.subscription.unsubscribe();
+        this.countdownService.stop();
     }
 
     async getImages() {
@@ -204,7 +199,7 @@ export class MazePage {
         const routeId = this.currentRoute['id'];
     }
 
-    async showWin() {
+    showWin() {
         this.navCtrl.navigateForward('win');
     }
 
@@ -212,18 +207,22 @@ export class MazePage {
         this.clearAlerts();
         this.clearModals();
 
-        this.mazeTimer = null;
+        // this.mazeTimer = null;
 
         this.navCtrl.navigateForward('death');
     }
 
     async onAnimationEvent(hey) {
         this.state = null;
-
-        if (this.monsterCoolDown === 0) {
-            this.monsterCoolDown = 400;
+        // console.log(this.monsterCoolDown, this.hasLeft, this.hasRight, this.hasForward);
+        // if (this.monsterCoolDown < 25 && !this.hasLeft && !this.hasRight && !this.hasForward) {
+        if (this.monsterCoolDown < 0) {
+            this.monsterCoolDown = 800;
             await this.getMonster();
+            // console.log(this.routes);
+            // setTimeout(() => {
             this.monsterPresent = true;
+            // }, 500);
         } else {
             this.monsterCoolDown = this.monsterCoolDown - 25;
         }
@@ -358,21 +357,70 @@ export class MazePage {
     }
 
     addRoomsToMap() {
-        // start a counter at 5
         let roomCount = 0;
 
-        // console.log(this.routes);
-
-        for (roomCount; roomCount < 6; roomCount++) {
+        for (roomCount; roomCount < 9; roomCount++) {
             const randRow = this.routes[Math.floor(Math.random() * this.routes.length)];
-
             // console.log(randRow);
+
             this.routeHistory.push(randRow.id);
-            // pick a random 'row'
-            //  let
-            // pick a random 'cell
-            // add to route history
         }
+    }
+
+    async showTimer() {
+        this.clickAudio.play();
+        // console.log(time);
+        // console.log(this.subscription);
+
+        const minutes = Math.floor(this.timeLeft / 60);
+        const seconds = this.timeLeft - minutes * 60;
+        const alert = await this.alertController.create({
+            // header: 'Squirtle Says',
+
+            // tslint:disable-next-line:quotemark
+            message: 'You have ' + minutes + ' minutes and ' + seconds + ' seconds',
+            buttons: [
+                {
+                    text: 'OK',
+                    handler: () => {}
+                }
+            ]
+        });
+
+        this.alerts.push(alert);
+        alert.present();
+    }
+
+    async showDirection() {
+        this.clickAudio.play();
+        // console.log('show');
+        let dir = '';
+        if (this.currentDirection === 's') {
+            dir = 'south';
+        }
+        if (this.currentDirection === 'e') {
+            dir = 'east';
+        }
+        if (this.currentDirection === 'w') {
+            dir = 'west';
+        }
+        if (this.currentDirection === 'n') {
+            dir = 'north';
+        }
+        const alert = await this.alertController.create({
+            // header: 'Squirtle Says',
+
+            message: 'You are currently headed ' + dir + '.',
+            buttons: [
+                {
+                    text: 'OK',
+                    handler: () => {}
+                }
+            ]
+        });
+
+        this.alerts.push(alert);
+        alert.present();
     }
 
     async showWinMiniGame() {
@@ -454,7 +502,7 @@ export class MazePage {
                     cssClass: 'secondary',
                     handler: () => {
                         this.monsterPresent = false;
-                        this.monsterCoolDown = 800;
+                        this.monsterCoolDown = 1600;
                         //  console.log('Confirm Cancel');
                     }
                 }
@@ -503,7 +551,7 @@ export class MazePage {
         // console.log('generate');
         this.currentRoom = '0-0';
         this.routes = [];
-        const disp = this.newMaze(40, 40);
+        const disp = this.newMaze(30, 30);
         // console.log(disp);
         this.mazeData = disp;
         // console.log(this.mazeData);
@@ -575,11 +623,11 @@ export class MazePage {
 
     getRoute(routeId) {
         if (this.routeHistory.length === 0) {
-            this.routeHistory.push('39-39');
+            this.routeHistory.push('29-29');
         }
         this.routeHistory.push(routeId);
 
-        if (routeId === '39-39') {
+        if (routeId === '29-29') {
             this.showWin();
         } else {
             this.currentRoute = this.routes.find(x => x.id === routeId);
@@ -773,6 +821,39 @@ export class MazePage {
         // console.log(this.mazeData);
         const modal = await this.modalController.create({
             component: MapPage,
+            backdropDismiss: false,
+            componentProps: {
+                currentDirection: this.currentDirection,
+                routeHistory: this.routeHistory,
+                mazeData: this.mazeData,
+                currentRoom: this.currentRoom
+            }
+        });
+
+        this.modals.push(modal);
+        return await modal.present();
+    }
+
+    async openCompass() {
+        this.clickAudio.play();
+        // console.log(this.currentRoom);
+        // console.log(this.mazeData);
+        const modal = await this.modalController.create({
+            component: CompassPage,
+            backdropDismiss: false,
+            componentProps: { routeHistory: this.routeHistory, mazeData: this.mazeData, currentRoom: this.currentRoom }
+        });
+
+        this.modals.push(modal);
+        return await modal.present();
+    }
+
+    async openTime() {
+        this.clickAudio.play();
+        // console.log(this.currentRoom);
+        // console.log(this.mazeData);
+        const modal = await this.modalController.create({
+            component: TimePage,
             backdropDismiss: false,
             componentProps: { routeHistory: this.routeHistory, mazeData: this.mazeData, currentRoom: this.currentRoom }
         });

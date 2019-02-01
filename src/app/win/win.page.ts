@@ -45,4 +45,8 @@ export class WinPage implements OnInit {
         this.clickAudio.play();
         this.navCtrl.navigateForward('intro');
     }
+
+    ionViewWillLeave() {
+        // window.location.reload();
+    }
 }

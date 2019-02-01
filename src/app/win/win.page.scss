@@ -6,7 +6,7 @@
 
 .text {
     color: #f7f7f7;
-    font-size: 5.5vh;
+    font-size: 4.5vh;
     animation: fadein 2s;
 }
 .fade {
@@ -18,6 +18,10 @@
     // background-image: url(../../assets/sandstone-large.jpg);
     background-color: #3c2422;
     padding: 20px;
+}
+
+ion-content {
+    --ion-background-color: #3c2422;
 }
 
 #row1 {

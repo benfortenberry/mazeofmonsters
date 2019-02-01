@@ -44,7 +44,7 @@
     --ion-color-warning-tint: #ffd31a;
 
     /** danger **/
-    --ion-color-danger: #f04141;
+    --ion-color-danger: #3f2613;
     --ion-color-danger-rgb: 245, 61, 61;
     --ion-color-danger-contrast: #ffffff;
     --ion-color-danger-contrast-rgb: 255, 255, 255;
@@ -80,3 +80,20 @@ html,
 body {
     background-color: #000;
 }
+
+.header-md:after {
+    background: none;
+}
+
+.header-ios ion-toolbar:last-child {
+    --border-width: 0;
+}
+// .button-solid,
+// :host(.button-solid) {
+//     box-shadow: none;
+// }
+
+// .button-native {
+//     box-shadow: none;
+//     -webkit-box-shadow: none;
+// }

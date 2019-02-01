@@ -39,7 +39,7 @@ export class DeathPage implements OnInit {
 
     tryAgain() {
         this.clickAudio.play();
-        this.navCtrl.navigateForward('maze');
+        this.navCtrl.navigateRoot('maze');
     }
 
     async getImages() {

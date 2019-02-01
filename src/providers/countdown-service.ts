@@ -6,18 +6,26 @@ import { takeWhile, map } from 'rxjs/operators';
 export class CountdownService {
     private _countdown = new Subject<number>();
     private isCounting = false;
+    public count;
+    private timer;
+    public mapObservable = this._countdown.asObservable();
     countdown(): Observable<number> {
-        return this._countdown.asObservable();
+        return this.mapObservable;
+    }
+    stop() {
+        this.timer.unsubscribe();
+        this.isCounting = false;
     }
 
-    start(count: number): void {
+    start(): void {
+        // console.log('start');
         // Ensure that only one timer is in progress at any given time.
         if (!this.isCounting) {
             this.isCounting = true;
-            timer(0, 1000)
+            this.timer = timer(0, 1000)
                 .pipe(
-                    takeWhile(t => t < count),
-                    map(t => count - t)
+                    takeWhile(t => t < this.count),
+                    map(t => this.count - t)
                 )
                 .subscribe(t => this._countdown.next(t), null, () => {
                     this._countdown.complete();
