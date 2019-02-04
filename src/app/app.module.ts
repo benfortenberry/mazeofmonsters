@@ -6,6 +6,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
+
 import { MazeProvider } from '../providers/maze-service';
 import { CountdownService } from '../providers/countdown-service';
 import { AppComponent } from './app.component';
@@ -19,6 +21,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     providers: [
         StatusBar,
         SplashScreen,
+        ScreenOrientation,
         { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
         MazeProvider,
         CountdownService

@@ -214,7 +214,7 @@ export class Generator2Page implements OnInit {
 
         if (key === 'ArrowUp' && this.hasTop) {
             //   this.move('f');
-            if (this.currentDirection == 's') {
+            if (this.currentDirection === 's') {
                 currentY++;
             }
 

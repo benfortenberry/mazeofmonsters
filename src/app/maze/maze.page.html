@@ -1,4 +1,5 @@
 <ion-content (keyup)="onKey($event)" no-bounce [ngClass]="[hasRight ? 'has-right' : '', hasLeft ? 'has-left' : '']">
+    <ion-fab *ngIf="monsterPresent" class="monster" vertical="center" horizontal="center" edge slot="fixed"></ion-fab>
     <ion-fab *ngIf="wallReady && !monsterPresent" vertical="center" horizontal="end" edge slot="fixed">
         <ion-fab-button *ngIf="hasRight" [disabled]="!hasRight" size="small" color="dark" (click)="moveRight()">
             <ion-icon name="arrow-forward"></ion-icon>
@@ -42,16 +43,16 @@
         </ng-container>
     </ion-fab>
 
-    <span [hidden]="!monsterPresent">
-        <img *ngIf="monsterPresent" class="monster" src="{{ monsterImageUrl }}" />
-    </span>
+    <!-- <ion-fab vertical="center" horizontal="center" slot="fixed"> -->
+    <!-- <div *ngIf="hasLeft && wallReady" class="door-overlay sandstone-door-left"></div> -->
+    <!-- <div *ngIf="hasRight && wallReady" class="door-overlay sandstone-door-right"></div> -->
+
+    <!-- <div class="door-overlay  sandstone-door-both"></div> -->
+    <!-- </ion-fab> -->
 
     <!-- <div *ngIf="hasRight && wallReady" class="right-door"></div>
     <div *ngIf="hasLeft && wallReady" class="left-door"></div> -->
 
-    <div *ngIf="hasLeft && wallReady" class="door-overlay sandstone-door-left"></div>
-    <div *ngIf="hasRight && wallReady" class="door-overlay sandstone-door-right"></div>
-    <div *ngIf="hasLeft && hasRight && wallReady" class="door-overlay sandstone-door-both"></div>
     <div
         (keyup)="onKey($event)"
         slot="fixed"

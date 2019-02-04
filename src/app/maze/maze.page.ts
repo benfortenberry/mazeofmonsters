@@ -51,43 +51,43 @@ import { ToastController } from '@ionic/angular';
             ),
             transition(
                 '* => f',
-                animate('500ms ease-in-out', keyframes([style({ transform: 'scale(1.75)', willChange: 'transform' })]))
+                animate('300ms ease', keyframes([style({ transform: 'scale(1.25)', willChange: 'transform' })]))
             ),
             transition(
                 '* => l',
                 animate(
-                    '500ms ease-in-out',
+                    '300ms ease',
                     keyframes([
                         style({ transform: 'translateX(0)', willChange: 'transform' }),
-                        style({ transform: 'translateX(25%)', willChange: 'transform' }),
-                        style({ transform: 'translateX(50%)', willChange: 'transform' }),
-                        style({ transform: 'translateX(75%)', willChange: 'transform' })
+                        style({ transform: 'translateX(25%)', willChange: 'transform' })
+                        // style({ transform: 'translateX(50%)', willChange: 'transform' }),
+                        // style({ transform: 'translateX(75%)', willChange: 'transform' })
                     ])
                 )
             ),
             transition(
                 '* => r',
                 animate(
-                    '500ms ease-in-out',
+                    '300ms ease',
                     keyframes([
                         style({ transform: 'translateX(0)', willChange: 'transform' }),
-                        style({ transform: 'translateX(-25%)', willChange: 'transform' }),
-                        style({ transform: 'translateX(-50%)', willChange: 'transform' }),
-                        style({ transform: 'translateX(-75%)', willChange: 'transform' })
+                        style({ transform: 'translateX(-25%)', willChange: 'transform' })
+                        // style({ transform: 'translateX(-50%)', willChange: 'transform' }),
+                        // style({ transform: 'translateX(-75%)', willChange: 'transform' })
                     ])
                 )
             ),
             transition(
                 '* => back',
                 animate(
-                    '500ms ease-in-out',
+                    '300ms ease',
                     keyframes([
                         style({ transform: 'translateX(0)', willChange: 'transform' }),
                         style({ transform: 'translateX(-105%)', willChange: 'transform' }),
                         style({ transform: 'translateX(-200%)', willChange: 'transform' }),
-                        style({ transform: 'translateX(-305%)', willChange: 'transform' }),
-                        style({ transform: 'translateX(-400%)', willChange: 'transform' }),
-                        style({ transform: 'translateX(-100%)', willChange: 'transform' }),
+                        // style({ transform: 'translateX(-305%)', willChange: 'transform' }),
+                        // style({ transform: 'translateX(-400%)', willChange: 'transform' }),
+                        // style({ transform: 'translateX(-100%)', willChange: 'transform' }),
                         style({ transform: 'translateX(-75%)', willChange: 'transform' }),
                         style({ transform: 'translateX(-50%)', willChange: 'transform' }),
                         style({ transform: 'translateX(-25%)', willChange: 'transform' }),
@@ -116,7 +116,7 @@ export class MazePage {
     monsterCoolDown = 800;
     monsterQuotes = [];
     wallClass;
-    monsterImageUrl = '../../assets/monolith.png';
+    monsterImageUrl = '../../assets/monsters/Dragon.png';
     monsterImageList;
     alerts = [];
     modals = [];
@@ -157,7 +157,7 @@ export class MazePage {
 
         this.getRoutes();
 
-        this.currentRoom = '0-0';
+        this.currentRoom = '3-11';
         // this.getQuotes();
         this.getImages();
         this.wallClass = 'sandstone';
@@ -166,12 +166,12 @@ export class MazePage {
 
         this.backgroundAudio.src = '../../assets/audio/theme.ogg';
         this.backgroundAudio.load();
-        this.backgroundAudio.volume = 0.1;
+        this.backgroundAudio.volume = 0.2;
         this.backgroundAudio.play();
         this.backgroundAudio.loop = true;
 
         this.winAudio.src = '../../assets/audio/win sound 2-3.wav';
-        this.backgroundAudio.volume = 0.1;
+        this.backgroundAudio.volume = 0.2;
         this.winAudio.load();
 
         this.loseAudio.src = '../../assets/audio/lose sound 1-2.wav';
@@ -210,7 +210,7 @@ export class MazePage {
     async getRoutes() {
         this.mazeProvider.getRoutes().then(response => {
             this.routes = response['routes'];
-            console.log(this.routes);
+            // console.log(this.routes);
             this.mazeData = response['data'];
             this.getRoute('0-0');
         });
@@ -492,7 +492,7 @@ export class MazePage {
             // header: 'Squirtle Says',
 
             // tslint:disable-next-line:quotemark
-            message: "Too bad... I can't add any rooms to your map.",
+            message: 'Sorry..I cannot help you.',
             buttons: [
                 {
                     text: 'OK',
@@ -552,15 +552,6 @@ export class MazePage {
             ]
         });
 
-        // const toast = await this.toastController.create({
-        //     message: 'Would you like some help?',
-        //     showCloseButton: true,
-        //     translucent: true,
-        //     position: 'middle',
-        //     closeButtonText: 'Yes'
-        // });
-        // await toast.present();
-        // console.log(this.monsterImageUrl);
         setTimeout(() => {
             this.alerts.push(alert);
             alert.present();
@@ -583,11 +574,6 @@ export class MazePage {
             });
         }
         this.modals = [];
-    }
-
-    onKey(event: any) {
-        // without type info
-        // console.log(event.keycode);
     }
 
     generate() {
@@ -709,6 +695,16 @@ export class MazePage {
             this.hasBottom = hasBottom;
             this.hasRight = hasRight;
             this.hasLeft = hasLeft;
+
+            if (this.hasLeft && this.hasRight) {
+                this.wallClass = 'sandstone-both';
+            } else if (this.hasLeft) {
+                this.wallClass = 'sandstone-left';
+            } else if (this.hasRight) {
+                this.wallClass = 'sandstone-right';
+            } else {
+                this.wallClass = 'sandstone';
+            }
         }
     }
 
@@ -775,7 +771,7 @@ export class MazePage {
 
     moveForward() {
         // this.clickAudio.play();
-        this.wallReady = false;
+
         if (this.currentDirection === 's') {
             this.currentY++;
         }
@@ -794,12 +790,12 @@ export class MazePage {
 
         this.currentRoom = this.currentY + '-' + this.currentX;
         this.state = 'f';
+        this.wallReady = false;
         this.getRoute(this.currentRoom);
     }
 
     moveLeft() {
         // this.clickAudio.play();
-        this.wallReady = false;
 
         if (this.currentDirection === 'n') {
             this.currentX--;
@@ -816,13 +812,14 @@ export class MazePage {
         }
         this.currentRoom = this.currentY + '-' + this.currentX;
         this.state = 'l';
+        this.wallReady = false;
         this.getRoute(this.currentRoom);
     }
 
     moveRight() {
         // this.clickAudio.play();
         //  this.roomChange.play();
-        this.wallReady = false;
+
         if (this.currentDirection === 'n') {
             this.currentX++;
             this.currentDirection = 'e';
@@ -839,12 +836,13 @@ export class MazePage {
 
         this.currentRoom = this.currentY + '-' + this.currentX;
         this.state = 'r';
+        this.wallReady = false;
         this.getRoute(this.currentRoom);
     }
 
     turnAround() {
         // this.clickAudio.play();
-        this.wallReady = false;
+
         if (this.currentDirection === 'n') {
             this.currentDirection = 's';
         } else if (this.currentDirection === 's') {
@@ -855,6 +853,7 @@ export class MazePage {
             this.currentDirection = 'e';
         }
         this.state = 'back';
+        this.wallReady = false;
         this.getRoute(this.currentRoom);
     }
 
