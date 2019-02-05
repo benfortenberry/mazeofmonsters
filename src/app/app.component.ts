@@ -24,11 +24,11 @@ export class AppComponent {
         this.platform.ready().then(() => {
             this.statusBar.styleDefault();
 
-            if (this.platform.is('desktop')) {
-                this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.LANDSCAPE);
-            } else {
-                // desktop browser only code
-            }
+            // if (this.platform.is('desktop')) {
+            this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.LANDSCAPE);
+            // } else {
+            // desktop browser only code
+            // }
 
             this.splashScreen.hide();
         });
