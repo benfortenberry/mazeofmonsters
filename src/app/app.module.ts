@@ -13,6 +13,7 @@ import { CountdownService } from '../providers/countdown-service';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NativeAudio } from '@ionic-native/native-audio/ngx';
 
 @NgModule({
     declarations: [AppComponent],
@@ -21,6 +22,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     providers: [
         StatusBar,
         SplashScreen,
+        NativeAudio,
         ScreenOrientation,
         { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
         MazeProvider,

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, NavController, IonRouterOutlet } from '@ionic/angular';
+import { NativeAudio } from '@ionic-native/native-audio/ngx';
 @Component({
     selector: 'app-intro',
     templateUrl: './intro.page.html',
@@ -11,9 +12,7 @@ export class IntroPage implements OnInit {
     thirdLine;
     buttonReady;
 
-    clickAudio = new Audio();
-
-    constructor(public navCtrl: NavController) {
+    constructor(public navCtrl: NavController, private nativeAudio: NativeAudio) {
         setTimeout(() => {
             this.firstLine = true;
         }, 200);
@@ -31,12 +30,11 @@ export class IntroPage implements OnInit {
     ngOnInit() {}
 
     beginMaze() {
-        this.clickAudio.play();
+        this.nativeAudio.play('clickAudio');
         this.navCtrl.navigateForward('maze');
     }
 
     ionViewDidEnter() {
-        this.clickAudio.src = '../../assets/audio/ui click 11 [2018-10-13 162315].wav';
-        this.clickAudio.load();
+        this.nativeAudio.preloadSimple('clickAudio', '../../assets/audio/ui click 11 [2018-10-13 162315].wav');
     }
 }

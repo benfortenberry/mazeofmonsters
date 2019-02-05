@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 import { NavParams, ModalController } from '@ionic/angular';
+import { NativeAudio } from '@ionic-native/native-audio/ngx';
 @Component({
     selector: 'app-eyeball',
     templateUrl: './eyeball.page.html',
@@ -199,15 +200,12 @@ export class EyeballPage implements OnInit {
     animationAnswers = [{ id: 0 }, { id: 1 }, { id: 2 }, { id: 3 }];
     lastAnswers = [{ id: 0 }, { id: 1 }, { id: 2 }, { id: 3 }];
 
-    clickAudio = new Audio();
-    woopAudio = new Audio();
+    // woopAudio = new Audio();
 
-    constructor(private modalController: ModalController) {
-        this.clickAudio.src = '../../assets/audio/ui click 11 [2018-10-13 162315].wav';
-        this.clickAudio.load();
+    constructor(private modalController: ModalController, private nativeAudio: NativeAudio) {
+        this.nativeAudio.preloadSimple('clickAudio', '../../assets/audio/ui click 11 [2018-10-13 162315].wav');
 
-        this.woopAudio.src = '../../assets/audio/ui click 10 [2018-10-13 162315].wav';
-        this.woopAudio.load();
+        this.nativeAudio.preloadSimple('woopAudio', '../../assets/audio/Socapex - hurt.wav');
 
         this.rightAnswer = Math.floor(Math.random() * this.possibleAnswers.length);
         this.possibleAnswers[this.rightAnswer]['answer'] = true;
@@ -223,30 +221,30 @@ export class EyeballPage implements OnInit {
 
         setTimeout(() => {
             this.shuffle();
-            this.woopAudio.play();
+            this.nativeAudio.play('woopAudio');
         }, 3000);
 
         setTimeout(() => {
             this.shuffle();
-            this.woopAudio.play();
+            this.nativeAudio.play('woopAudio');
             this.shuffleCount++;
         }, 5000);
 
         setTimeout(() => {
             this.shuffle();
-            this.woopAudio.play();
+            this.nativeAudio.play('woopAudio');
             this.shuffleCount++;
         }, 7000);
 
         setTimeout(() => {
             this.shuffle();
-            this.woopAudio.play();
+            this.nativeAudio.play('woopAudio');
             this.shuffleCount++;
         }, 9000);
 
         setTimeout(() => {
             this.shuffle();
-            this.woopAudio.play();
+            this.nativeAudio.play('woopAudio');
             this.shuffleCount++;
         }, 11000);
     }
@@ -255,7 +253,7 @@ export class EyeballPage implements OnInit {
 
     closeModal(status) {
         if (status == null) {
-            this.clickAudio.play();
+            this.nativeAudio.play('clickAudio');
         }
 
         this.modalController.dismiss({ result: status });
@@ -265,7 +263,7 @@ export class EyeballPage implements OnInit {
         // console.log(this.rightAnswer);
 
         if (this.shuffleCount === 5) {
-            this.clickAudio.play();
+            this.nativeAudio.play('clickAudio');
 
             this.flipped = false;
             setTimeout(() => {

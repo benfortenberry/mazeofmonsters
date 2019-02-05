@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, NavController, IonRouterOutlet } from '@ionic/angular';
+import { NativeAudio } from '@ionic-native/native-audio/ngx';
 @Component({
     selector: 'app-win',
     templateUrl: './win.page.html',
@@ -11,10 +12,7 @@ export class WinPage implements OnInit {
     thirdLine;
     buttonReady;
 
-    clickAudio = new Audio();
-
-    backgroundAudio = new Audio();
-    constructor(public navCtrl: NavController) {
+    constructor(public navCtrl: NavController, private nativeAudio: NativeAudio) {
         setTimeout(() => {
             this.firstLine = true;
         }, 200);
@@ -32,17 +30,15 @@ export class WinPage implements OnInit {
     ngOnInit() {}
 
     ionViewDidEnter() {
-        this.clickAudio.src = '../../assets/audio/ui click 11 [2018-10-13 162315].wav';
-        this.clickAudio.load();
+        this.nativeAudio.preloadSimple('clickAudio', '../../assets/audio/ui click 11 [2018-10-13 162315].wav');
 
-        this.backgroundAudio.src = '../../assets/audio/HappyMusic.ogg';
-        this.backgroundAudio.load();
-        this.backgroundAudio.volume = 0.1;
-        this.backgroundAudio.play();
+        this.nativeAudio.preloadComplex('winAudio', '../../assets/audio/HappyMusic.ogg', 0.5, 1, 0);
+
+        this.nativeAudio.play('winAudio');
     }
 
     beginMaze() {
-        this.clickAudio.play();
+        this.nativeAudio.play('clickAudio');
         this.navCtrl.navigateForward('intro');
     }
 

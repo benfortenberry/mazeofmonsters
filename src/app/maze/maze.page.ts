@@ -2,7 +2,6 @@ import { Component, HostListener } from '@angular/core';
 import { MazeProvider } from '../..//providers/maze-service';
 import { AlertController, NavController, IonRouterOutlet } from '@ionic/angular';
 import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
-import { Subscription } from 'rxjs';
 import { CountdownService } from '../../providers/countdown-service';
 import { ModalController } from '@ionic/angular';
 import { MapPage } from '../map/map.page';
@@ -14,7 +13,7 @@ import { OrbPage } from '../orb/orb';
 import { XandoPage } from '../xando/xando.page';
 import { EyeballPage } from '../eyeball/eyeball.page';
 import { ToastController } from '@ionic/angular';
-
+import { NativeAudio } from '@ionic-native/native-audio/ngx';
 @Component({
     selector: 'app-maze',
     templateUrl: 'maze.page.html',
@@ -128,16 +127,13 @@ export class MazePage {
     availMiniGames = [];
     availMonsterList = [];
     usedMonster = [];
+    monsterClass;
 
-    backgroundAudio = new Audio();
+    // backgroundAudio = new Audio();
 
-    clickAudio = new Audio();
+    // loseAudio = new Audio();
 
-    winAudio = new Audio();
-
-    loseAudio = new Audio();
-
-    monsterAudio = new Audio();
+    // monsterAudio = new Audio();
 
     subscription;
 
@@ -151,41 +147,42 @@ export class MazePage {
         public alertController: AlertController,
         public modalController: ModalController,
         public toastController: ToastController,
-        private countdownService: CountdownService
+        private countdownService: CountdownService,
+        private nativeAudio: NativeAudio
     ) {
         // this.generate();
 
         this.getRoutes();
 
-        this.currentRoom = '3-11';
+        this.currentRoom = '0-0';
         // this.getQuotes();
         this.getImages();
         this.wallClass = 'sandstone';
 
         // this.nativeAudio.preloadSimple('uniqueId1', 'path/to/file.mp3');
 
-        this.backgroundAudio.src = '../../assets/audio/theme.ogg';
-        this.backgroundAudio.load();
-        this.backgroundAudio.volume = 0.2;
-        this.backgroundAudio.play();
-        this.backgroundAudio.loop = true;
+        // this.backgroundAudio.src = '../../assets/audio/theme.ogg';
+        // this.backgroundAudio.load();
+        this.nativeAudio.preloadComplex('backgroundAudio', '../../assets/audio/theme.ogg', 0.2, 1, 0);
+        this.nativeAudio.preloadSimple('clickAudio', '../../assets/audio/ui click 11 [2018-10-13 162315].wav');
+        this.nativeAudio.loop('backgroundAudio');
+        this.nativeAudio.preloadComplex('winAudio', '../../assets/audio/win sound 2-3.wav', 0.5, 1, 0);
+        // this.backgroundAudio.volume = 0.2;
+        // this.backgroundAudio.play();
+        // this.backgroundAudio.loop = true;
 
-        this.winAudio.src = '../../assets/audio/win sound 2-3.wav';
-        this.backgroundAudio.volume = 0.2;
-        this.winAudio.load();
+        // this.winAudio.src = '../../assets/audio/win sound 2-3.wav';
+        // this.backgroundAudio.volume = 0.2;
+        // this.winAudio.load();
 
-        this.loseAudio.src = '../../assets/audio/lose sound 1-2.wav';
-        this.backgroundAudio.volume = 0.1;
-        this.loseAudio.load();
-
-        this.clickAudio.src = '../../assets/audio/ui click 11 [2018-10-13 162315].wav';
-
-        this.clickAudio.load();
+        // this.loseAudio.src = '../../assets/audio/lose sound 1-2.wav';
+        // this.backgroundAudio.volume = 0.1;
+        // this.loseAudio.load();
     }
 
     ionViewDidEnter() {
         this.showTime = true;
-        this.countdownService.count = 1200;
+        this.countdownService.count = 900;
         this.countdownService.start();
         this.subscription = this.countdownService.countdown();
         this.subscription.subscribe(t => {
@@ -406,9 +403,7 @@ export class MazePage {
     }
 
     async showTimer() {
-        this.clickAudio.play();
-        // console.log(time);
-        // console.log(this.subscription);
+        this.nativeAudio.play('clickAudio');
 
         const minutes = Math.floor(this.timeLeft / 60);
         const seconds = this.timeLeft - minutes * 60;
@@ -430,7 +425,7 @@ export class MazePage {
     }
 
     async showDirection() {
-        this.clickAudio.play();
+        this.nativeAudio.play('clickAudio');
         // console.log('show');
         let dir = '';
         if (this.currentDirection === 's') {
@@ -482,7 +477,7 @@ export class MazePage {
         // setTimeout(() => {
         this.alerts.push(alert);
         alert.present();
-        this.winAudio.play();
+        this.nativeAudio.play('winAudio');
         // }, 1000);
     }
 
@@ -496,6 +491,7 @@ export class MazePage {
             buttons: [
                 {
                     text: 'OK',
+                    role: 'cancel',
                     handler: () => {
                         this.monsterPresent = false;
                         // add five rooms to map
@@ -512,17 +508,23 @@ export class MazePage {
 
     async getMonster() {
         if (this.availMonsterList.length === 0) {
-            this.availMonsterList = this.shuffleList(this.monsterImageList);
+            this.availMonsterList = this.shuffleList(this.monsterImageList).map(x => Object.assign({}, x));
         }
 
+        console.log(this.availMonsterList);
+        console.log(this.monsterImageList);
         const selectedMonster = this.availMonsterList[this.availMonsterList.length - 1];
+        console.log(selectedMonster);
         this.availMonsterList.pop();
+        console.log(selectedMonster);
         this.monsterImageUrl = '../../assets/monsters/' + selectedMonster.img;
-
-        this.monsterAudio.src = selectedMonster.audio;
-        this.monsterAudio.load();
-        this.monsterAudio.volume = 0.1;
-        this.monsterAudio.play();
+        this.monsterClass = selectedMonster.class;
+        this.nativeAudio.preloadComplex('monsterAudio', selectedMonster.audio, 0.2, 1, 0);
+        this.nativeAudio.play('monsterAudio');
+        // this.monsterAudio.src = selectedMonster.audio;
+        // this.monsterAudio.load();
+        // this.monsterAudio.volume = 0.1;
+        // this.monsterAudio.play();
 
         const alert = await this.alertController.create({
             // header: 'Squirtle Says',
@@ -770,8 +772,6 @@ export class MazePage {
     }
 
     moveForward() {
-        // this.clickAudio.play();
-
         if (this.currentDirection === 's') {
             this.currentY++;
         }
@@ -795,8 +795,6 @@ export class MazePage {
     }
 
     moveLeft() {
-        // this.clickAudio.play();
-
         if (this.currentDirection === 'n') {
             this.currentX--;
             this.currentDirection = 'w';
@@ -817,9 +815,6 @@ export class MazePage {
     }
 
     moveRight() {
-        // this.clickAudio.play();
-        //  this.roomChange.play();
-
         if (this.currentDirection === 'n') {
             this.currentX++;
             this.currentDirection = 'e';
@@ -841,8 +836,6 @@ export class MazePage {
     }
 
     turnAround() {
-        // this.clickAudio.play();
-
         if (this.currentDirection === 'n') {
             this.currentDirection = 's';
         } else if (this.currentDirection === 's') {
@@ -858,9 +851,8 @@ export class MazePage {
     }
 
     async openMap() {
-        this.clickAudio.play();
-        // console.log(this.currentRoom);
-        // console.log(this.mazeData);
+        this.nativeAudio.play('clickAudio');
+
         const modal = await this.modalController.create({
             component: MapPage,
             backdropDismiss: false,
@@ -877,9 +869,8 @@ export class MazePage {
     }
 
     async openCompass() {
-        this.clickAudio.play();
-        // console.log(this.currentRoom);
-        // console.log(this.mazeData);
+        this.nativeAudio.play('clickAudio');
+
         const modal = await this.modalController.create({
             component: CompassPage,
             backdropDismiss: false,
@@ -891,9 +882,8 @@ export class MazePage {
     }
 
     async openTime() {
-        this.clickAudio.play();
-        // console.log(this.currentRoom);
-        // console.log(this.mazeData);
+        this.nativeAudio.play('clickAudio');
+
         const modal = await this.modalController.create({
             component: TimePage,
             backdropDismiss: false,

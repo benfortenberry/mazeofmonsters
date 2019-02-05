@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { NavParams, ModalController } from '@ionic/angular';
 import { DomSanitizer } from '@angular/platform-browser';
+import { NativeAudio } from '@ionic-native/native-audio/ngx';
 @Component({
     selector: 'app-map',
     templateUrl: './map.page.html',
@@ -15,15 +16,13 @@ export class MapPage implements OnInit {
     routeHistory = null;
     mazeData = null;
 
-    clickAudio = new Audio();
-
     constructor(
         private navParams: NavParams,
         private sanitizer: DomSanitizer,
-        private modalController: ModalController
+        private modalController: ModalController,
+        private nativeAudio: NativeAudio
     ) {
-        this.clickAudio.src = '../../assets/audio/ui click 11 [2018-10-13 162315].wav';
-        this.clickAudio.load();
+        this.nativeAudio.preloadSimple('clickAudio', '../../assets/audio/ui click 11 [2018-10-13 162315].wav');
     }
 
     ionViewWillEnter() {
@@ -51,7 +50,7 @@ export class MapPage implements OnInit {
                     showRoute = true;
                 }
 
-                showRoute = true;
+                // showRoute = true;
 
                 this.htmlToAdd = this.htmlToAdd + '<td style="text-align:center;  height:20px; width:20px;';
                 if (disp[i][j][0] === 0 && showRoute) {
@@ -110,7 +109,7 @@ export class MapPage implements OnInit {
     }
 
     closeModal() {
-        this.clickAudio.play();
+        this.nativeAudio.play('clickAudio');
         this.modalController.dismiss();
     }
 }

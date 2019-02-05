@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavParams, ModalController } from '@ionic/angular';
+import { NativeAudio } from '@ionic-native/native-audio/ngx';
 @Component({
     selector: 'app-orb',
     templateUrl: './orb.page.html',
@@ -8,9 +9,6 @@ import { NavParams, ModalController } from '@ionic/angular';
 export class OrbPage implements OnInit {
     gameBegin = false;
     error = false;
-
-    clickAudio = new Audio();
-    beepAudio = new Audio();
 
     tileList = [
         { id: 0, active: false },
@@ -24,12 +22,9 @@ export class OrbPage implements OnInit {
 
     patternList = [];
 
-    constructor(private modalController: ModalController) {
-        this.clickAudio.src = '../../assets/audio/ui click 11 [2018-10-13 162315].wav';
-        this.clickAudio.load();
-
-        this.beepAudio.src = '../../assets/audio/beep.wav';
-        this.beepAudio.load();
+    constructor(private modalController: ModalController, private nativeAudio: NativeAudio) {
+        this.nativeAudio.preloadSimple('clickAudio', '../../assets/audio/ui click 11 [2018-10-13 162315].wav');
+        this.nativeAudio.preloadSimple('beepAudio', '../../assets/audio/beep.wav');
 
         setTimeout(() => {
             this.begin();
@@ -39,7 +34,7 @@ export class OrbPage implements OnInit {
     ngOnInit() {}
 
     storePattern(id) {
-        this.clickAudio.play();
+        this.nativeAudio.play('clickAudio');
 
         this.tileList[id].active = true;
 
@@ -82,7 +77,7 @@ export class OrbPage implements OnInit {
 
     closeModal(status) {
         if (status == null) {
-            this.clickAudio.play();
+            this.nativeAudio.play('clickAudio');
         }
         this.modalController.dismiss({ result: status });
     }
@@ -97,7 +92,7 @@ export class OrbPage implements OnInit {
         this.patternList.forEach(e => {
             setTimeout(() => {
                 e.active = true;
-                this.beepAudio.play();
+                this.nativeAudio.play('beepAudio');
             }, startCounter * 1000);
 
             setTimeout(() => {

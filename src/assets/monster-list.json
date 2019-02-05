@@ -1,14 +1,14 @@
 {
     "monsters": [
-        { "img": "DivineGuardian.png", "audio": "../../assets/audio/Fire.mp3" },
-        { "img": "Dragon.png", "audio": "../../assets/audio/grunt1.wav" },
-        { "img": "Goblin.png", "audio": "../../assets/audio/deathd.wav" },
-        { "img": "Lichlord.png", "audio": "../../assets/audio/Magic Smite.wav" },
-        { "img": "Naga.png", "audio": "../../assets/audio/painb.wav" },
-        { "img": "Orc.png", "audio": "../../assets/audio/deathb.wav" },
-        { "img": "Ratman.png", "audio": "../../assets/audio/MonsterCreaturesVoiceSound005.mp3" },
-        { "img": "Treefolk.png", "audio": "../../assets/audio/2.wav" },
-        { "img": "Troll.png", "audio": "../../assets/audio/3.wav" },
-        { "img": "zombie.png", "audio": "../../assets/audio/1.wav" }
+        { "img": "DivineGuardian.png", "audio": "../../assets/audio/Fire.mp3", "class": "fire" },
+        { "img": "Dragon.png", "audio": "../../assets/audio/grunt1.wav", "class": "dragon" },
+        { "img": "Goblin.png", "audio": "../../assets/audio/deathd.wav", "class": "goblin" },
+        { "img": "Lichlord.png", "audio": "../../assets/audio/Magic Smite.wav", "class": "lichlord" },
+        { "img": "Naga.png", "audio": "../../assets/audio/painb.wav", "class": "naga" },
+        { "img": "Orc.png", "audio": "../../assets/audio/deathb.wav", "class": "orc" },
+        { "img": "Ratman.png", "audio": "../../assets/audio/MonsterCreaturesVoiceSound005.mp3", "class": "ratman" },
+        { "img": "Treefolk.png", "audio": "../../assets/audio/2.wav", "class": "treefolk" },
+        { "img": "Troll.png", "audio": "../../assets/audio/3.wav", "class": "troll" },
+        { "img": "zombie.png", "audio": "../../assets/audio/1.wav", "class": "zombie" }
     ]
 }

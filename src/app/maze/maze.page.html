@@ -1,5 +1,13 @@
-<ion-content (keyup)="onKey($event)" no-bounce [ngClass]="[hasRight ? 'has-right' : '', hasLeft ? 'has-left' : '']">
-    <ion-fab *ngIf="monsterPresent" class="monster" vertical="center" horizontal="center" edge slot="fixed"></ion-fab>
+<ion-content no-bounce [ngClass]="[hasRight ? 'has-right' : '', hasLeft ? 'has-left' : '']">
+    <ion-fab
+        *ngIf="monsterPresent"
+        [ngClass]="monsterClass"
+        class="monster"
+        vertical="center"
+        horizontal="center"
+        edge
+        slot="fixed"
+    ></ion-fab>
     <ion-fab *ngIf="wallReady && !monsterPresent" vertical="center" horizontal="end" edge slot="fixed">
         <ion-fab-button *ngIf="hasRight" [disabled]="!hasRight" size="small" color="dark" (click)="moveRight()">
             <ion-icon name="arrow-forward"></ion-icon>
@@ -54,7 +62,6 @@
     <div *ngIf="hasLeft && wallReady" class="left-door"></div> -->
 
     <div
-        (keyup)="onKey($event)"
         slot="fixed"
         [@myAwesomeAnimation]="state"
         (@myAwesomeAnimation.done)="onAnimationEvent($event)"

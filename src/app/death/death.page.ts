@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, NavController, IonRouterOutlet } from '@ionic/angular';
 import { MazeProvider } from '../..//providers/maze-service';
-
+import { NativeAudio } from '@ionic-native/native-audio/ngx';
 @Component({
     selector: 'app-death',
     templateUrl: './death.page.html',
@@ -16,11 +16,7 @@ export class DeathPage implements OnInit {
     thirdLine;
     buttonReady;
 
-    backgroundAudio = new Audio();
-
-    clickAudio = new Audio();
-
-    constructor(public navCtrl: NavController, public mazeProvider: MazeProvider) {
+    constructor(public navCtrl: NavController, public mazeProvider: MazeProvider, private nativeAudio: NativeAudio) {
         this.getImages();
 
         setTimeout(() => {
@@ -38,7 +34,7 @@ export class DeathPage implements OnInit {
     }
 
     tryAgain() {
-        this.clickAudio.play();
+        this.nativeAudio.play('clickAudio');
         this.navCtrl.navigateRoot('maze');
     }
 
@@ -56,13 +52,10 @@ export class DeathPage implements OnInit {
     ngOnInit() {}
 
     ionViewDidEnter() {
-        this.backgroundAudio.src = '../../assets/audio/lose music 1 - 1_0.wav';
-        this.backgroundAudio.load();
-        this.backgroundAudio.volume = 0.1;
+        this.nativeAudio.preloadComplex('lostAudio', '../../assets/audio/lose music 1 - 1_0.wav', 0.5, 1, 0);
 
-        this.backgroundAudio.play();
+        this.nativeAudio.play('loseAudio');
 
-        this.clickAudio.src = '../../assets/audio/ui click 11 [2018-10-13 162315].wav';
-        this.clickAudio.load();
+        this.nativeAudio.preloadSimple('clickAudio', '../../assets/audio/ui click 11 [2018-10-13 162315].wav');
     }
 }

@@ -24,7 +24,7 @@ export class ProgressComponent implements OnInit, OnChanges {
     }
 
     private progress(value: number) {
-        const progress = value / 1200;
+        const progress = value / 900;
         this.dashoffset = this.circumference * (1 - progress);
     }
 }

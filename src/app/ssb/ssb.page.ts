@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavParams, ModalController } from '@ionic/angular';
+import { NativeAudio } from '@ionic-native/native-audio/ngx';
 @Component({
     selector: 'app-ssb',
     templateUrl: './ssb.page.html',
@@ -12,15 +13,12 @@ export class SsbPage implements OnInit {
     cpuChoice;
     goAgain = false;
 
-    clickAudio = new Audio();
-
-    constructor(private modalController: ModalController) {
-        this.clickAudio.src = '../../assets/audio/ui click 11 [2018-10-13 162315].wav';
-        this.clickAudio.load();
+    constructor(private modalController: ModalController, private nativeAudio: NativeAudio) {
+        this.nativeAudio.preloadSimple('clickAudio', '../../assets/audio/ui click 11 [2018-10-13 162315].wav');
     }
 
     makeChoice(choice) {
-        this.clickAudio.play();
+        this.nativeAudio.play('clickAudio');
         this.pickedChoice = choice;
         this.humanTurn = false;
         this.cpuChoice = this.choices[Math.floor(Math.random() * this.choices.length)];
@@ -89,7 +87,7 @@ export class SsbPage implements OnInit {
 
     closeModal(status) {
         if (status == null) {
-            this.clickAudio.play();
+            this.nativeAudio.play('clickAudio');
         }
         // console.log('win', status);
         this.modalController.dismiss({ result: status });
