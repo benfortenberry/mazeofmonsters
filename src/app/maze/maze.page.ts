@@ -163,7 +163,7 @@ export class MazePage {
 
         // this.backgroundAudio.src = '../../assets/audio/theme.ogg';
         // this.backgroundAudio.load();
-        this.nativeAudio.preloadComplex('backgroundAudio', '../../assets/audio/theme.ogg', 0.2, 1, 0);
+
         this.nativeAudio.preloadSimple('clickAudio', '../../assets/audio/ui click 11 [2018-10-13 162315].wav');
         this.nativeAudio.loop('backgroundAudio');
         this.nativeAudio.preloadComplex('winAudio', '../../assets/audio/win sound 2-3.wav', 0.5, 1, 0);
