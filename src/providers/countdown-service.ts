@@ -18,7 +18,6 @@ export class CountdownService {
     }
 
     start(): void {
-        // console.log('start');
         // Ensure that only one timer is in progress at any given time.
         if (!this.isCounting) {
             this.isCounting = true;

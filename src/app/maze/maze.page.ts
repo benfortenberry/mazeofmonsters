@@ -3,6 +3,7 @@ import { MazeProvider } from '../..//providers/maze-service';
 import { AlertController, NavController, IonRouterOutlet } from '@ionic/angular';
 import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 import { CountdownService } from '../../providers/countdown-service';
+import { AudioService } from '../../providers/audioService';
 import { ModalController } from '@ionic/angular';
 import { MapPage } from '../map/map.page';
 import { CompassPage } from '../compass/compass.page';
@@ -12,7 +13,7 @@ import { GemPage } from '../gems/gems.page';
 import { OrbPage } from '../orb/orb';
 import { XandoPage } from '../xando/xando.page';
 import { EyeballPage } from '../eyeball/eyeball.page';
-import { ToastController } from '@ionic/angular';
+import { ToastController, Platform } from '@ionic/angular';
 import { NativeAudio } from '@ionic-native/native-audio/ngx';
 @Component({
     selector: 'app-maze',
@@ -148,7 +149,9 @@ export class MazePage {
         public modalController: ModalController,
         public toastController: ToastController,
         private countdownService: CountdownService,
-        private nativeAudio: NativeAudio
+        private nativeAudio: NativeAudio,
+        private platform: Platform,
+        private aService: AudioService
     ) {
         // this.generate();
 
@@ -159,25 +162,9 @@ export class MazePage {
         this.getImages();
         this.wallClass = 'sandstone';
 
-        // this.nativeAudio.preloadSimple('uniqueId1', 'path/to/file.mp3');
 
-        // this.backgroundAudio.src = '../../assets/audio/theme.ogg';
-        // this.backgroundAudio.load();
 
-        this.nativeAudio.preloadSimple('clickAudio', '../../assets/audio/ui click 11 [2018-10-13 162315].wav');
         this.nativeAudio.loop('backgroundAudio');
-        this.nativeAudio.preloadComplex('winAudio', '../../assets/audio/win sound 2-3.wav', 0.5, 1, 0);
-        // this.backgroundAudio.volume = 0.2;
-        // this.backgroundAudio.play();
-        // this.backgroundAudio.loop = true;
-
-        // this.winAudio.src = '../../assets/audio/win sound 2-3.wav';
-        // this.backgroundAudio.volume = 0.2;
-        // this.winAudio.load();
-
-        // this.loseAudio.src = '../../assets/audio/lose sound 1-2.wav';
-        // this.backgroundAudio.volume = 0.1;
-        // this.loseAudio.load();
     }
 
     ionViewDidEnter() {
@@ -403,7 +390,7 @@ export class MazePage {
     }
 
     async showTimer() {
-        this.nativeAudio.play('clickAudio');
+        this.aService.play('clickAudio');
 
         const minutes = Math.floor(this.timeLeft / 60);
         const seconds = this.timeLeft - minutes * 60;
@@ -425,7 +412,7 @@ export class MazePage {
     }
 
     async showDirection() {
-        this.nativeAudio.play('clickAudio');
+        this.aService.play('clickAudio');
         // console.log('show');
         let dir = '';
         if (this.currentDirection === 's') {
@@ -511,16 +498,15 @@ export class MazePage {
             this.availMonsterList = this.shuffleList(this.monsterImageList).map(x => Object.assign({}, x));
         }
 
-        console.log(this.availMonsterList);
-        console.log(this.monsterImageList);
+        // console.log(this.availMonsterList);
+        // console.log(this.monsterImageList);
         const selectedMonster = this.availMonsterList[this.availMonsterList.length - 1];
-        console.log(selectedMonster);
+        // console.log(selectedMonster);
         this.availMonsterList.pop();
-        console.log(selectedMonster);
+        // console.log(selectedMonster);
         this.monsterImageUrl = '../../assets/monsters/' + selectedMonster.img;
         this.monsterClass = selectedMonster.class;
-        this.nativeAudio.preloadComplex('monsterAudio', selectedMonster.audio, 0.2, 1, 0);
-        this.nativeAudio.play('monsterAudio');
+        this.nativeAudio.play(selectedMonster.class);
         // this.monsterAudio.src = selectedMonster.audio;
         // this.monsterAudio.load();
         // this.monsterAudio.volume = 0.1;
@@ -772,6 +758,8 @@ export class MazePage {
     }
 
     moveForward() {
+        this.aService.play('fire');
+
         if (this.currentDirection === 's') {
             this.currentY++;
         }
@@ -851,8 +839,8 @@ export class MazePage {
     }
 
     async openMap() {
-        this.nativeAudio.play('clickAudio');
-
+        // this.nativeAudio.play('clickAudio');
+        this.aService.play('clickAudio');
         const modal = await this.modalController.create({
             component: MapPage,
             backdropDismiss: false,
@@ -869,7 +857,7 @@ export class MazePage {
     }
 
     async openCompass() {
-        this.nativeAudio.play('clickAudio');
+        this.aService.play('clickAudio');
 
         const modal = await this.modalController.create({
             component: CompassPage,
@@ -882,7 +870,7 @@ export class MazePage {
     }
 
     async openTime() {
-        this.nativeAudio.play('clickAudio');
+        this.aService.play('clickAudio');
 
         const modal = await this.modalController.create({
             component: TimePage,

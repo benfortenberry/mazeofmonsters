@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.thumbsupsolutions.yabdibsmaze" version="0.0.4" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.thumbsupsolutions.yabdibsmaze" version="0.0.7" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Yabdib's Maze</name>
     <description>Reach the exit if you can.</description>
     <author email="ben@thumbsupsolutions.com" href="http:/thumbsupsolutions.com/">Thumbs Up Solutions</author>
@@ -85,7 +85,12 @@
     <plugin name="cordova-plugin-splashscreen" spec="^5.0.2" />
     <plugin name="cordova-plugin-statusbar" spec="^2.4.2" />
     <plugin name="cordova-plugin-nativeaudio" spec="3.0.9" />
+    <plugin name="cordova-plugin-media" spec="5.0.2">
+        <variable name="KEEP_AVAUDIOSESSION_ALWAYS_ACTIVE" value="NO" />
+    </plugin>
+    <plugin name="cordova-plugin-file" spec="6.0.1" />
+    <allow-navigation href="http://172.23.1.138:8100" sessionid="e0962109" />
     <engine name="browser" spec="5.0.4" />
+    <engine name="ios" spec="^5.0.0" />
     <engine name="android" spec="7.1.4" />
-    <engine name="ios" spec="^4.5.5" />
 </widget>

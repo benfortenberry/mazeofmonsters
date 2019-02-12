@@ -14,7 +14,6 @@ export class MazeProvider {
     imageUrl = './assets/monster-list.json';
     deathList = './assets/death.monster.list.json';
     constructor(public http: HttpClient) {
-        // console.log('Hello TimeDateServiceProvider Provider');
     }
 
     // getData() {

@@ -30,10 +30,6 @@ export class WinPage implements OnInit {
     ngOnInit() {}
 
     ionViewDidEnter() {
-        this.nativeAudio.preloadSimple('clickAudio', '../../assets/audio/ui click 11 [2018-10-13 162315].wav');
-
-        this.nativeAudio.preloadComplex('winAudio', '../../assets/audio/HappyMusic.ogg', 0.5, 1, 0);
-
         this.nativeAudio.play('winAudio');
     }
 

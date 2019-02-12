@@ -94,7 +94,7 @@ export class Generator2Page implements OnInit {
         }
         // console.log(this.routes);
         this.safeHtml = this.sanitizer.bypassSecurityTrustHtml(this.htmlToAdd);
-        console.log(this.routes);
+        // console.log(this.routes);
         this.getRoute('0-0');
     }
 

@@ -195,6 +195,7 @@ export class EyeballPage implements OnInit {
     shuffleCount = 0;
     gameStart = false;
     flipped = false;
+    closed;
 
     possibleAnswers = [{ id: 0 }, { id: 1 }, { id: 2 }, { id: 3 }];
     animationAnswers = [{ id: 0 }, { id: 1 }, { id: 2 }, { id: 3 }];
@@ -203,10 +204,6 @@ export class EyeballPage implements OnInit {
     // woopAudio = new Audio();
 
     constructor(private modalController: ModalController, private nativeAudio: NativeAudio) {
-        this.nativeAudio.preloadSimple('clickAudio', '../../assets/audio/ui click 11 [2018-10-13 162315].wav');
-
-        this.nativeAudio.preloadSimple('woopAudio', '../../assets/audio/Socapex - hurt.wav');
-
         this.rightAnswer = Math.floor(Math.random() * this.possibleAnswers.length);
         this.possibleAnswers[this.rightAnswer]['answer'] = true;
 
@@ -220,38 +217,50 @@ export class EyeballPage implements OnInit {
         }, 1800);
 
         setTimeout(() => {
-            this.shuffle();
-            this.nativeAudio.play('woopAudio');
+            if (!this.closed) {
+                this.shuffle();
+
+                this.nativeAudio.play('woopAudio');
+            }
         }, 3000);
 
         setTimeout(() => {
-            this.shuffle();
-            this.nativeAudio.play('woopAudio');
-            this.shuffleCount++;
+            if (!this.closed) {
+                this.shuffle();
+                this.nativeAudio.play('woopAudio');
+                this.shuffleCount++;
+            }
         }, 5000);
 
         setTimeout(() => {
-            this.shuffle();
-            this.nativeAudio.play('woopAudio');
-            this.shuffleCount++;
+            if (!this.closed) {
+                this.shuffle();
+                this.nativeAudio.play('woopAudio');
+                this.shuffleCount++;
+            }
         }, 7000);
 
         setTimeout(() => {
-            this.shuffle();
-            this.nativeAudio.play('woopAudio');
-            this.shuffleCount++;
+            if (!this.closed) {
+                this.shuffle();
+                this.nativeAudio.play('woopAudio');
+                this.shuffleCount++;
+            }
         }, 9000);
 
         setTimeout(() => {
-            this.shuffle();
-            this.nativeAudio.play('woopAudio');
-            this.shuffleCount++;
+            if (!this.closed) {
+                this.shuffle();
+                this.nativeAudio.play('woopAudio');
+                this.shuffleCount++;
+            }
         }, 11000);
     }
 
     diffs = [];
 
     closeModal(status) {
+        this.closed = true;
         if (status == null) {
             this.nativeAudio.play('clickAudio');
         }
@@ -260,8 +269,6 @@ export class EyeballPage implements OnInit {
     }
 
     guessShell(id) {
-        // console.log(this.rightAnswer);
-
         if (this.shuffleCount === 5) {
             this.nativeAudio.play('clickAudio');
 
@@ -278,17 +285,10 @@ export class EyeballPage implements OnInit {
                 }
             }, 2000);
         }
-
-        // console.log(this.possibleAnswers[id].id);
     }
 
     getAniClass(slot) {
         return 'content' + (this.animationAnswers[slot].id + 1);
-
-        // console.log(this.findWithAttr(this.lastAnswers, 'id', slot));
-
-        // this.animationAnswers[slot].id + 1;
-        // return '';
     }
 
     diff(a, b) {
@@ -314,7 +314,6 @@ export class EyeballPage implements OnInit {
         this.possibleAnswers = this.shuffleList(this.possibleAnswers);
 
         if (JSON.stringify(cloned) === JSON.stringify(this.possibleAnswers)) {
-            // console.log('found same');
             this.possibleAnswers = this.shuffleList(this.possibleAnswers);
         }
 

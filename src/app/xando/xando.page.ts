@@ -51,37 +51,31 @@ export class XandoPage implements OnInit {
     cpuMarkTile() {
         this.unmarkedList = [];
         this.tileList.forEach(e => {
-            // console.log(e.value);
             if (e.value !== 'X' && e.value !== 'O') {
                 this.unmarkedList.push(e);
             }
         });
 
         this.checkForWinner();
-        // console.log(this.unmarkedList.length);
         setTimeout(() => {
             if (this.unmarkedList.length) {
                 // this.getBestMove();
                 const cpuMove = this.figureBotMove();
-                // console.log(cpuMove);
                 if (cpuMove !== -1) {
                     this.tileList[cpuMove - 1].value = 'O';
                     this.tileList[cpuMove - 1].free = false;
                 } else {
                     if (this.unmarkedList.length) {
                         const pickedTile = this.getRandomTile(this.unmarkedList);
-                        // console.log('mark O');
                         pickedTile.value = 'O';
                         pickedTile.free = false;
                     }
                 }
             }
-            // console.log(this.unmarkedList);
 
             this.checkForWinner();
 
             if (this.unmarkedList.length === 0) {
-                //  console.log('drw');
                 this.closeModal(false);
             }
 
@@ -130,12 +124,10 @@ export class XandoPage implements OnInit {
     }
 
     constructor(private modalController: ModalController, private nativeAudio: NativeAudio) {
-        this.nativeAudio.preloadSimple('clickAudio', '../../assets/audio/ui click 11 [2018-10-13 162315].wav');
     }
     ngOnInit() {}
 
     closeModal(status) {
-        // console.log('close modal');
         if (status == null) {
             this.nativeAudio.play('clickAudio');
         }
@@ -173,11 +165,9 @@ export class XandoPage implements OnInit {
         if (bot_move > 0) {
             return bot_move;
         }
-        // console.log('random');
         return -1;
     }
     blockEnemyAttemptCompleteSet() {
-        // console.log('block');
         const block1 = this.tileList[0];
         const block2 = this.tileList[1];
         const block3 = this.tileList[2];
@@ -338,7 +328,6 @@ export class XandoPage implements OnInit {
     }
 
     GetCompletingSet() {
-        // console.log('complete');
         const block1 = this.tileList[0];
         const block2 = this.tileList[1];
         const block3 = this.tileList[2];

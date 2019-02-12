@@ -46,8 +46,6 @@ export class GemPage implements OnInit {
     guesses = [];
 
     constructor(private modalController: ModalController, private nativeAudio: NativeAudio) {
-        this.nativeAudio.preloadSimple('clickAudio', '../../assets/audio/ui click 11 [2018-10-13 162315].wav');
-        this.nativeAudio.preloadSimple('matchAudio', '../../assets/audio/dingCling-positive.ogg');
 
         this.tiles = this.shuffleList(this.tiles);
     }
@@ -81,7 +79,6 @@ export class GemPage implements OnInit {
                 this.guessCount++;
 
                 if (this.guesses[0].img === this.guesses[1].img) {
-                    // console.log('match');
                     this.nativeAudio.play('matchAudio');
                     const firstSpot = this.findWithAttr(this.tiles, 'id', this.guesses[0].id);
                     const secondSpot = this.findWithAttr(this.tiles, 'id', this.guesses[1].id);
@@ -117,7 +114,6 @@ export class GemPage implements OnInit {
                         this.img11 = '';
                     }, 1500);
 
-                    // console.log('no match');
                 }
             }
 

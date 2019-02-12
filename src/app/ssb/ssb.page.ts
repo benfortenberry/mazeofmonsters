@@ -13,9 +13,7 @@ export class SsbPage implements OnInit {
     cpuChoice;
     goAgain = false;
 
-    constructor(private modalController: ModalController, private nativeAudio: NativeAudio) {
-        this.nativeAudio.preloadSimple('clickAudio', '../../assets/audio/ui click 11 [2018-10-13 162315].wav');
-    }
+    constructor(private modalController: ModalController, private nativeAudio: NativeAudio) {}
 
     makeChoice(choice) {
         this.nativeAudio.play('clickAudio');
