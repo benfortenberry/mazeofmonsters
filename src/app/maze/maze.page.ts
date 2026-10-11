@@ -14,7 +14,6 @@ import { OrbPage } from '../orb/orb';
 import { XandoPage } from '../xando/xando.page';
 import { EyeballPage } from '../eyeball/eyeball.page';
 import { ToastController, Platform } from '@ionic/angular';
-import { NativeAudio } from '@ionic-native/native-audio/ngx';
 @Component({
     selector: 'app-maze',
     templateUrl: 'maze.page.html',
@@ -51,7 +50,18 @@ import { NativeAudio } from '@ionic-native/native-audio/ngx';
             ),
             transition(
                 '* => f',
-                animate('300ms ease', keyframes([style({ transform: 'scale(1.25)', willChange: 'transform' })]))
+                // Forward "step": push the corridor toward the viewer so the
+                // walls rush past, overshoot slightly, then settle. Reads as
+                // moving a step deeper rather than a flat zoom.
+                animate(
+                    '320ms cubic-bezier(0.33, 0, 0.2, 1)',
+                    keyframes([
+                        style({ transform: 'scale(1) translateZ(0)', offset: 0 }),
+                        style({ transform: 'scale(1.4)', offset: 0.65 }),
+                        style({ transform: 'scale(1.55)', offset: 0.82 }),
+                        style({ transform: 'scale(1)', offset: 1 })
+                    ])
+                )
             ),
             transition(
                 '* => l',
@@ -149,7 +159,6 @@ export class MazePage {
         public modalController: ModalController,
         public toastController: ToastController,
         private countdownService: CountdownService,
-        private nativeAudio: NativeAudio,
         private platform: Platform,
         private aService: AudioService
     ) {
@@ -164,7 +173,7 @@ export class MazePage {
 
 
 
-        this.nativeAudio.loop('backgroundAudio');
+        this.aService.loop('backgroundAudio');
     }
 
     ionViewDidEnter() {
@@ -464,7 +473,7 @@ export class MazePage {
         // setTimeout(() => {
         this.alerts.push(alert);
         alert.present();
-        this.nativeAudio.play('winAudio');
+        this.aService.play('winAudio');
         // }, 1000);
     }
 
@@ -506,7 +515,7 @@ export class MazePage {
         // console.log(selectedMonster);
         this.monsterImageUrl = '../../assets/monsters/' + selectedMonster.img;
         this.monsterClass = selectedMonster.class;
-        this.nativeAudio.play(selectedMonster.class);
+        this.aService.play(selectedMonster.class);
         // this.monsterAudio.src = selectedMonster.audio;
         // this.monsterAudio.load();
         // this.monsterAudio.volume = 0.1;
@@ -758,7 +767,7 @@ export class MazePage {
     }
 
     moveForward() {
-        this.aService.play('fire');
+        this.aService.play('turnAudio');
 
         if (this.currentDirection === 's') {
             this.currentY++;
@@ -783,6 +792,7 @@ export class MazePage {
     }
 
     moveLeft() {
+        this.aService.play('turnAudio');
         if (this.currentDirection === 'n') {
             this.currentX--;
             this.currentDirection = 'w';
@@ -803,6 +813,7 @@ export class MazePage {
     }
 
     moveRight() {
+        this.aService.play('turnAudio');
         if (this.currentDirection === 'n') {
             this.currentX++;
             this.currentDirection = 'e';
@@ -824,6 +835,7 @@ export class MazePage {
     }
 
     turnAround() {
+        this.aService.play('turnAudio');
         if (this.currentDirection === 'n') {
             this.currentDirection = 's';
         } else if (this.currentDirection === 's') {
@@ -839,7 +851,6 @@ export class MazePage {
     }
 
     async openMap() {
-        // this.nativeAudio.play('clickAudio');
         this.aService.play('clickAudio');
         const modal = await this.modalController.create({
             component: MapPage,

@@ -1,36 +1,21 @@
 import { Component } from '@angular/core';
 
 import { Platform } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { enableProdMode } from '@angular/core';
 import { AudioService } from '../providers/audioService';
-import { NativeAudio } from '@ionic-native/native-audio/ngx';
 enableProdMode();
 @Component({
     selector: 'app-root',
     templateUrl: 'app.component.html'
 })
 export class AppComponent {
-    constructor(
-        private platform: Platform,
-        private splashScreen: SplashScreen,
-        private statusBar: StatusBar,
-        private screenOrientation: ScreenOrientation,
-        private aService: AudioService,
-        private nativeAudio: NativeAudio
-    ) {
+    constructor(private platform: Platform, private aService: AudioService) {
         this.initializeApp();
     }
 
     initializeApp() {
         this.platform.ready().then(() => {
-            this.statusBar.styleLightContent();
-            this.statusBar.isVisible = false;
-
-            this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.LANDSCAPE);
-            this.aService.preload('backgroundAudio', 'assets/audio/theme.ogg', 0.2, true);
+            this.aService.preload('backgroundAudio', 'assets/audio/theme.ogg', 0.45, true);
             this.aService.preload('clickAudio', 'assets/audio/click11.wav', 1, true);
 
             this.aService.preload('fire', 'assets/audio/Fire.mp3', 1, true);
@@ -52,7 +37,7 @@ export class AppComponent {
             this.aService.preload('matchAudio', 'assets/audio/dingCling-positive.ogg', 1, true);
             this.aService.preload('beepAudio', 'assets/audio/beep.wav', 1, true);
             this.aService.preload('winAudio', 'assets/audio/HappyMusic.ogg', 0.5, true);
-            this.splashScreen.hide();
+            this.aService.preload('turnAudio', 'assets/audio/short wind sound.wav', 0.6, true);
         });
     }
 }

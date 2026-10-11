@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavParams, ModalController } from '@ionic/angular';
-import { NativeAudio } from '@ionic-native/native-audio/ngx';
+import { AudioService } from '../../providers/audioService';
 @Component({
     selector: 'app-orb',
     templateUrl: './orb.page.html',
@@ -22,7 +22,7 @@ export class OrbPage implements OnInit {
 
     patternList = [];
 
-    constructor(private modalController: ModalController, private nativeAudio: NativeAudio) {
+    constructor(private modalController: ModalController, private aService: AudioService) {
         setTimeout(() => {
             this.begin();
         }, 1000);
@@ -31,7 +31,7 @@ export class OrbPage implements OnInit {
     ngOnInit() {}
 
     storePattern(id) {
-        this.nativeAudio.play('clickAudio');
+        this.aService.play('clickAudio');
 
         this.tileList[id].active = true;
 
@@ -74,7 +74,7 @@ export class OrbPage implements OnInit {
 
     closeModal(status) {
         if (status == null) {
-            this.nativeAudio.play('clickAudio');
+            this.aService.play('clickAudio');
         }
         this.modalController.dismiss({ result: status });
     }
@@ -89,7 +89,7 @@ export class OrbPage implements OnInit {
         this.patternList.forEach(e => {
             setTimeout(() => {
                 e.active = true;
-                this.nativeAudio.play('beepAudio');
+                this.aService.play('beepAudio');
             }, startCounter * 1000);
 
             setTimeout(() => {

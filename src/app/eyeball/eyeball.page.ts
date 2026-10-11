@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 import { NavParams, ModalController } from '@ionic/angular';
-import { NativeAudio } from '@ionic-native/native-audio/ngx';
+import { AudioService } from '../../providers/audioService';
 @Component({
     selector: 'app-eyeball',
     templateUrl: './eyeball.page.html',
@@ -203,7 +203,7 @@ export class EyeballPage implements OnInit {
 
     // woopAudio = new Audio();
 
-    constructor(private modalController: ModalController, private nativeAudio: NativeAudio) {
+    constructor(private modalController: ModalController, private aService: AudioService) {
         this.rightAnswer = Math.floor(Math.random() * this.possibleAnswers.length);
         this.possibleAnswers[this.rightAnswer]['answer'] = true;
 
@@ -220,14 +220,14 @@ export class EyeballPage implements OnInit {
             if (!this.closed) {
                 this.shuffle();
 
-                this.nativeAudio.play('woopAudio');
+                this.aService.play('woopAudio');
             }
         }, 3000);
 
         setTimeout(() => {
             if (!this.closed) {
                 this.shuffle();
-                this.nativeAudio.play('woopAudio');
+                this.aService.play('woopAudio');
                 this.shuffleCount++;
             }
         }, 5000);
@@ -235,7 +235,7 @@ export class EyeballPage implements OnInit {
         setTimeout(() => {
             if (!this.closed) {
                 this.shuffle();
-                this.nativeAudio.play('woopAudio');
+                this.aService.play('woopAudio');
                 this.shuffleCount++;
             }
         }, 7000);
@@ -243,7 +243,7 @@ export class EyeballPage implements OnInit {
         setTimeout(() => {
             if (!this.closed) {
                 this.shuffle();
-                this.nativeAudio.play('woopAudio');
+                this.aService.play('woopAudio');
                 this.shuffleCount++;
             }
         }, 9000);
@@ -251,7 +251,7 @@ export class EyeballPage implements OnInit {
         setTimeout(() => {
             if (!this.closed) {
                 this.shuffle();
-                this.nativeAudio.play('woopAudio');
+                this.aService.play('woopAudio');
                 this.shuffleCount++;
             }
         }, 11000);
@@ -262,7 +262,7 @@ export class EyeballPage implements OnInit {
     closeModal(status) {
         this.closed = true;
         if (status == null) {
-            this.nativeAudio.play('clickAudio');
+            this.aService.play('clickAudio');
         }
 
         this.modalController.dismiss({ result: status });
@@ -270,7 +270,7 @@ export class EyeballPage implements OnInit {
 
     guessShell(id) {
         if (this.shuffleCount === 5) {
-            this.nativeAudio.play('clickAudio');
+            this.aService.play('clickAudio');
 
             this.flipped = false;
             setTimeout(() => {

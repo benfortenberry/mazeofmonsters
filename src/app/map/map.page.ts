@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { NavParams, ModalController } from '@ionic/angular';
 import { DomSanitizer } from '@angular/platform-browser';
-import { NativeAudio } from '@ionic-native/native-audio/ngx';
+import { AudioService } from '../../providers/audioService';
 @Component({
     selector: 'app-map',
     templateUrl: './map.page.html',
@@ -20,7 +20,7 @@ export class MapPage implements OnInit {
         private navParams: NavParams,
         private sanitizer: DomSanitizer,
         private modalController: ModalController,
-        private nativeAudio: NativeAudio
+        private aService: AudioService
     ) {
     }
 
@@ -108,7 +108,7 @@ export class MapPage implements OnInit {
     }
 
     closeModal() {
-        this.nativeAudio.play('clickAudio');
+        this.aService.play('clickAudio');
         this.modalController.dismiss();
     }
 }

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavParams, ModalController } from '@ionic/angular';
-import { forEach } from '@angular/router/src/utils/collection';
-import { NativeAudio } from '@ionic-native/native-audio/ngx';
+import { AudioService } from '../../providers/audioService';
 @Component({
     selector: 'app-xando',
     templateUrl: './xando.page.html',
@@ -25,7 +24,7 @@ export class XandoPage implements OnInit {
     unmarkedList = [];
     markTile(id) {
         if (!this.wait) {
-            this.nativeAudio.play('clickAudio');
+            this.aService.play('clickAudio');
 
             this.wait = true;
             if (!this.getStatus(id)) {
@@ -123,13 +122,13 @@ export class XandoPage implements OnInit {
         return tileList[Math.floor(Math.random() * tileList.length)];
     }
 
-    constructor(private modalController: ModalController, private nativeAudio: NativeAudio) {
+    constructor(private modalController: ModalController, private aService: AudioService) {
     }
     ngOnInit() {}
 
     closeModal(status) {
         if (status == null) {
-            this.nativeAudio.play('clickAudio');
+            this.aService.play('clickAudio');
         }
         // alert('win?' + status);
         this.modalController.dismiss({ result: status });

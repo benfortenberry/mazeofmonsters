@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, NavController, IonRouterOutlet } from '@ionic/angular';
-import { NativeAudio } from '@ionic-native/native-audio/ngx';
+import { AudioService } from '../../providers/audioService';
 @Component({
     selector: 'app-win',
     templateUrl: './win.page.html',
@@ -12,7 +12,7 @@ export class WinPage implements OnInit {
     thirdLine;
     buttonReady;
 
-    constructor(public navCtrl: NavController, private nativeAudio: NativeAudio) {
+    constructor(public navCtrl: NavController, private aService: AudioService) {
         setTimeout(() => {
             this.firstLine = true;
         }, 200);
@@ -30,11 +30,11 @@ export class WinPage implements OnInit {
     ngOnInit() {}
 
     ionViewDidEnter() {
-        this.nativeAudio.play('winAudio');
+        this.aService.play('winAudio');
     }
 
     beginMaze() {
-        this.nativeAudio.play('clickAudio');
+        this.aService.play('clickAudio');
         this.navCtrl.navigateForward('intro');
     }
 

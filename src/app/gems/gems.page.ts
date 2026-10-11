@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavParams, ModalController } from '@ionic/angular';
-import { NativeAudio } from '@ionic-native/native-audio/ngx';
+import { AudioService } from '../../providers/audioService';
 
 @Component({
     selector: 'app-gems',
@@ -45,7 +45,7 @@ export class GemPage implements OnInit {
 
     guesses = [];
 
-    constructor(private modalController: ModalController, private nativeAudio: NativeAudio) {
+    constructor(private modalController: ModalController, private aService: AudioService) {
 
         this.tiles = this.shuffleList(this.tiles);
     }
@@ -62,7 +62,7 @@ export class GemPage implements OnInit {
     }
     flip(id) {
         if (this.guesses.length < 2) {
-            this.nativeAudio.play('clickAudio');
+            this.aService.play('clickAudio');
             this.guesses.push(this.tiles[id]);
 
             this.tiles[id].flipped = true;
@@ -79,7 +79,7 @@ export class GemPage implements OnInit {
                 this.guessCount++;
 
                 if (this.guesses[0].img === this.guesses[1].img) {
-                    this.nativeAudio.play('matchAudio');
+                    this.aService.play('matchAudio');
                     const firstSpot = this.findWithAttr(this.tiles, 'id', this.guesses[0].id);
                     const secondSpot = this.findWithAttr(this.tiles, 'id', this.guesses[1].id);
 
@@ -186,7 +186,7 @@ export class GemPage implements OnInit {
 
     closeModal(status) {
         if (status == null) {
-            this.nativeAudio.play('clickAudio');
+            this.aService.play('clickAudio');
         }
         this.modalController.dismiss({ result: status });
     }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, NavController, IonRouterOutlet } from '@ionic/angular';
 import { MazeProvider } from '../..//providers/maze-service';
-import { NativeAudio } from '@ionic-native/native-audio/ngx';
+import { AudioService } from '../../providers/audioService';
 @Component({
     selector: 'app-death',
     templateUrl: './death.page.html',
@@ -16,7 +16,7 @@ export class DeathPage implements OnInit {
     thirdLine;
     buttonReady;
 
-    constructor(public navCtrl: NavController, public mazeProvider: MazeProvider, private nativeAudio: NativeAudio) {
+    constructor(public navCtrl: NavController, public mazeProvider: MazeProvider, private aService: AudioService) {
         this.getImages();
 
         setTimeout(() => {
@@ -34,7 +34,7 @@ export class DeathPage implements OnInit {
     }
 
     tryAgain() {
-        this.nativeAudio.play('clickAudio');
+        this.aService.play('clickAudio');
         this.navCtrl.navigateRoot('maze');
     }
 
@@ -52,6 +52,6 @@ export class DeathPage implements OnInit {
     ngOnInit() {}
 
     ionViewDidEnter() {
-        this.nativeAudio.play('loseAudio');
+        this.aService.play('loseAudio');
     }
 }
