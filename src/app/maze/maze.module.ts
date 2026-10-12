@@ -36,7 +36,6 @@ const routes: Routes = [
         ProgressComponent,
         CompassPage,
         TimePage
-    ],
-    entryComponents: [MapPage, SsbPage, OrbPage, EyeballPage, GemPage, XandoPage]
+    ]
 })
 export class MazePageModule {}
