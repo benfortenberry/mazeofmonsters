@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavParams, ModalController } from '@ionic/angular';
 import { AudioService } from '../../providers/audioService';
 @Component({
+    standalone: false,
     selector: 'app-orb',
     templateUrl: './orb.page.html',
     styleUrls: ['./orb.page.scss']

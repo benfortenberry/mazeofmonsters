@@ -5,6 +5,7 @@ import { enableProdMode } from '@angular/core';
 import { AudioService } from '../providers/audioService';
 enableProdMode();
 @Component({
+    standalone: false,
     selector: 'app-root',
     templateUrl: 'app.component.html'
 })

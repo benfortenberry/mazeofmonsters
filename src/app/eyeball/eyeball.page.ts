@@ -3,6 +3,7 @@ import { trigger, state, style, transition, animate, keyframes } from '@angular/
 import { NavParams, ModalController } from '@ionic/angular';
 import { AudioService } from '../../providers/audioService';
 @Component({
+    standalone: false,
     selector: 'app-eyeball',
     templateUrl: './eyeball.page.html',
     animations: [

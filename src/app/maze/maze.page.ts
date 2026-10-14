@@ -15,6 +15,7 @@ import { XandoPage } from '../xando/xando.page';
 import { EyeballPage } from '../eyeball/eyeball.page';
 import { ToastController, Platform } from '@ionic/angular';
 @Component({
+    standalone: false,
     selector: 'app-maze',
     templateUrl: 'maze.page.html',
     animations: [

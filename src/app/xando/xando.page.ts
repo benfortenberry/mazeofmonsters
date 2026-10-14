@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavParams, ModalController } from '@ionic/angular';
 import { AudioService } from '../../providers/audioService';
 @Component({
+    standalone: false,
     selector: 'app-xando',
     templateUrl: './xando.page.html',
     styleUrls: ['./xando.page.scss']

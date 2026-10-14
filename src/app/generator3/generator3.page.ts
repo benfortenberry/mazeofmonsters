@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 declare var Maze: any;
 
 @Component({
+    standalone: false,
     selector: 'app-generator3',
     templateUrl: './generator3.page.html',
     styleUrls: ['./generator3.page.scss']

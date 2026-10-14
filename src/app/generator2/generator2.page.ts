@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { HostListener } from '@angular/core';
 @Component({
+    standalone: false,
     selector: 'app-generator2',
     templateUrl: './generator2.page.html',
     styleUrls: ['./generator2.page.scss']
