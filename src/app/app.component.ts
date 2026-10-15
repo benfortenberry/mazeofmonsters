@@ -1,7 +1,5 @@
-import { Component } from '@angular/core';
-
+import { Component, enableProdMode } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { enableProdMode } from '@angular/core';
 import { AudioService } from '../providers/audioService';
 enableProdMode();
 @Component({
@@ -16,6 +14,10 @@ export class AppComponent {
 
     initializeApp() {
         this.platform.ready().then(() => {
+            // Audio is preloaded here. Image assets are prefetched via
+            // <link rel="prefetch"> in index.html (the single image-preload
+            // mechanism), and the monster <img> fires its sound on load so the
+            // growl and the visible monster stay in sync.
             this.aService.preload('backgroundAudio', 'assets/audio/theme.ogg', 0.45, true);
             this.aService.preload('clickAudio', 'assets/audio/click11.wav', 1, true);
 

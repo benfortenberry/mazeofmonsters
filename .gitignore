@@ -35,3 +35,6 @@ UserInterfaceState.xcuserstate
 
 # Netlify CLI local state
 .netlify/
+
+# Angular CLI build cache
+.angular/

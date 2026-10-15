@@ -285,54 +285,20 @@ ion-fab {
 }
 
 .monster {
-    width: 100vw;
-    // max-width: 1000px;
-    height: 100vh;
-    // max-height: 1500px;
-    position: absolute;
-
-    background-size: contain;
-    background-position: center center;
-    background-repeat: no-repeat;
+    // Full-screen flat <img> overlay for the monster. Positioned fixed with a
+    // high z-index so it sits above the 3D maze scene. It's a plain <img> (not
+    // an ion-fab, which animated its own entrance) and its sound is fired from
+    // the image's load event, so the growl and the visible monster coincide.
+    position: fixed;
+    width: 94vw;
+    height: 80vh;
     left: 3vw;
-    // border: solid red 10px;
     top: 20vh;
 
+    object-fit: contain;
+
     z-index: 999999;
-    transform: translateZ(15000px);
-    transform-style: flat;
-}
-
-.treefolk {
-    background-image: url(../../assets/monsters/Treefolk.png);
-}
-
-.fire {
-    background-image: url(../../assets/monsters/DivineGuardian.png);
-}
-.dragon {
-    background-image: url(../../assets/monsters/Dragon.png);
-}
-.goblin {
-    background-image: url(../../assets/monsters/Goblin.png);
-}
-.lichlord {
-    background-image: url(../../assets/monsters/Lichlord.png);
-}
-.naga {
-    background-image: url(../../assets/monsters/Naga.png);
-}
-.orc {
-    background-image: url(../../assets/monsters/Orc.png);
-}
-.ratman {
-    background-image: url(../../assets/monsters/Ratman.png);
-}
-.troll {
-    background-image: url(../../assets/monsters/Troll.png);
-}
-.zombie {
-    background-image: url(../../assets/monsters/zombie.png);
+    pointer-events: none;
 }
 
 [hidden] {

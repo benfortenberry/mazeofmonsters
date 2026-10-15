@@ -14,6 +14,11 @@
         <meta name="msapplication-tap-highlight" content="no" />
 
         <link rel="icon" type="image/png" href="assets/icon/favicon.png" />
+
+        <!-- Prefetch the gameplay-critical artwork (monsters + maze textures)
+             so they're cached before the player reaches the maze. This is the
+             single preload mechanism for the app; browser-native, low-priority,
+             non-blocking. Only referenced assets are listed. -->
         <link rel="prefetch" href="assets/monsters/DivineGuardian.png" as="image" />
         <link rel="prefetch" href="assets/monsters/Dragon.png" as="image" />
         <link rel="prefetch" href="assets/monsters/Goblin.png" as="image" />
@@ -23,19 +28,13 @@
         <link rel="prefetch" href="assets/monsters/Ratman.png" as="image" />
         <link rel="prefetch" href="assets/monsters/Treefolk.png" as="image" />
         <link rel="prefetch" href="assets/monsters/Troll.png" as="image" />
-        <link rel="prefetch" href="assets/monsters/intro.jpg" as="image" />
         <link rel="prefetch" href="assets/monsters/zombie.png" as="image" />
-        <link rel="prefetch" href="assets/monsters/DivineGuardian.png" as="image" />
-        <link rel="prefetch" href="../assets/monsters/Dragon.png" as="image" />
-        <link rel="prefetch" href="../assets/monsters/Goblin.png" as="image" />
-        <link rel="prefetch" href="../assets/monsters/Lichlord.png" as="image" />
-        <link rel="prefetch" href="../assets/monsters/Naga.png" as="image" />
-        <link rel="prefetch" href="../assets/monsters/Orc.png" as="image" />
-        <link rel="prefetch" href="../assets/monsters/Ratman.png" as="image" />
-        <link rel="prefetch" href="../assets/monsters/Treefolk.png" as="image" />
-        <link rel="prefetch" href="../assets/monsters/Troll.png" as="image" />
-        <link rel="prefetch" href="../assets/monsters/intro.jpg" as="image" />
-        <link rel="prefetch" href="../assets/monsters/zombie.png" as="image" />
+        <link rel="prefetch" href="assets/sandstone-large.jpg" as="image" />
+        <link rel="prefetch" href="assets/new-sandstone-3.jpg" as="image" />
+        <link rel="prefetch" href="assets/new-sandstone-4.jpg" as="image" />
+        <link rel="prefetch" href="assets/new-sandstone-5.jpg" as="image" />
+        <link rel="prefetch" href="assets/sandy.jpg" as="image" />
+        <link rel="prefetch" href="assets/stone.jpg" as="image" />
 
         <!-- add to homescreen for ios -->
         <meta name="apple-mobile-web-app-capable" content="yes" />

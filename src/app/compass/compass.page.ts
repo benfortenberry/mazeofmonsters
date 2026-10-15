@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   standalone: false,
@@ -8,9 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CompassPage implements OnInit {
 
-  constructor() { }
+  constructor(private modalController: ModalController) { }
 
   ngOnInit() {
+  }
+
+  closeModal() {
+    this.modalController.dismiss();
   }
 
 }

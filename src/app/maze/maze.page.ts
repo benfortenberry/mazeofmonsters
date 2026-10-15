@@ -129,6 +129,9 @@ export class MazePage {
     wallClass;
     monsterImageUrl = '../../assets/monsters/Dragon.png';
     monsterImageList;
+    // Sound to play once the monster <img> has actually loaded, so the growl
+    // and the visible monster land on the same beat.
+    pendingMonsterSound: string = null;
     alerts = [];
     modals = [];
     currentX = 0;
@@ -234,11 +237,9 @@ export class MazePage {
         // if (this.monsterCoolDown < 25 && !this.hasLeft && !this.hasRight && !this.hasForward) {
         if (this.monsterCoolDown < 0) {
             this.monsterCoolDown = 800;
+            // getMonster() now reveals the monster (sets monsterPresent) at the
+            // same moment it plays the sound, so they're in sync.
             await this.getMonster();
-            // console.log(this.routes);
-            // setTimeout(() => {
-            this.monsterPresent = true;
-            // }, 500);
         } else {
             this.monsterCoolDown = this.monsterCoolDown - 25;
         }
@@ -474,7 +475,9 @@ export class MazePage {
         // setTimeout(() => {
         this.alerts.push(alert);
         alert.present();
-        this.aService.play('winAudio');
+        // Short celebratory sting for a mini-game win. The full HappyMusic
+        // song ('winAudio') is reserved for the final maze-victory screen.
+        this.aService.play('matchAudio');
         // }, 1000);
     }
 
@@ -503,6 +506,16 @@ export class MazePage {
         // }, 1000);
     }
 
+    // Fired by the monster <img>'s (load) event. Playing the sound here (rather
+    // than when we set monsterPresent) guarantees the growl coincides with the
+    // monster actually being visible, not before it has loaded.
+    onMonsterImageLoaded() {
+        if (this.pendingMonsterSound) {
+            this.aService.play(this.pendingMonsterSound);
+            this.pendingMonsterSound = null;
+        }
+    }
+
     async getMonster() {
         if (this.availMonsterList.length === 0) {
             this.availMonsterList = this.shuffleList(this.monsterImageList).map(x => Object.assign({}, x));
@@ -514,13 +527,17 @@ export class MazePage {
         // console.log(selectedMonster);
         this.availMonsterList.pop();
         // console.log(selectedMonster);
-        this.monsterImageUrl = '../../assets/monsters/' + selectedMonster.img;
+        // Root-relative so it resolves correctly as an <img src> (CSS used
+        // ../../ which is relative to the stylesheet, not the document).
+        this.monsterImageUrl = 'assets/monsters/' + selectedMonster.img;
         this.monsterClass = selectedMonster.class;
-        this.aService.play(selectedMonster.class);
-        // this.monsterAudio.src = selectedMonster.audio;
-        // this.monsterAudio.load();
-        // this.monsterAudio.volume = 0.1;
-        // this.monsterAudio.play();
+
+        // Remember which sound to play, then show the <img>. The sound is fired
+        // from the image's (load) event in onMonsterImageLoaded(), so the growl
+        // and the visible monster are guaranteed to land on the same beat
+        // regardless of how long the image takes to load/decode.
+        this.pendingMonsterSound = selectedMonster.class;
+        this.monsterPresent = true;
 
         const alert = await this.alertController.create({
             // header: 'Squirtle Says',

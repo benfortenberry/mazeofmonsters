@@ -1,9 +1,11 @@
 <ion-header>
     <ion-toolbar color="danger">
-        <ion-title float-left padding-top>Eyeball</ion-title>
-        <ion-button float-right button mode="ios" color="danger" (click)="closeModal(null)">
-            <ion-icon name="close"></ion-icon>
-        </ion-button>
+        <ion-title>Eyeball</ion-title>
+        <ion-buttons slot="end">
+            <ion-button mode="ios" color="light" (click)="closeModal(null)">
+                <ion-icon slot="icon-only" name="close"></ion-icon>
+            </ion-button>
+        </ion-buttons>
     </ion-toolbar>
 </ion-header>
 
