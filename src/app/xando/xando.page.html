@@ -1,65 +1,49 @@
 <ion-header>
     <ion-toolbar color="danger">
-        <ion-title float-left padding-top>Xs and Os</ion-title>
-        <ion-button float-right button mode="ios" color="danger" (click)="closeModal(null)">
-            <ion-icon name="close"></ion-icon>
-        </ion-button>
+        <ion-title>Xs and Os</ion-title>
+        <ion-buttons slot="end">
+            <ion-button mode="ios" color="light" (click)="closeModal(null)">
+                <ion-icon slot="icon-only" name="close"></ion-icon>
+            </ion-button>
+        </ion-buttons>
     </ion-toolbar>
 </ion-header>
 
-<ion-content color="dark" padding>
+<ion-content color="dark" class="ion-padding">
     <p>Beat me in this game of Xs and Os for help:</p>
     <ion-grid>
         <ion-row>
-            <ion-col
-                class="tile"
-                [ngClass]="[isX(0) ? 'x' : '', isO(0) ? 'o' : '', getStatus(0) ? 'picked' : '']"
-                (click)="markTile(0)"
-            ></ion-col>
-            <ion-col
-                class="tile"
-                [ngClass]="[isX(1) ? 'x' : '', isO(1) ? 'o' : '', getStatus(1) ? 'picked' : '']"
-                (click)="markTile(1)"
-            ></ion-col>
-            <ion-col
-                class="tile"
-                [ngClass]="[isX(2) ? 'x' : '', isO(2) ? 'o' : '', getStatus(2) ? 'picked' : '']"
-                (click)="markTile(2)"
-            ></ion-col>
+            <ion-col class="tile mark" [class.picked]="getStatus(0)" (click)="markTile(0)">
+                <img *ngIf="markImg(0)" [src]="markImg(0)" alt="" />
+            </ion-col>
+            <ion-col class="tile mark" [class.picked]="getStatus(1)" (click)="markTile(1)">
+                <img *ngIf="markImg(1)" [src]="markImg(1)" alt="" />
+            </ion-col>
+            <ion-col class="tile mark" [class.picked]="getStatus(2)" (click)="markTile(2)">
+                <img *ngIf="markImg(2)" [src]="markImg(2)" alt="" />
+            </ion-col>
         </ion-row>
         <ion-row>
-            <ion-col
-                class="tile"
-                [ngClass]="[isX(3) ? 'x' : '', isO(3) ? 'o' : '', getStatus(3) ? 'picked' : '']"
-                (click)="markTile(3)"
-            ></ion-col>
-            <ion-col
-                class="tile"
-                [ngClass]="[isX(4) ? 'x' : '', isO(4) ? 'o' : '', getStatus(4) ? 'picked' : '']"
-                (click)="markTile(4)"
-            ></ion-col>
-            <ion-col
-                class="tile"
-                [ngClass]="[isX(5) ? 'x' : '', isO(5) ? 'o' : '', getStatus(5) ? 'picked' : '']"
-                (click)="markTile(5)"
-            ></ion-col>
+            <ion-col class="tile mark" [class.picked]="getStatus(3)" (click)="markTile(3)">
+                <img *ngIf="markImg(3)" [src]="markImg(3)" alt="" />
+            </ion-col>
+            <ion-col class="tile mark" [class.picked]="getStatus(4)" (click)="markTile(4)">
+                <img *ngIf="markImg(4)" [src]="markImg(4)" alt="" />
+            </ion-col>
+            <ion-col class="tile mark" [class.picked]="getStatus(5)" (click)="markTile(5)">
+                <img *ngIf="markImg(5)" [src]="markImg(5)" alt="" />
+            </ion-col>
         </ion-row>
         <ion-row>
-            <ion-col
-                class="tile"
-                [ngClass]="[isX(6) ? 'x' : '', isO(6) ? 'o' : '', getStatus(6) ? 'picked' : '']"
-                (click)="markTile(6)"
-            ></ion-col>
-            <ion-col
-                class="tile"
-                [ngClass]="[isX(7) ? 'x' : '', isO(7) ? 'o' : '', getStatus(7) ? 'picked' : '']"
-                (click)="markTile(7)"
-            ></ion-col>
-            <ion-col
-                class="tile"
-                [ngClass]="[isX(8) ? 'x' : '', isO(8) ? 'o' : '', getStatus(8) ? 'picked' : '']"
-                (click)="markTile(8)"
-            ></ion-col>
+            <ion-col class="tile mark" [class.picked]="getStatus(6)" (click)="markTile(6)">
+                <img *ngIf="markImg(6)" [src]="markImg(6)" alt="" />
+            </ion-col>
+            <ion-col class="tile mark" [class.picked]="getStatus(7)" (click)="markTile(7)">
+                <img *ngIf="markImg(7)" [src]="markImg(7)" alt="" />
+            </ion-col>
+            <ion-col class="tile mark" [class.picked]="getStatus(8)" (click)="markTile(8)">
+                <img *ngIf="markImg(8)" [src]="markImg(8)" alt="" />
+            </ion-col>
         </ion-row>
     </ion-grid>
 </ion-content>

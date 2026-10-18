@@ -5,11 +5,11 @@
 :root {
     /** primary **/
     --ion-color-primary: #5a4f3e;
-    --ion-color-primary-rgb: 56, 128, 255;
+    --ion-color-primary-rgb: 90, 79, 62;
     --ion-color-primary-contrast: #ffffff;
     --ion-color-primary-contrast-rgb: 255, 255, 255;
-    --ion-color-primary-shade: #666;
-    --ion-color-primary-tint: #666;
+    --ion-color-primary-shade: #4f4537;
+    --ion-color-primary-tint: #6b6152;
 
     /** secondary **/
     --ion-color-secondary: #0cd1e8;
@@ -45,19 +45,19 @@
 
     /** danger **/
     --ion-color-danger: #3f2613;
-    --ion-color-danger-rgb: 245, 61, 61;
+    --ion-color-danger-rgb: 63, 38, 19;
     --ion-color-danger-contrast: #ffffff;
     --ion-color-danger-contrast-rgb: 255, 255, 255;
-    --ion-color-danger-shade: #d33939;
-    --ion-color-danger-tint: #f25454;
+    --ion-color-danger-shade: #372111;
+    --ion-color-danger-tint: #523c2b;
 
     /** dark **/
     --ion-color-dark: #472b15;
-    --ion-color-dark-rgb: 34, 34, 34;
+    --ion-color-dark-rgb: 71, 43, 21;
     --ion-color-dark-contrast: #ffffff;
     --ion-color-dark-contrast-rgb: 255, 255, 255;
-    --ion-color-dark-shade: #3f2613;
-    --ion-color-dark-tint: #331f0f;
+    --ion-color-dark-shade: #3e2612;
+    --ion-color-dark-tint: #59402c;
 
     /** medium **/
     --ion-color-medium: #989aa2;
@@ -107,8 +107,21 @@ body {
     font-size: 18px !important;
 }
 
+// Readable system font is the default everywhere, so small body text (mini-game
+// instructions, the how-to-play list, alerts) is legible.
 * {
-    font-family: 'Metal Mania';
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+        Arial, sans-serif;
+}
+
+// The decorative "Metal Mania" font is reserved for large thematic display
+// elements where it reads fine and carries the game's atmosphere: page titles,
+// buttons, and the big narrative text on the intro / death / win screens.
+ion-title,
+ion-button,
+.text,
+.display-font {
+    font-family: 'Metal Mania', cursive;
 }
 
 body {

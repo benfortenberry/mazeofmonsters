@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController, NavController, IonRouterOutlet } from '@ionic/angular';
 import { AudioService } from '../../providers/audioService';
 @Component({
+    standalone: false,
     selector: 'app-win',
     templateUrl: './win.page.html',
     styleUrls: ['./win.page.scss']

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavParams, ModalController } from '@ionic/angular';
 import { AudioService } from '../../providers/audioService';
 @Component({
+    standalone: false,
     selector: 'app-orb',
     templateUrl: './orb.page.html',
     styleUrls: ['./orb.page.scss']
@@ -9,6 +10,10 @@ import { AudioService } from '../../providers/audioService';
 export class OrbPage implements OnInit {
     gameBegin = false;
     error = false;
+    // False while the pattern is being shown; true when it's the player's turn
+    // to repeat it. Blocks taps during playback from being counted as guesses.
+    acceptingInput = false;
+    resolved = false;
 
     tileList = [
         { id: 0, active: false },
@@ -22,15 +27,55 @@ export class OrbPage implements OnInit {
 
     patternList = [];
 
-    constructor(private modalController: ModalController, private aService: AudioService) {
-        setTimeout(() => {
-            this.begin();
-        }, 1000);
-    }
+    // Planet tile images (CSS backgrounds). Decoded before the pattern starts
+    // so the board is fully visible when the first tile flashes.
+    private planetImages = [
+        'assets/orb/planet-3.png',
+        'assets/orb/planet-9.png',
+        'assets/orb/planet-5.png',
+        'assets/orb/planet-10.png',
+        'assets/orb/planet-1.png'
+    ];
+    private started = false;
+
+    constructor(private modalController: ModalController, private aService: AudioService) {}
 
     ngOnInit() {}
 
+    // Start only after the modal has fully presented (ionViewDidEnter) AND the
+    // planet images are decoded — otherwise the first pattern flashed before
+    // the board was visible, so the player missed it.
+    ionViewDidEnter() {
+        if (this.started) {
+            return;
+        }
+        this.started = true;
+
+        const jobs = this.planetImages.map(src => {
+            const img = new Image();
+            img.src = src;
+            if (typeof img.decode === 'function') {
+                return img.decode().catch(() => {});
+            }
+            return new Promise<void>(resolve => {
+                img.onload = () => resolve();
+                img.onerror = () => resolve();
+            });
+        });
+
+        Promise.all(jobs).then(() => {
+            // Short beat so the player clearly sees the board before the first
+            // tile lights up.
+            setTimeout(() => this.begin(), 700);
+        });
+    }
+
     storePattern(id) {
+        // Ignore taps while the pattern is still playing back, after the game
+        // is resolved, or once this round's guesses are already complete.
+        if (!this.acceptingInput || this.resolved || this.humanGuesses.length >= this.patternList.length) {
+            return;
+        }
         this.aService.play('clickAudio');
 
         this.tileList[id].active = true;
@@ -73,6 +118,10 @@ export class OrbPage implements OnInit {
     }
 
     closeModal(status) {
+        if (this.resolved) {
+            return; // already dismissed once
+        }
+        this.resolved = true;
         if (status == null) {
             this.aService.play('clickAudio');
         }
@@ -81,23 +130,34 @@ export class OrbPage implements OnInit {
 
     begin() {
         this.gameBegin = true;
+        // Lock input while the pattern plays back.
+        this.acceptingInput = false;
 
         this.patternList.push(this.tileList[Math.floor(Math.random() * this.tileList.length)]);
 
+        // Small lead-in so the first flash doesn't fire on the same tick begin()
+        // runs (which made the first step easy to miss).
+        const LEAD = 400;
         let endCounter = 1;
         let startCounter = 0;
         this.patternList.forEach(e => {
             setTimeout(() => {
                 e.active = true;
                 this.aService.play('beepAudio');
-            }, startCounter * 1000);
+            }, LEAD + startCounter * 1000);
 
             setTimeout(() => {
                 e.active = false;
-            }, endCounter * 1000 - 500);
+            }, LEAD + endCounter * 1000 - 500);
 
             startCounter++;
             endCounter++;
         });
+
+        // Hand control back to the player once the whole pattern has finished
+        // flashing (one second per step).
+        setTimeout(() => {
+            this.acceptingInput = true;
+        }, LEAD + this.patternList.length * 1000);
     }
 }

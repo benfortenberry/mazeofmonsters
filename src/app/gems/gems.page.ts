@@ -3,6 +3,7 @@ import { NavParams, ModalController } from '@ionic/angular';
 import { AudioService } from '../../providers/audioService';
 
 @Component({
+    standalone: false,
     selector: 'app-gems',
     templateUrl: './gems.page.html',
     styleUrls: ['./gems.page.scss']
@@ -61,6 +62,18 @@ export class GemPage implements OnInit {
         return a;
     }
     flip(id) {
+        // Ignore clicks on a tile that's already part of the current guess,
+        // already face-up, or already matched/removed. Without this, clicking
+        // the same tile twice pushed it into `guesses` twice and registered a
+        // (bogus) match against itself.
+        if (
+            this.tiles[id].flipped ||
+            !this.tiles[id].show ||
+            this.guesses.some(g => g.id === this.tiles[id].id)
+        ) {
+            return;
+        }
+
         if (this.guesses.length < 2) {
             this.aService.play('clickAudio');
             this.guesses.push(this.tiles[id]);

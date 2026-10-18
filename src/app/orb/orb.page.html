@@ -1,13 +1,15 @@
 <ion-header>
     <ion-toolbar color="danger">
-        <ion-title float-left padding-top>Orb</ion-title>
-        <ion-button float-right button mode="ios" color="danger" (click)="closeModal(null)">
-            <ion-icon name="close"></ion-icon>
-        </ion-button>
+        <ion-title>Orb</ion-title>
+        <ion-buttons slot="end">
+            <ion-button mode="ios" color="light" (click)="closeModal(null)">
+                <ion-icon slot="icon-only" name="close"></ion-icon>
+            </ion-button>
+        </ion-buttons>
     </ion-toolbar>
 </ion-header>
 
-<ion-content padding color="dark">
+<ion-content color="dark" class="ion-padding">
     <p>Follow the pattern for 7 turns for help:</p>
 
     <div [ngClass]="{ shake: error }">

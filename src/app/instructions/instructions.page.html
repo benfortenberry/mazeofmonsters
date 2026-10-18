@@ -1,0 +1,45 @@
+<ion-header>
+    <ion-toolbar color="danger">
+        <ion-title>How to Escape</ion-title>
+        <ion-buttons slot="end">
+            <ion-button mode="ios" color="light" (click)="closeModal()">
+                <ion-icon slot="icon-only" name="close"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content color="dark" class="ion-padding">
+    <p class="lead">You have <strong>15 minutes</strong> to find your way out of the maze before you're turned into one of the monster's creations.</p>
+
+    <ul class="rules">
+        <li>
+            <ion-icon name="arrow-up"></ion-icon>
+            <ion-icon name="arrow-back"></ion-icon>
+            <ion-icon name="arrow-forward"></ion-icon>
+            Use the arrows to move. They only appear where the way is open &mdash; walls block your path.
+        </li>
+        <li>
+            <ion-icon name="refresh"></ion-icon>
+            Turn around with the refresh button to head back the way you came.
+        </li>
+        <li>
+            <ion-icon name="map"></ion-icon>
+            Open the map to see where you've been. Winning a monster's challenge adds rooms to it.
+        </li>
+        <li>
+            <ion-icon name="skull"></ion-icon>
+            Monsters block your way. Beat their mini-game for help &mdash; lose, and you join the collection.
+        </li>
+        <li>
+            <ion-icon name="time"></ion-icon>
+            Keep an eye on the timer. If it runs out, the maze claims you.
+        </li>
+    </ul>
+
+    <p class="hint">Reach the end before the clock does. Good luck.</p>
+
+    <ion-button expand="block" shape="round" color="light" fill="outline" (click)="closeModal()">
+        Enter the Maze
+    </ion-button>
+</ion-content>

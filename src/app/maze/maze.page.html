@@ -1,13 +1,12 @@
 <ion-content no-bounce [ngClass]="[hasRight ? 'has-right' : '', hasLeft ? 'has-left' : '']">
-    <ion-fab
+    <img
         *ngIf="monsterPresent"
-        [ngClass]="monsterClass"
+        [src]="monsterImageUrl"
+        (load)="onMonsterImageLoaded()"
         class="monster"
-        vertical="center"
-        horizontal="center"
-        edge
         slot="fixed"
-    ></ion-fab>
+        alt="monster"
+    />
     <ion-fab *ngIf="wallReady && !monsterPresent" vertical="center" horizontal="end" edge slot="fixed">
         <ion-fab-button *ngIf="hasRight" [disabled]="!hasRight" size="small" color="dark" (click)="moveRight()">
             <ion-icon name="arrow-forward"></ion-icon>
@@ -34,6 +33,12 @@
 
     <ion-fab vertical="bottom" horizontal="left" slot="fixed">
         <ion-fab-button size="small" color="dark" (click)="openMap()"><ion-icon name="map"></ion-icon></ion-fab-button>
+    </ion-fab>
+
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button size="small" color="dark" (click)="openInstructions()">
+            <ion-icon name="help"></ion-icon>
+        </ion-fab-button>
     </ion-fab>
 
     <ion-fab vertical="top" horizontal="left" slot="fixed">

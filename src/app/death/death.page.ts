@@ -3,6 +3,7 @@ import { AlertController, NavController, IonRouterOutlet } from '@ionic/angular'
 import { MazeProvider } from '../..//providers/maze-service';
 import { AudioService } from '../../providers/audioService';
 @Component({
+    standalone: false,
     selector: 'app-death',
     templateUrl: './death.page.html',
     styleUrls: ['./death.page.scss']

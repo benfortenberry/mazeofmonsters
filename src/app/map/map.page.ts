@@ -3,6 +3,7 @@ import { NavParams, ModalController } from '@ionic/angular';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AudioService } from '../../providers/audioService';
 @Component({
+    standalone: false,
     selector: 'app-map',
     templateUrl: './map.page.html',
     styleUrls: ['./map.page.scss']

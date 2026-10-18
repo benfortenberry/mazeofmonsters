@@ -1,13 +1,15 @@
 <ion-header>
     <ion-toolbar color="danger">
-        <ion-title float-left padding-top>Gems</ion-title>
-        <ion-button float-right button mode="ios" color="danger" (click)="closeModal(null)">
-            <ion-icon name="close"></ion-icon>
-        </ion-button>
+        <ion-title>Gems</ion-title>
+        <ion-buttons slot="end">
+            <ion-button mode="ios" color="light" (click)="closeModal(null)">
+                <ion-icon slot="icon-only" name="close"></ion-icon>
+            </ion-button>
+        </ion-buttons>
     </ion-toolbar>
 </ion-header>
 
-<ion-content padding color="dark">
+<ion-content color="dark" class="ion-padding">
     <p>
         Match the gems in under {{ guessesLeft }}
         <span *ngIf="guessesLeft != 1">turns</span>

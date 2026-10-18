@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 
 @Component({
+    standalone: false,
     selector: 'app-progress',
     templateUrl: './countdown.component.html',
     styleUrls: ['./countdown.component.scss']
