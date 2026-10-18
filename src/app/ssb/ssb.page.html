@@ -19,9 +19,15 @@
         </p>
         <ion-grid *ngIf="humanTurn">
             <ion-row>
-                <ion-col class="sword hover pointer tile" (click)="makeChoice('sword')"><br /></ion-col>
-                <ion-col class="shield hover pointer tile" (click)="makeChoice('shield')"><br /></ion-col>
-                <ion-col class="bow hover pointer tile" (click)="makeChoice('bow')"><br /></ion-col>
+                <ion-col class="tile weapon hover pointer" (click)="makeChoice('sword')">
+                    <img src="assets/ssb/LongSword.png" alt="sword" />
+                </ion-col>
+                <ion-col class="tile weapon hover pointer" (click)="makeChoice('shield')">
+                    <img src="assets/ssb/RoundShield.png" alt="shield" />
+                </ion-col>
+                <ion-col class="tile weapon hover pointer" (click)="makeChoice('bow')">
+                    <img src="assets/ssb/ShortBow.png" alt="bow" />
+                </ion-col>
             </ion-row>
         </ion-grid>
 
@@ -29,9 +35,15 @@
 
         <ion-grid *ngIf="!humanTurn">
             <ion-row>
-                <ion-col class="tile" [ngClass]="{ sword: isSword() }"><br /></ion-col>
-                <ion-col class="tile" [ngClass]="{ shield: isShield() }"><br /></ion-col>
-                <ion-col class="tile" [ngClass]="{ bow: isBow() }"><br /></ion-col>
+                <ion-col class="tile weapon">
+                    <img *ngIf="isSword()" src="assets/ssb/LongSword.png" alt="sword" />
+                </ion-col>
+                <ion-col class="tile weapon">
+                    <img *ngIf="isShield()" src="assets/ssb/RoundShield.png" alt="shield" />
+                </ion-col>
+                <ion-col class="tile weapon">
+                    <img *ngIf="isBow()" src="assets/ssb/ShortBow.png" alt="bow" />
+                </ion-col>
             </ion-row>
         </ion-grid>
     </div>

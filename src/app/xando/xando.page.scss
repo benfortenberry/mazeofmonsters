@@ -14,16 +14,19 @@
     background-color: #bb9e7c;
 }
 
-.x {
-    background-image: url(../../assets/xando/frame1.png);
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-}
+// Marks are now real <img> elements (eager-loading) centered in each tile,
+// instead of CSS backgrounds — so an X or O never pops in.
+.mark {
+    position: relative;
 
-.o {
-    background-image: url(../../assets/xando/x.png);
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
+    img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        padding: 8px;
+        box-sizing: border-box;
+    }
 }

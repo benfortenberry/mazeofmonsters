@@ -56,6 +56,19 @@ export class XandoPage implements OnInit {
         return this.tileList[id].value;
     }
 
+    // Image for a tile's mark, or null if empty. Uses real <img> (eager) so the
+    // mark never pops in. NOTE: the original SCSS mapped .x -> frame1.png and
+    // .o -> x.png, so we keep that same mapping here.
+    markImg(id) {
+        if (this.tileList[id].value === 'X') {
+            return 'assets/xando/frame1.png';
+        }
+        if (this.tileList[id].value === 'O') {
+            return 'assets/xando/x.png';
+        }
+        return null;
+    }
+
     cpuMarkTile() {
         this.unmarkedList = [];
         this.tileList.forEach(e => {
