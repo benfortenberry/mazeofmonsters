@@ -10,6 +10,10 @@ import { AudioService } from '../../providers/audioService';
 export class OrbPage implements OnInit {
     gameBegin = false;
     error = false;
+    // False while the pattern is being shown; true when it's the player's turn
+    // to repeat it. Blocks taps during playback from being counted as guesses.
+    acceptingInput = false;
+    resolved = false;
 
     tileList = [
         { id: 0, active: false },
@@ -32,6 +36,11 @@ export class OrbPage implements OnInit {
     ngOnInit() {}
 
     storePattern(id) {
+        // Ignore taps while the pattern is still playing back, after the game
+        // is resolved, or once this round's guesses are already complete.
+        if (!this.acceptingInput || this.resolved || this.humanGuesses.length >= this.patternList.length) {
+            return;
+        }
         this.aService.play('clickAudio');
 
         this.tileList[id].active = true;
@@ -74,6 +83,10 @@ export class OrbPage implements OnInit {
     }
 
     closeModal(status) {
+        if (this.resolved) {
+            return; // already dismissed once
+        }
+        this.resolved = true;
         if (status == null) {
             this.aService.play('clickAudio');
         }
@@ -82,6 +95,8 @@ export class OrbPage implements OnInit {
 
     begin() {
         this.gameBegin = true;
+        // Lock input while the pattern plays back.
+        this.acceptingInput = false;
 
         this.patternList.push(this.tileList[Math.floor(Math.random() * this.tileList.length)]);
 
@@ -100,5 +115,11 @@ export class OrbPage implements OnInit {
             startCounter++;
             endCounter++;
         });
+
+        // Hand control back to the player once the whole pattern has finished
+        // flashing (one second per step).
+        setTimeout(() => {
+            this.acceptingInput = true;
+        }, this.patternList.length * 1000);
     }
 }

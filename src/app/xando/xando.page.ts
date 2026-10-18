@@ -21,10 +21,14 @@ export class XandoPage implements OnInit {
     ];
 
     wait;
+    // Set once the game is decided (win/lose/draw) so no further moves, win
+    // checks, or dismissals happen. Without this the CPU kept moving after the
+    // player had already won and closeModal/dismiss could fire twice.
+    gameOver = false;
 
     unmarkedList = [];
     markTile(id) {
-        if (!this.wait) {
+        if (!this.wait && !this.gameOver) {
             this.aService.play('clickAudio');
 
             this.wait = true;
@@ -32,6 +36,10 @@ export class XandoPage implements OnInit {
                 this.tileList[id].value = 'X';
                 this.tileList[id].free = false;
                 this.cpuMarkTile();
+            } else {
+                // Clicked an occupied tile — nothing happened, so release the
+                // lock instead of stranding the game in a waiting state.
+                this.wait = false;
             }
         }
     }
@@ -56,7 +64,13 @@ export class XandoPage implements OnInit {
             }
         });
 
+        // Did the player's move just win? If so, stop — don't let the CPU move.
         this.checkForWinner();
+        if (this.gameOver) {
+            this.wait = false;
+            return;
+        }
+
         setTimeout(() => {
             if (this.unmarkedList.length) {
                 // this.getBestMove();
@@ -75,7 +89,10 @@ export class XandoPage implements OnInit {
 
             this.checkForWinner();
 
-            if (this.unmarkedList.length === 0) {
+            // Board full with no winner = draw. Count the actual board state
+            // (unmarkedList was built before the CPU moved, so it's stale here).
+            const emptyLeft = this.tileList.filter(t => t.value !== 'X' && t.value !== 'O').length;
+            if (!this.gameOver && emptyLeft === 0) {
                 this.closeModal(false);
             }
 
@@ -128,10 +145,21 @@ export class XandoPage implements OnInit {
     ngOnInit() {}
 
     closeModal(status) {
+        // Guard against being called more than once (checkForWinner runs
+        // multiple times, and the close button also calls this). First call
+        // wins; the rest are ignored.
+        if (this.gameOver) {
+            return;
+        }
+        // A decisive result (win/lose) ends the game. The X-close button passes
+        // null (player bailed) which also dismisses but shouldn't be treated as
+        // a scored outcome lock beyond closing.
+        if (status !== null) {
+            this.gameOver = true;
+        }
         if (status == null) {
             this.aService.play('clickAudio');
         }
-        // alert('win?' + status);
         this.modalController.dismiss({ result: status });
     }
 

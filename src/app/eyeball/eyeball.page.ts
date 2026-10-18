@@ -197,6 +197,10 @@ export class EyeballPage implements OnInit {
     gameStart = false;
     flipped = false;
     closed;
+    // True once the player has committed a guess, so a second tap can't
+    // schedule another resolution and flip the result / double-dismiss.
+    guessed = false;
+    dismissed = false;
 
     possibleAnswers = [{ id: 0 }, { id: 1 }, { id: 2 }, { id: 3 }];
     animationAnswers = [{ id: 0 }, { id: 1 }, { id: 2 }, { id: 3 }];
@@ -262,6 +266,10 @@ export class EyeballPage implements OnInit {
 
     closeModal(status) {
         this.closed = true;
+        if (this.dismissed) {
+            return; // already dismissed once
+        }
+        this.dismissed = true;
         if (status == null) {
             this.aService.play('clickAudio');
         }
@@ -270,7 +278,9 @@ export class EyeballPage implements OnInit {
     }
 
     guessShell(id) {
-        if (this.shuffleCount === 5) {
+        // Only one guess, and only once the shuffling is done.
+        if (this.shuffleCount === 5 && !this.guessed) {
+            this.guessed = true;
             this.aService.play('clickAudio');
 
             this.flipped = false;
