@@ -107,8 +107,21 @@ body {
     font-size: 18px !important;
 }
 
+// Readable system font is the default everywhere, so small body text (mini-game
+// instructions, the how-to-play list, alerts) is legible.
 * {
-    font-family: 'Metal Mania';
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+        Arial, sans-serif;
+}
+
+// The decorative "Metal Mania" font is reserved for large thematic display
+// elements where it reads fine and carries the game's atmosphere: page titles,
+// buttons, and the big narrative text on the intro / death / win screens.
+ion-title,
+ion-button,
+.text,
+.display-font {
+    font-family: 'Metal Mania', cursive;
 }
 
 body {
