@@ -1,27 +1,89 @@
 .lead {
     font-size: 1.1rem;
-    margin-bottom: 1.2rem;
+    margin-bottom: 1.4rem;
+}
+
+.section-title {
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin: 0 0 0.75rem 0;
 }
 
 ul.rules {
     list-style: none;
     padding: 0;
-    margin: 0 0 1.2rem 0;
+    margin: 0 0 1.6rem 0;
 
     li {
         display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 6px;
+        align-items: flex-start;
+        gap: 12px;
         margin-bottom: 1rem;
-        line-height: 1.4;
+        line-height: 1.45;
 
-        ion-icon {
-            font-size: 1.5rem;
-            color: var(--ion-color-light);
+        .rule-icons {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
             flex: 0 0 auto;
+            min-width: 72px;
+
+            ion-icon {
+                font-size: 1.4rem;
+                color: var(--ion-color-light);
+            }
         }
     }
+}
+
+.shortcuts {
+    margin: 0 0 1.6rem 0;
+
+    .shortcut-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 6px 0;
+
+        & + .shortcut-row {
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    }
+
+    .keys {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        flex: 0 0 auto;
+        min-width: 92px;
+    }
+
+    .slash {
+        opacity: 0.4;
+        font-size: 0.85rem;
+    }
+
+    .shortcut-label {
+        line-height: 1.3;
+    }
+}
+
+kbd {
+    display: inline-block;
+    min-width: 1.6em;
+    padding: 2px 7px;
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-align: center;
+    color: var(--ion-color-light);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-bottom-width: 2px;
+    border-radius: 5px;
+    line-height: 1.3;
 }
 
 .hint {

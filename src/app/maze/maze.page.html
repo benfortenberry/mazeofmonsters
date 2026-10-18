@@ -49,26 +49,15 @@
 
     <ion-fab vertical="top" horizontal="end" slot="fixed">
         <ng-container *ngIf="showTime">
-            <!-- {{ subscription | async }} {{ timeLeft }} -->
             <ion-fab-button (click)="showTimer()" size="small" color="dark">
                 <app-progress [value]="subscription | async"></app-progress>
             </ion-fab-button>
         </ng-container>
     </ion-fab>
 
-    <!-- <ion-fab vertical="center" horizontal="center" slot="fixed"> -->
-    <!-- <div *ngIf="hasLeft && wallReady" class="door-overlay sandstone-door-left"></div> -->
-    <!-- <div *ngIf="hasRight && wallReady" class="door-overlay sandstone-door-right"></div> -->
-
-    <!-- <div class="door-overlay  sandstone-door-both"></div> -->
-    <!-- </ion-fab> -->
-
-    <!-- <div *ngIf="hasRight && wallReady" class="right-door"></div>
-    <div *ngIf="hasLeft && wallReady" class="left-door"></div> -->
-
     <div
         slot="fixed"
-        [@myAwesomeAnimation]="state"
+        [@myAwesomeAnimation]="mazeAnim"
         (@myAwesomeAnimation.done)="onAnimationEvent($event)"
         class="maze"
         [ngClass]="{ 'solid-wall': !hasForward && wallReady }"
@@ -97,4 +86,10 @@
             </ion-row>
         </ion-grid>
     </div>
+
+    <!-- Volumetric depth cue, split into two overlays so each can be treated
+         separately: a static vignette, and a torch glow that gently flickers.
+         Both are pure visual overlays with no pointer events. -->
+    <div class="depth-vignette" slot="fixed"></div>
+    <div class="torch-glow" slot="fixed"></div>
 </ion-content>

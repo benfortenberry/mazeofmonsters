@@ -208,10 +208,50 @@ export class EyeballPage implements OnInit {
 
     // woopAudio = new Audio();
 
+    // Set once the timed reveal/shuffle sequence has been kicked off, so it
+    // only runs once even if ionViewDidEnter fires again.
+    private started = false;
+
+    // The eyeball image shown during the reveal. Decoded before the sequence
+    // starts so it's painted for its full (brief) reveal window.
+    private readonly eyeImage = 'assets/minigames/full_yellow_2.png';
+
     constructor(private modalController: ModalController, private aService: AudioService) {
         this.rightAnswer = Math.floor(Math.random() * this.possibleAnswers.length);
         this.possibleAnswers[this.rightAnswer]['answer'] = true;
+    }
 
+    // Kick off the game only after the modal has fully presented AND the
+    // eyeball image is decoded. Previously the whole timed sequence ran from the
+    // constructor — before the modal was on screen and before the .eye element
+    // existed to paint — so the eyeball's short reveal window could be over (or
+    // the image not yet painted) by the time the player could see it. Since
+    // eyeball is a watch-the-shell skill game, missing that reveal makes it
+    // unwinnable, not just unfair.
+    ionViewDidEnter() {
+        if (this.started) {
+            return;
+        }
+        this.started = true;
+
+        const img = new Image();
+        img.src = this.eyeImage;
+        const decoded =
+            typeof img.decode === 'function'
+                ? img.decode().catch(() => {})
+                : new Promise<void>(resolve => {
+                      img.onload = () => resolve();
+                      img.onerror = () => resolve();
+                  });
+
+        decoded.then(() => {
+            // Small paint beat so the eyeball is actually on screen before its
+            // reveal window begins, then run the original timeline.
+            setTimeout(() => this.runSequence(), 300);
+        });
+    }
+
+    private runSequence() {
         setTimeout(() => {
             this.flipped = true;
         }, 1600);

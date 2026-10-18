@@ -10,32 +10,87 @@
 </ion-header>
 
 <ion-content color="dark" class="ion-padding">
-    <p class="lead">You have <strong>15 minutes</strong> to find your way out of the maze before you're turned into one of the monster's creations.</p>
+    <p class="lead">
+        <strong>15 minutes</strong> to escape Yabdib's maze, or you join the collection.
+    </p>
 
+    <h2 class="section-title">The rules</h2>
     <ul class="rules">
         <li>
-            <ion-icon name="arrow-up"></ion-icon>
-            <ion-icon name="arrow-back"></ion-icon>
-            <ion-icon name="arrow-forward"></ion-icon>
-            Use the arrows to move. They only appear where the way is open &mdash; walls block your path.
+            <span class="rule-icons">
+                <ion-icon name="arrow-up"></ion-icon>
+                <ion-icon name="arrow-back"></ion-icon>
+                <ion-icon name="arrow-forward"></ion-icon>
+            </span>
+            <span>Move with the arrows. They appear only where the way is open.</span>
         </li>
         <li>
-            <ion-icon name="refresh"></ion-icon>
-            Turn around with the refresh button to head back the way you came.
+            <span class="rule-icons"><ion-icon name="refresh"></ion-icon></span>
+            <span>Turn around to head back the way you came.</span>
         </li>
         <li>
-            <ion-icon name="map"></ion-icon>
-            Open the map to see where you've been. Winning a monster's challenge adds rooms to it.
+            <span class="rule-icons"><ion-icon name="map"></ion-icon></span>
+            <span>Open the map to see where you've been. Beating a monster reveals the way ahead.</span>
         </li>
         <li>
-            <ion-icon name="skull"></ion-icon>
-            Monsters block your way. Beat their mini-game for help &mdash; lose, and you join the collection.
+            <span class="rule-icons"><ion-icon name="skull"></ion-icon></span>
+            <span>Monsters block your way. Beat their game for help. Lose, and it costs you time.</span>
         </li>
         <li>
-            <ion-icon name="time"></ion-icon>
-            Keep an eye on the timer. If it runs out, the maze claims you.
+            <span class="rule-icons"><ion-icon name="time"></ion-icon></span>
+            <span>Watch the timer. If it runs out, the maze claims you.</span>
         </li>
     </ul>
+
+    <h2 class="section-title">Keyboard shortcuts</h2>
+    <div class="shortcuts">
+        <div class="shortcut-row">
+            <span class="keys">
+                <kbd>&uarr;</kbd><span class="slash">/</span><kbd>W</kbd>
+            </span>
+            <span class="shortcut-label">Move forward</span>
+        </div>
+        <div class="shortcut-row">
+            <span class="keys">
+                <kbd>&larr;</kbd><span class="slash">/</span><kbd>A</kbd>
+            </span>
+            <span class="shortcut-label">Turn left</span>
+        </div>
+        <div class="shortcut-row">
+            <span class="keys">
+                <kbd>&rarr;</kbd><span class="slash">/</span><kbd>D</kbd>
+            </span>
+            <span class="shortcut-label">Turn right</span>
+        </div>
+        <div class="shortcut-row">
+            <span class="keys">
+                <kbd>&darr;</kbd><span class="slash">/</span><kbd>S</kbd>
+            </span>
+            <span class="shortcut-label">Turn around</span>
+        </div>
+        <div class="shortcut-row">
+            <span class="keys"><kbd>M</kbd></span>
+            <span class="shortcut-label">Open the map</span>
+        </div>
+        <div class="shortcut-row">
+            <span class="keys"><kbd>C</kbd></span>
+            <span class="shortcut-label">Check your heading</span>
+        </div>
+        <div class="shortcut-row">
+            <span class="keys"><kbd>T</kbd></span>
+            <span class="shortcut-label">Check the timer</span>
+        </div>
+        <div class="shortcut-row">
+            <span class="keys">
+                <kbd>H</kbd><span class="slash">/</span><kbd>?</kbd>
+            </span>
+            <span class="shortcut-label">Open this help</span>
+        </div>
+        <div class="shortcut-row">
+            <span class="keys"><kbd>Enter</kbd></span>
+            <span class="shortcut-label">Dismiss a prompt</span>
+        </div>
+    </div>
 
     <p class="hint">Reach the end before the clock does. Good luck.</p>
 

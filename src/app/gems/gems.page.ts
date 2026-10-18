@@ -42,7 +42,11 @@ export class GemPage implements OnInit {
     correctCount = 0;
     flipCount = 0;
 
-    guessesLeft = 12;
+    // Guess budget. 6 pairs with a tile visible for over a second is a very
+    // forgiving memory test — the old 12-guess budget made the game nearly
+    // impossible to lose. 9 keeps it winnable with attention but makes losing
+    // a real possibility.
+    readonly MAX_GUESSES = 9;
 
     guesses = [];
 
@@ -85,10 +89,6 @@ export class GemPage implements OnInit {
             }, 300);
 
             if (this.guesses.length === 2) {
-                if (this.guessesLeft !== 1) {
-                    this.guessesLeft--;
-                }
-
                 this.guessCount++;
 
                 if (this.guesses[0].img === this.guesses[1].img) {
@@ -137,12 +137,10 @@ export class GemPage implements OnInit {
     checkForEnd() {
         setTimeout(() => {
             if (this.correctCount === 6) {
-                // alert('win');
                 this.closeModal(true);
             }
 
-            if (this.guessCount === 12 && this.correctCount !== 6) {
-                // alert('ivan is a loser');
+            if (this.guessCount >= this.MAX_GUESSES && this.correctCount !== 6) {
                 this.closeModal(false);
             }
         }, 1000);
@@ -196,6 +194,12 @@ export class GemPage implements OnInit {
     }
 
     ngOnInit() {}
+
+    // Guesses the player has left before the game is lost. Drives the "match in
+    // under N turns" counter in the template.
+    get guessesLeft(): number {
+        return Math.max(0, this.MAX_GUESSES - this.guessCount);
+    }
 
     closeModal(status) {
         if (status == null) {

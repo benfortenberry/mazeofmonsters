@@ -6,22 +6,18 @@
     <div id="row1">
         <div id="column1" class="left">
             <p class="text">
-                <span class="text" *ngIf="firstLine">What a nice looking human!</span>
+                <span class="text" *ngIf="firstLine">A soft little human. How promising. I am Yabdib.</span>
 
                 <span class="text" *ngIf="secondLine">
                     <br />
                     <br />
-                    Unfortunately, you have 15 minutes to reach the end of my maze to avoid 
-                    being turned into one of my creations.
+                    Fifteen minutes to reach the end of my maze. Fail, and you stay with the others.
                 </span>
 
                 <span class="text" *ngIf="thirdLine">
                     <br />
                     <br />
-
-                    It's a wonderful collection.
-                    <!-- I wonder if you'll have fur, scales or horns. -->
-                    <!-- I'm sure you'll git right in. -->
+                    My collection grows.
                 </span>
             </p>
             <ion-button
@@ -37,7 +33,7 @@
             </ion-button>
 
             <div class="loader fade" *ngIf="loading">
-                <p>Preparing the maze&hellip; {{ loadPercent }}%</p>
+                <p>Rearranging the walls&hellip; {{ loadPercent }}%</p>
                 <ion-progress-bar color="light" [value]="loadPercent / 100"></ion-progress-bar>
             </div>
         </div>

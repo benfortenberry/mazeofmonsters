@@ -11,11 +11,11 @@
 
 <ion-content color="dark" class="ion-padding">
     <p>
-        Match the gems in under {{ guessesLeft }}
+        Match every pair in
+        {{ guessesLeft }}
         <span *ngIf="guessesLeft != 1">turns</span>
-
         <span *ngIf="guessesLeft == 1">turn</span>
-        to get help:
+        and I'll light your way out, before Yabdib notices.
     </p>
     <ion-grid>
         <ion-row>
@@ -133,13 +133,4 @@
             </ion-col>
         </ion-row>
     </ion-grid>
-    <!-- 
-    {{ guessOne | json }}
-    <br />
-    {{ guessTwo | json }}
-    <br />
-    {{ correctCount }}
-    <br />
-    -->
-    <!-- {{ guessCount }} -->
 </ion-content>

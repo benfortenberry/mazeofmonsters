@@ -1,80 +1,68 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { createSeed } from './seededRandom';
 
-/*
-  Generated class for the TimeDateServiceProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
+/**
+ * Loads static game data (monster lists) and owns the maze seed.
+ *
+ * The maze layout itself is no longer loaded from maze-routes.json. It is
+ * generated procedurally in MazePage from a numeric seed that lives here so a
+ * run is reproducible: dying and retrying, or reloading the page, rebuilds the
+ * exact same maze. A fresh seed is rolled only when the player completes a maze
+ * (WinPage) or explicitly starts a new game.
+ */
 @Injectable()
 export class MazeProvider {
-    apiUrl = '../assets/maze-routes.json';
-    // quoteUrl = './assets/monster-quotes.json';
     imageUrl = './assets/monster-list.json';
     deathList = './assets/death.monster.list.json';
-    constructor(public http: HttpClient) {
+
+    private static readonly SEED_KEY = 'mom_maze_seed';
+
+    constructor(public http: HttpClient) {}
+
+    /**
+     * Current maze seed. Reads the persisted seed if present; otherwise creates
+     * and stores a new one. Call this when entering the maze so retries and
+     * reloads reproduce the same layout.
+     */
+    getSeed(): number {
+        let seed = this.readStoredSeed();
+        if (seed === null) {
+            seed = createSeed();
+            this.writeStoredSeed(seed);
+        }
+        return seed;
     }
 
-    // getData() {
-    //     return new Promise(resolve => {
-    //         this.http.get(this.apiUrl).subscribe(
-    //             data => {
-    //                 // console.log(data)
-    //                 resolve(data);
-    //             },
-    //             err => {
-    //                 console.log(err);
-    //             }
-    //         );
-    //     });
-    // }
+    /** Roll a brand-new maze. Called on completion / new game. */
+    newSeed(): number {
+        const seed = createSeed();
+        this.writeStoredSeed(seed);
+        return seed;
+    }
 
-    // getRoute(id) {
-    //     return new Promise(resolve => {
-    //         this.http.get(this.apiUrl).subscribe(
-    //             data => {
-    //                 //  console.log(data['paths']);
-    //                 const filteredData = [];
-    //                 data['paths'].forEach(element => {
-    //                     if (element.id == id) {
-    //                         filteredData.push(element);
-    //                     }
-    //                 });
-    //                 // console.log(filteredData);
-    //                 resolve(filteredData);
-    //             },
-    //             err => {
-    //                 console.log(err);
-    //             }
-    //         );
-    //     });
-    // }
+    private readStoredSeed(): number | null {
+        try {
+            const raw = localStorage.getItem(MazeProvider.SEED_KEY);
+            if (raw === null) {
+                return null;
+            }
+            const parsed = Number(raw);
+            return Number.isFinite(parsed) ? parsed >>> 0 : null;
+        } catch (e) {
+            // localStorage can throw in some privacy modes; fall back to a
+            // volatile seed for this session only.
+            return null;
+        }
+    }
 
-    // getQuotes() {
-    //     return new Promise(resolve => {
-    //         this.http.get(this.quoteUrl).subscribe(
-    //             data => {
-    //                 resolve(data);
-    //             },
-    //             err => {
-    //                 console.log(err);
-    //             }
-    //         );
-    //     });
-    // }
-
-    getRoutes() {
-        return new Promise(resolve => {
-            this.http.get(this.apiUrl).subscribe(
-                data => {
-                    resolve(data);
-                },
-                err => {
-                    console.log(err);
-                }
-            );
-        });
+    private writeStoredSeed(seed: number) {
+        try {
+            localStorage.setItem(MazeProvider.SEED_KEY, String(seed >>> 0));
+        } catch (e) {
+            // Non-fatal: without persistence the maze simply won't survive a
+            // reload, but the current session still works.
+        }
     }
 
     getImages() {

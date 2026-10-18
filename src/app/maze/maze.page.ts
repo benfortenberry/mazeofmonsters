@@ -6,8 +6,6 @@ import { CountdownService } from '../../providers/countdown-service';
 import { AudioService } from '../../providers/audioService';
 import { ModalController } from '@ionic/angular';
 import { MapPage } from '../map/map.page';
-import { CompassPage } from '../compass/compass.page';
-import { TimePage } from '../time/time.page';
 import { SsbPage } from '../ssb/ssb.page';
 import { GemPage } from '../gems/gems.page';
 import { OrbPage } from '../orb/orb';
@@ -17,6 +15,7 @@ import { InstructionsPage } from '../instructions/instructions.page';
 import { ImagePreloadService } from '../../providers/imagePreloadService';
 import { GAME_IMAGES } from '../../providers/gameAssets';
 import { ToastController, Platform } from '@ionic/angular';
+import { SeededRandom } from '../../providers/seededRandom';
 @Component({
     standalone: false,
     selector: 'app-maze',
@@ -53,61 +52,70 @@ import { ToastController, Platform } from '@ionic/angular';
                 })
             ),
             transition(
+                // Forward "step": a gentle zoom-in that eases back to the
+                // starting frame. The sense of progress comes from the walls
+                // updating to the next room; the transform must end exactly at
+                // scale(1) so there is no pop when the state resets. We only
+                // scale here — this scene is a faked CSS-perspective stage, so
+                // translateZ/rotateY on the whole stage clips and distorts.
                 '* => f',
-                // Forward "step": push the corridor toward the viewer so the
-                // walls rush past, overshoot slightly, then settle. Reads as
-                // moving a step deeper rather than a flat zoom.
+                // Quick push, soft settle: accelerate into the zoom then
+                // decelerate back, with the peak held a touch past the middle
+                // so it reads as a committed step rather than a bounce. Ends
+                // exactly at scale(1) so there's no pop on reset. The peak scale
+                // is a param so reduced-motion can shrink it to a tiny pulse.
                 animate(
-                    '320ms cubic-bezier(0.33, 0, 0.2, 1)',
+                    '320ms cubic-bezier(0.22, 1, 0.36, 1)',
                     keyframes([
-                        style({ transform: 'scale(1) translateZ(0)', offset: 0 }),
-                        style({ transform: 'scale(1.4)', offset: 0.65 }),
-                        style({ transform: 'scale(1.55)', offset: 0.82 }),
+                        style({ transform: 'scale(1)', offset: 0 }),
+                        style({ transform: 'scale({{ zoomMid }})', offset: 0.5 }),
+                        style({ transform: 'scale({{ zoomPeak }})', offset: 0.68 }),
                         style({ transform: 'scale(1)', offset: 1 })
                     ])
-                )
+                ),
+                { params: { zoomMid: 1.16, zoomPeak: 1.19 } }
             ),
             transition(
+                // Turn left: slide the scene sideways and ease back to center.
+                // Pure translateX keeps it in the plane the scene expects (no
+                // added perspective), so it stays smooth.
                 '* => l',
+                // Snappy slide out, gentle ease back to center.
                 animate(
-                    '300ms ease',
+                    '300ms cubic-bezier(0.33, 0, 0.2, 1)',
                     keyframes([
-                        style({ transform: 'translateX(0)', willChange: 'transform' }),
-                        style({ transform: 'translateX(25%)', willChange: 'transform' })
-                        // style({ transform: 'translateX(50%)', willChange: 'transform' }),
-                        // style({ transform: 'translateX(75%)', willChange: 'transform' })
+                        style({ transform: 'translateX(0)', offset: 0 }),
+                        style({ transform: 'translateX({{ turn }})', offset: 0.55 }),
+                        style({ transform: 'translateX(0)', offset: 1 })
                     ])
-                )
+                ),
+                { params: { turn: '24%' } }
             ),
             transition(
+                // Turn right: mirror of the left turn.
                 '* => r',
                 animate(
-                    '300ms ease',
+                    '300ms cubic-bezier(0.33, 0, 0.2, 1)',
                     keyframes([
-                        style({ transform: 'translateX(0)', willChange: 'transform' }),
-                        style({ transform: 'translateX(-25%)', willChange: 'transform' })
-                        // style({ transform: 'translateX(-50%)', willChange: 'transform' }),
-                        // style({ transform: 'translateX(-75%)', willChange: 'transform' })
+                        style({ transform: 'translateX(0)', offset: 0 }),
+                        style({ transform: 'translateX({{ turn }})', offset: 0.55 }),
+                        style({ transform: 'translateX(0)', offset: 1 })
                     ])
-                )
+                ),
+                { params: { turn: '-24%' } }
             ),
             transition(
+                // Turn around: a bigger sweep across and back to center.
                 '* => back',
                 animate(
-                    '300ms ease',
+                    '380ms cubic-bezier(0.33, 0, 0.2, 1)',
                     keyframes([
-                        style({ transform: 'translateX(0)', willChange: 'transform' }),
-                        style({ transform: 'translateX(-105%)', willChange: 'transform' }),
-                        style({ transform: 'translateX(-200%)', willChange: 'transform' }),
-                        // style({ transform: 'translateX(-305%)', willChange: 'transform' }),
-                        // style({ transform: 'translateX(-400%)', willChange: 'transform' }),
-                        // style({ transform: 'translateX(-100%)', willChange: 'transform' }),
-                        style({ transform: 'translateX(-75%)', willChange: 'transform' }),
-                        style({ transform: 'translateX(-50%)', willChange: 'transform' }),
-                        style({ transform: 'translateX(-25%)', willChange: 'transform' }),
-                        style({ transform: 'translateX(0)', willChange: 'transform' })
+                        style({ transform: 'translateX(0)', offset: 0 }),
+                        style({ transform: 'translateX({{ sweep }})', offset: 0.5 }),
+                        style({ transform: 'translateX(0)', offset: 1 })
                     ])
-                )
+                ),
+                { params: { sweep: '-62%' } }
             )
         ])
     ],
@@ -125,10 +133,31 @@ export class MazePage {
     hasBottom: Boolean = false;
     wallReady;
     state: String = 'small';
+
+    // Accessibility: when the player's OS requests reduced motion, we feed much
+    // smaller transform magnitudes into the animations (see mazeAnim() below).
+    // The animations still run and still fire their .done callback — which is
+    // load-bearing here (it unlocks movement and drives monster spawns) — so
+    // gameplay is unchanged; only the visible motion shrinks.
+    reduceMotion =
+        typeof window !== 'undefined' &&
+        !!window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     currentDirection = 's';
     monsterPresent = false;
     monsterCoolDown = 800;
-    monsterQuotes = [];
+
+    // Time penalties (seconds) that give monster encounters real stakes.
+    // Refusing the offered help annoys the monster; gambling on a mini-game and
+    // losing costs more. Winning stays purely a reward (no penalty).
+    readonly REFUSE_PENALTY = 20;
+    readonly LOSE_PENALTY = 45;
+
+    // Shared id applied to the dismissible HUD modals (map, help). The Escape
+    // handler only closes a modal carrying this id, so it can never force-close
+    // a mini-game modal (which is awaited for a win/lose result).
+    readonly HUD_MODAL_ID = 'hud-modal';
     wallClass;
     monsterImageUrl = '../../assets/monsters/Dragon.png';
     monsterImageList;
@@ -146,6 +175,10 @@ export class MazePage {
     availMonsterList = [];
     usedMonster = [];
     monsterClass;
+
+    // Seeded RNG driving procedural maze generation. Built from the persisted
+    // seed so a run is reproducible across death-retry and page reload.
+    rng: SeededRandom;
 
     // backgroundAudio = new Audio();
 
@@ -170,14 +203,13 @@ export class MazePage {
         private aService: AudioService,
         private imagePreload: ImagePreloadService
     ) {
-        // this.generate();
-
-        this.getRoutes();
-
-        this.currentRoom = '0-0';
-        // this.getQuotes();
+        // One-time wiring only. Per-run state (maze layout, player position,
+        // timers) is set up in startRun() on view-enter, NOT here — because
+        // Ionic caches this page in the nav stack, so on a death-retry the
+        // component is reused and the constructor does NOT run again. Putting
+        // run setup here left the player standing where they died with a fresh
+        // clock instead of restarting at the entrance.
         this.getImages();
-        this.wallClass = 'sandstone';
 
         // Safety net: ensure all game art is decoded. The intro already warms
         // everything (GAME_IMAGES) before the maze loads, so this is normally a
@@ -188,12 +220,74 @@ export class MazePage {
         this.aService.loop('backgroundAudio');
     }
 
+    // Reset everything for a fresh run and build the maze. Runs on every entry
+    // (first visit, death-retry, win-restart), so the player always starts at
+    // the entrance facing south with a clean history. The maze itself is built
+    // from the persisted seed: a death-retry reproduces the same maze (the seed
+    // is untouched on death), while a win rolls a new seed in WinPage first.
+    private startRun() {
+        this.rng = new SeededRandom(this.mazeProvider.getSeed());
+
+        // Reset player position / orientation / history.
+        this.currentDirection = 's';
+        this.currentX = 0;
+        this.currentY = 0;
+        this.currentRoom = '0-0';
+        this.routeHistory = [];
+        this.currentRoute = {};
+        this.wallClass = 'sandstone';
+
+        // Reset per-run encounter pools and monster state.
+        this.availMiniGames = [];
+        this.availMonsterList = [];
+        this.usedMonster = [];
+        this.monsterPresent = false;
+        this.monsterCoolDown = 800;
+
+        // Build the maze from the seed and place the player at the start.
+        this.generate();
+    }
+
+    // Animation binding for the .maze element. Combines the current movement
+    // state with per-transition transform magnitudes. When the OS asks for
+    // reduced motion we feed tiny magnitudes so the step/turn is barely a pulse
+    // while the animation (and its load-bearing .done callback) still runs.
+    get mazeAnim() {
+        const full = { zoomMid: 1.16, zoomPeak: 1.19, turnL: '24%', turnR: '-24%', sweep: '-62%' };
+        const gentle = { zoomMid: 1.02, zoomPeak: 1.025, turnL: '4%', turnR: '-4%', sweep: '-10%' };
+        const p = this.reduceMotion ? gentle : full;
+        return {
+            value: this.state,
+            params: {
+                zoomMid: p.zoomMid,
+                zoomPeak: p.zoomPeak,
+                // left and right turns read the same `turn` param name, so pick
+                // the signed value by the state we're animating into.
+                turn: this.state === 'r' ? p.turnR : p.turnL,
+                sweep: p.sweep
+            }
+        };
+    }
+
+    ionViewWillEnter() {
+        // Fresh run on every entry (first visit, death-retry, win-restart).
+        // Must run before the countdown starts in ionViewDidEnter.
+        this.startRun();
+    }
+
     ionViewDidEnter() {
         this.showTime = true;
         this.countdownService.count = 900;
         this.countdownService.start();
-        this.subscription = this.countdownService.countdown();
-        this.subscription.subscribe(t => {
+        // Tear down any prior subscription before making a new one. On a reused
+        // (cached) page, ionViewDidEnter runs again on each entry; without this
+        // the old subscription would linger and stack, firing showDeath() more
+        // than once. (Note: countdown() returns the observable; subscribe()
+        // returns the Subscription we actually need to keep.)
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
+        this.subscription = this.countdownService.countdown().subscribe(t => {
             this.timeLeft = t;
             if (this.timeLeft === 1) {
                 this.showDeath();
@@ -213,22 +307,16 @@ export class MazePage {
     }
 
     ionViewWillLeave() {
-        // this.subscription.unsubscribe();
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+            this.subscription = null;
+        }
         this.countdownService.stop();
     }
 
     async getImages() {
         this.mazeProvider.getImages().then(response => {
             this.monsterImageList = response['monsters'];
-        });
-    }
-
-    async getRoutes() {
-        this.mazeProvider.getRoutes().then(response => {
-            this.routes = response['routes'];
-            // console.log(this.routes);
-            this.mazeData = response['data'];
-            this.getRoute('0-0');
         });
     }
 
@@ -408,15 +496,107 @@ export class MazePage {
         }
     }
 
+    /**
+     * Reward for winning a mini-game: reveal the next stretch of the *correct*
+     * escape route on the map, starting from the player's current room.
+     *
+     * Previously this lit up random cells, which never actually helped the
+     * player escape. Now we compute the shortest path from the current room to
+     * the exit (the maze is a perfect maze, so there is exactly one) and reveal
+     * the next few rooms along it that aren't already on the map. That turns a
+     * win into genuine forward progress.
+     */
     addRoomsToMap() {
-        let roomCount = 0;
+        const revealCount = 9;
+        const path = this.pathToExit(this.currentRoom);
 
-        for (roomCount; roomCount < 9; roomCount++) {
-            const randRow = this.routes[Math.floor(Math.random() * this.routes.length)];
-            // console.log(randRow);
-
-            this.routeHistory.push(randRow.id);
+        if (!path || path.length === 0) {
+            return;
         }
+
+        let revealed = 0;
+        for (const roomId of path) {
+            if (revealed >= revealCount) {
+                break;
+            }
+            if (this.routeHistory.indexOf(roomId) === -1) {
+                this.routeHistory.push(roomId);
+                revealed++;
+            }
+        }
+    }
+
+    /**
+     * Breadth-first search over the open-wall adjacency from `startId` to the
+     * exit ('29-29'), returning the ordered list of room ids on the path
+     * (excluding the start room, including the exit). Returns an empty array if
+     * no path exists or the maze data isn't ready.
+     *
+     * mazeData[row][col] = [top, right, bottom, left], 1 = open passage.
+     */
+    pathToExit(startId): string[] {
+        const exitId = '29-29';
+        if (!this.mazeData || !startId) {
+            return [];
+        }
+
+        const rows = this.mazeData.length;
+        const cols = this.mazeData[0].length;
+        const parse = (id: string) => {
+            const [r, c] = id.split('-').map(Number);
+            return { r, c };
+        };
+
+        const start = parse(startId);
+        const visited = new Set<string>([startId]);
+        const prev: { [id: string]: string } = {};
+        const queue: string[] = [startId];
+
+        while (queue.length) {
+            const currentId = queue.shift();
+            if (currentId === exitId) {
+                break;
+            }
+            const { r, c } = parse(currentId);
+            const walls = this.mazeData[r][c]; // [top, right, bottom, left]
+
+            const neighbors: Array<{ open: number; nr: number; nc: number }> = [
+                { open: walls[0], nr: r - 1, nc: c }, // top
+                { open: walls[1], nr: r, nc: c + 1 }, // right
+                { open: walls[2], nr: r + 1, nc: c }, // bottom
+                { open: walls[3], nr: r, nc: c - 1 } // left
+            ];
+
+            for (const n of neighbors) {
+                if (n.open !== 1) {
+                    continue;
+                }
+                if (n.nr < 0 || n.nr >= rows || n.nc < 0 || n.nc >= cols) {
+                    continue;
+                }
+                const nid = n.nr + '-' + n.nc;
+                if (visited.has(nid)) {
+                    continue;
+                }
+                visited.add(nid);
+                prev[nid] = currentId;
+                queue.push(nid);
+            }
+        }
+
+        if (!visited.has(exitId)) {
+            return [];
+        }
+
+        // Reconstruct from exit back to start, then reverse. Drop the start
+        // room so the reveal begins with the next step forward.
+        const path: string[] = [];
+        let step = exitId;
+        while (step !== startId) {
+            path.push(step);
+            step = prev[step];
+        }
+        return path.reverse();
     }
 
     async showTimer() {
@@ -424,14 +604,25 @@ export class MazePage {
 
         const minutes = Math.floor(this.timeLeft / 60);
         const seconds = this.timeLeft - minutes * 60;
-        const alert = await this.alertController.create({
-            // header: 'Squirtle Says',
 
-            // tslint:disable-next-line:quotemark
-            message: 'You have ' + minutes + ' minutes and ' + seconds + ' seconds',
+        // The keeper's voice: cold, gloating, counting down to your "joining"
+        // the collection. Grammar handles singular/plural and dropped-zero
+        // parts so it never reads "1 minutes" or "3 minutes and 0 seconds".
+        const parts = [];
+        if (minutes > 0) {
+            parts.push(minutes + (minutes === 1 ? ' minute' : ' minutes'));
+        }
+        if (seconds > 0 || minutes === 0) {
+            parts.push(seconds + (seconds === 1 ? ' second' : ' seconds'));
+        }
+        const timeStr = parts.join(' and ');
+
+        const alert = await this.alertController.create({
+            header: 'The Maze',
+            message: timeStr + ' until you belong to Yabdib. Do hurry.',
             buttons: [
                 {
-                    text: 'OK',
+                    text: 'Keep moving',
                     handler: () => {}
                 }
             ]
@@ -458,12 +649,11 @@ export class MazePage {
             dir = 'north';
         }
         const alert = await this.alertController.create({
-            // header: 'Squirtle Says',
-
-            message: 'You are currently headed ' + dir + '.',
+            header: 'Your Bearings',
+            message: 'You face ' + dir + '. For now. The walls rearrange when you blink.',
             buttons: [
                 {
-                    text: 'OK',
+                    text: 'Onward',
                     handler: () => {}
                 }
             ]
@@ -474,17 +664,18 @@ export class MazePage {
     }
 
     async showWinMiniGame() {
+        // The former-player creature's voice: a trapped ally, haunted but
+        // rooting for you to do what they couldn't — get out and spite the Maze.
         const alert = await this.alertController.create({
-            // header: 'Squirtle Says',
-
-            // tslint:disable-next-line:quotemark
-            message: "You won! I'll add rooms to your map.",
+            header: 'A Friend in the Dark',
+            message:
+                "You beat me. I was human once, too. Here, I'll light the next stretch on your map. Go. Get out.",
             buttons: [
                 {
-                    text: 'OK',
+                    text: 'Thank you',
                     handler: () => {
                         this.monsterPresent = false;
-                        // add five rooms to map
+                        // Reveal the next stretch of the correct escape route.
                         this.addRoomsToMap();
                     }
                 }
@@ -500,20 +691,34 @@ export class MazePage {
         // }, 1000);
     }
 
+    /**
+     * Apply a time penalty to the countdown and end the run if it drains the
+     * clock. `this.timeLeft` is the latest value emitted by the countdown
+     * stream, which we pass through so the service can report post-penalty
+     * remaining time (the timer's own completion path doesn't trigger death).
+     */
+    applyTimePenalty(seconds: number) {
+        const remaining = this.countdownService.penalize(seconds, this.timeLeft);
+        if (remaining <= 0) {
+            this.showDeath();
+        }
+    }
+
     async showLostMiniGame() {
+        // The former-player creature failed to help — sorrowful, not gloating.
         // this.loseAudio.play();
         const alert = await this.alertController.create({
-            // header: 'Squirtle Says',
-
-            // tslint:disable-next-line:quotemark
-            message: 'Sorry..I cannot help you.',
+            header: 'A Friend in the Dark',
+            message:
+                "I'm sorry. I couldn't hold the way open. Yabdib felt us trying, and took back some of your time. Keep going.",
             buttons: [
                 {
-                    text: 'OK',
+                    text: 'Keep going',
                     role: 'cancel',
                     handler: () => {
                         this.monsterPresent = false;
-                        // add five rooms to map
+                        // Gambling on help and losing costs time.
+                        this.applyTimePenalty(this.LOSE_PENALTY);
                     }
                 }
             ]
@@ -558,13 +763,15 @@ export class MazePage {
         this.pendingMonsterSound = selectedMonster.class;
         this.monsterPresent = true;
 
+        // The former-player creature appears: a trapped ally, whispering so the
+        // Maze doesn't hear, offering to bend the rules in your favor.
         const alert = await this.alertController.create({
-            // header: 'Squirtle Says',
-
-            message: 'Would you like some help?',
+            header: 'A Friend in the Dark',
+            message:
+                "Don't be afraid. I wore a face like yours once. Beat my game and I'll show you a way Yabdib would rather you never found.",
             buttons: [
                 {
-                    text: 'Yes',
+                    text: "Let's play",
                     handler: () => {
                         //
 
@@ -574,13 +781,15 @@ export class MazePage {
                     }
                 },
                 {
-                    text: 'No',
+                    text: 'Not now',
                     role: 'cancel',
                     cssClass: 'secondary',
                     handler: () => {
                         this.monsterPresent = false;
                         this.monsterCoolDown = 1600;
-                        //  console.log('Confirm Cancel');
+                        // Brushing the monster off isn't free — it costs a
+                        // little time, so refusing is a real decision.
+                        this.applyTimePenalty(this.REFUSE_PENALTY);
                     }
                 }
             ]
@@ -756,8 +965,8 @@ export class MazePage {
             }
         }
 
-        // Set a random position to start from
-        let currentCell = [Math.floor(Math.random() * y), Math.floor(Math.random() * x)];
+        // Set a random position to start from (seeded for reproducibility)
+        let currentCell = [this.rng.nextInt(y), this.rng.nextInt(x)];
         const path = [currentCell];
         unvis[currentCell[0]][currentCell[1]] = false;
         let visited = 1;
@@ -782,8 +991,8 @@ export class MazePage {
 
             // If at least one active neighboring cell has been found
             if (neighbors.length) {
-                // Choose one of the neighbors at random
-                const next = neighbors[Math.floor(Math.random() * neighbors.length)];
+                // Choose one of the neighbors at random (seeded)
+                const next = neighbors[this.rng.nextInt(neighbors.length)];
 
                 // Remove the wall between the current cell and the chosen neighboring cell
                 cells[currentCell[0]][currentCell[1]][next[2]] = 1;
@@ -891,7 +1100,11 @@ export class MazePage {
         this.aService.play('clickAudio');
         const modal = await this.modalController.create({
             component: InstructionsPage,
-            backdropDismiss: true
+            backdropDismiss: true,
+            // Tagged so the Escape key can safely dismiss it (see
+            // handleKeyboardEvent). Mini-game modals are intentionally untagged
+            // because they must run to completion and are awaited for a result.
+            id: this.HUD_MODAL_ID
         });
         this.modals.push(modal);
         return await modal.present();
@@ -902,6 +1115,8 @@ export class MazePage {
         const modal = await this.modalController.create({
             component: MapPage,
             backdropDismiss: false,
+            // Tagged so Escape can safely dismiss it (see handleKeyboardEvent).
+            id: this.HUD_MODAL_ID,
             componentProps: {
                 currentDirection: this.currentDirection,
                 routeHistory: this.routeHistory,
@@ -914,58 +1129,109 @@ export class MazePage {
         return await modal.present();
     }
 
-    async openCompass() {
-        this.aService.play('clickAudio');
-
-        const modal = await this.modalController.create({
-            component: CompassPage,
-            backdropDismiss: false,
-            componentProps: { routeHistory: this.routeHistory, mazeData: this.mazeData, currentRoom: this.currentRoom }
-        });
-
-        this.modals.push(modal);
-        return await modal.present();
-    }
-
-    async openTime() {
-        this.aService.play('clickAudio');
-
-        const modal = await this.modalController.create({
-            component: TimePage,
-            backdropDismiss: false,
-            componentProps: { routeHistory: this.routeHistory, mazeData: this.mazeData, currentRoom: this.currentRoom }
-        });
-
-        this.modals.push(modal);
-        return await modal.present();
-    }
-
     @HostListener('document:keyup', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent) {
         const splitCoords = this.currentRoom.split('-');
 
         this.currentY = +splitCoords[0];
         this.currentX = +splitCoords[1];
+
+        // Normalise to a lowercase key so WASD aliases are case-insensitive and
+        // don't depend on Shift/CapsLock. Arrow keys keep their own names.
         const key = event.key;
+        const k = key.length === 1 ? key.toLowerCase() : key;
 
-        if (key === 'ArrowUp' && this.hasForward && !this.monsterPresent) {
-            this.moveForward();
-        }
-
-        if (key === 'ArrowLeft' && this.hasLeft && !this.monsterPresent) {
-            this.moveLeft();
-        }
-
+        // Enter dismisses any open alert, regardless of other state.
         if (key === 'Enter') {
             this.clearAlerts();
+            return;
         }
 
-        if (key === 'ArrowRight' && this.hasRight && !this.monsterPresent) {
+        // Escape closes an open HUD modal (map/help) or an alert. It never
+        // touches a mini-game modal — those aren't tagged with HUD_MODAL_ID and
+        // are awaited for a win/lose result, so force-closing would break them.
+        if (key === 'Escape') {
+            this.handleEscape();
+            return;
+        }
+
+        // Movement — arrow keys and WASD. Only while a wall transition isn't in
+        // flight-blocking state and no monster is on screen.
+        if ((key === 'ArrowUp' || k === 'w') && this.hasForward && !this.monsterPresent) {
+            this.moveForward();
+            return;
+        }
+
+        if ((key === 'ArrowLeft' || k === 'a') && this.hasLeft && !this.monsterPresent) {
+            this.moveLeft();
+            return;
+        }
+
+        if ((key === 'ArrowRight' || k === 'd') && this.hasRight && !this.monsterPresent) {
             this.moveRight();
+            return;
         }
 
-        if (key === 'ArrowDown' && !this.monsterPresent) {
+        if ((key === 'ArrowDown' || k === 's') && !this.monsterPresent) {
             this.turnAround();
+            return;
+        }
+
+        // HUD shortcuts. These open modals/alerts, so skip them while a monster
+        // is present (the monster alert owns the screen) or when an overlay is
+        // already on screen, to avoid stacking overlays. Only the four HUD keys
+        // reach the async guard, so other keys stay fully synchronous.
+        if (k === 'm' || k === 'h' || key === '?' || k === 'c' || k === 't') {
+            this.handleHudShortcut(k, key);
+        }
+    }
+
+    // Escape: dismiss the top HUD modal (map/help) if one is open, otherwise
+    // dismiss any open alert. A mini-game modal on top is left alone — it has
+    // no HUD_MODAL_ID, so getTop() returns it but we only dismiss on a matching
+    // id, protecting the awaited win/lose flow.
+    private async handleEscape() {
+        const topModal = await this.modalController.getTop();
+        if (topModal) {
+            if (topModal.id === this.HUD_MODAL_ID) {
+                await topModal.dismiss();
+            }
+            // A mini-game (or any untagged) modal owns the screen — don't close
+            // it, and don't fall through to the alert handling behind it.
+            return;
+        }
+
+        const topAlert = await this.alertController.getTop();
+        if (topAlert) {
+            this.clearAlerts();
+        }
+    }
+
+    // Opens the HUD overlay for a shortcut key, but only when the screen is
+    // clear. We ask Ionic's controllers for the actual top overlay rather than
+    // tracking it ourselves — the alerts/modals arrays are only cleared on
+    // death, so they can't tell us what's currently presented.
+    private async handleHudShortcut(k: string, key: string) {
+        if (this.monsterPresent) {
+            return;
+        }
+
+        const [topModal, topAlert] = await Promise.all([
+            this.modalController.getTop(),
+            this.alertController.getTop()
+        ]);
+        if (topModal || topAlert) {
+            return;
+        }
+
+        if (k === 'm') {
+            this.openMap();
+        } else if (k === 'h' || key === '?') {
+            this.openInstructions();
+        } else if (k === 'c') {
+            this.showDirection();
+        } else if (k === 't') {
+            this.showTimer();
         }
     }
 }

@@ -7,8 +7,6 @@ import { IonicModule } from '@ionic/angular';
 
 import { MazePage } from './maze.page';
 import { MapPage } from '../map/map.page';
-import { CompassPage } from '../compass/compass.page';
-import { TimePage } from '../time/time.page';
 import { SsbPage } from '../ssb/ssb.page';
 import { OrbPage } from '../orb/orb';
 import { GemPage } from '../gems/gems.page';
@@ -35,8 +33,6 @@ const routes: Routes = [
         GemPage,
         EyeballPage,
         ProgressComponent,
-        CompassPage,
-        TimePage,
         InstructionsPage
     ]
 })

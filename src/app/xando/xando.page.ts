@@ -104,9 +104,12 @@ export class XandoPage implements OnInit {
 
             // Board full with no winner = draw. Count the actual board state
             // (unmarkedList was built before the CPU moved, so it's stale here).
+            // The bot plays optimally, so a draw is the best a skilled player
+            // can force — treat that as a win ("you fought the monster to a
+            // standstill"). Without this, xando was effectively unwinnable.
             const emptyLeft = this.tileList.filter(t => t.value !== 'X' && t.value !== 'O').length;
             if (!this.gameOver && emptyLeft === 0) {
-                this.closeModal(false);
+                this.closeModal(true);
             }
 
             this.wait = false;

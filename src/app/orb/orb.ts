@@ -8,6 +8,10 @@ import { AudioService } from '../../providers/audioService';
     styleUrls: ['./orb.page.scss']
 })
 export class OrbPage implements OnInit {
+    // Pattern length the player must successfully repeat to win. Lowered from
+    // the original 7 to make orb fair for the stakes it carries.
+    readonly WIN_PATTERN_LENGTH = 4;
+
     gameBegin = false;
     error = false;
     // False while the pattern is being shown; true when it's the player's turn
@@ -64,9 +68,20 @@ export class OrbPage implements OnInit {
         });
 
         Promise.all(jobs).then(() => {
-            // Short beat so the player clearly sees the board before the first
-            // tile lights up.
-            setTimeout(() => this.begin(), 700);
+            // Decoding a detached Image() only warms the cache — it does NOT
+            // force the tiles' CSS background-image to actually paint. The tiles
+            // sit at opacity 0.6 until flashed, so on the very first pattern step
+            // a planet could still pop in late. Fix: briefly light every tile
+            // (full opacity) as a "board reveal" so the browser paints all five
+            // backgrounds on screen before any pattern step runs.
+            this.tileList.forEach(t => (t.active = true));
+
+            setTimeout(() => {
+                this.tileList.forEach(t => (t.active = false));
+                // Short beat after the reveal so the board clearly settles
+                // before the first tile lights up.
+                setTimeout(() => this.begin(), 400);
+            }, 600);
         });
     }
 
@@ -93,7 +108,11 @@ export class OrbPage implements OnInit {
                 this.compareLists();
 
                 if (this.error === false) {
-                    if (this.patternList.length === 7) {
+                    // Win at pattern length 4. The original 7 — with a single
+                    // mistake ending the game — made orb punishingly hard for
+                    // the stakes it carries; 4 still escalates and rewards focus
+                    // without demanding a 30s flawless run.
+                    if (this.patternList.length === this.WIN_PATTERN_LENGTH) {
                         this.closeModal(true);
                     } else {
                         this.humanGuesses.length = 0;

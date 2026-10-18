@@ -10,7 +10,7 @@
 </ion-header>
 
 <ion-content color="dark" class="ion-padding">
-    Follow the eyeball, then pick the right slot for help:
+    Keep your eye on mine, then tell me where it hides. Guess true and I'll open the way.
 
     <ion-grid>
         <ion-row id="shuffleRow">
@@ -28,8 +28,6 @@
                     "
                     class="eye"
                 ></div>
-
-                <!-- {{ possibleAnswers[0].id }} -->
             </ion-col>
             <ion-col
                 [@my2ndAnimation]="twoSlot"
@@ -75,22 +73,4 @@
             </ion-col>
         </ion-row>
     </ion-grid>
-    <!-- right answer: {{ rightAnswer }} -->
-    <!-- right answer: {{ rightAnswer }}
-    <br />
-    one slot: {{ oneSlot }}
-    <br />
-    two slot: {{ twoSlot }}
-    <br />
-    three slot: {{ threeSlot }}
-    <br />
-    four slot: {{ fourSlot }}
-    <br />
-
-    current : {{ possibleAnswers | json }}
-    <br />
-    last: {{ lastAnswers | json }}
-    <br /> -->
-
-    <!-- <a ion-button (click)="shuffle()">shuffle!</a> -->
 </ion-content>

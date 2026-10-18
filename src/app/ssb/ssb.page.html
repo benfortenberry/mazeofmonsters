@@ -10,12 +10,17 @@
 </ion-header>
 
 <ion-content color="dark" class="ion-padding">
-    <p *ngIf="goAgain">We tied! Let's play again...</p>
+    <p *ngIf="goAgain">A draw. Again.</p>
 
     <div *ngIf="!goAgain">
         <p *ngIf="humanTurn">
-            Beat me in this game of Sword, Shield, & Bow for help. Shield beats bow, bow beats sword, and sword beats
-            shield.
+            Shield beats bow, bow beats sword, sword beats shield. Win two rounds and I'll open the way.
+        </p>
+
+        <p *ngIf="humanTurn" class="score">You {{ playerScore }} &ndash; {{ cpuScore }} Me</p>
+
+        <p *ngIf="humanTurn && lastCpuChoice">
+            Last time I chose <strong>{{ lastCpuChoice }}</strong>. Use it.
         </p>
         <ion-grid *ngIf="humanTurn">
             <ion-row>
@@ -31,7 +36,7 @@
             </ion-row>
         </ion-grid>
 
-        <p *ngIf="!humanTurn">I picked {{ cpuChoice }}!</p>
+        <p *ngIf="!humanTurn">I chose {{ cpuChoice }}.</p>
 
         <ion-grid *ngIf="!humanTurn">
             <ion-row>

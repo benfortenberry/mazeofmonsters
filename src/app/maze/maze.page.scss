@@ -14,34 +14,11 @@
     transform-style: preserve-3d;
 }
 
-.door-overlay {
-    perspective: 1000px;
-    // background: #000;
-
-    transform-style: preserve-3d;
-}
-
 .solid-wall {
     background-image: linear-gradient(0deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.75)),
         url(../../assets/sandstone-large.jpg) !important;
     background-size: cover;
 }
-
-// .top {
-//     height: 8.5vmax;
-//     // background-image: url(../../assets/test4.png);
-//     // background-color: #444;
-//     background-size: cover;
-//     background-position: left top;
-// }
-
-// .bottom {
-//     height: 13.5vmax;
-//     // background-image: url(../../assets/test3.png);
-//     // background-color: #555;
-//     background-size: cover;
-//     background-position: left bottom;
-// }
 
 a {
     width: 100%;
@@ -49,68 +26,115 @@ a {
     display: inline-block;
 }
 
-// .left-door {
-//     position: absolute;
-//     left: 8vw;
-//     width: 10vw;
-//     background-color: #080402;
-//     height: 90vw;
-//     top: 10vw;
-//     z-index: 999;
-//     border-radius: 15px;
-//     transform: skew(0deg, -155deg);
-//     transform-style: none;
-//     perspective: 0;
-//     perspective: 600px;
-//     transform-style: preserve-3d;
-//     // clip-path: inset(10px 20px 30px 40px);
-//     // border-image: linear-gradient(to left, #000, #888) 30 round;
-//     // border-left: 20px solid red;
-//     background-image: linear-gradient(to right, #584a39, #050301 10%);
-// }
-
-// .right-door {
-//     position: absolute;
-//     right: 8vw;
-//     width: 10vw;
-//     background-color: #080402;
-//     height: 100vw;
-//     top: 10vw;
-//     border-radius: 15px;
-//     transform: skew(0deg, 155deg);
-//     background-image: linear-gradient(to left, #584a39, #050301 10%);
-// }
-// .right {
-//     border-right: 20.7vmax solid #333;
-//     border-top: 8.5vmax solid #444;
-//     border-bottom: 13.5vmax solid #555;
-//     width: 100%;
-//     height: 100%;
-// }
-
 .maze {
     // perspective: 600px;
 
     background: #080402;
+
+    // Promote the animated scene to its own compositor layer so the scale /
+    // slide transforms stay smooth. Safe on its own — unlike backface-visibility
+    // or an extra transform-style, will-change doesn't alter the 3D rendering of
+    // the pseudo-element walls, it only hints the browser to GPU-composite.
+    will-change: transform;
 }
+
+// Depth cue: a radial vignette darkens the edges and a faint warm "torch"
+// glow sits near the camera, so the corridor reads as volumetric and the hard
+// texture seam at the far end is swallowed by shadow. Sits above the 3D walls
+// but below the HUD/monster, and ignores pointer events. Purely a static
+// overlay — it does not transform with the scene, so it can't introduce jank.
+.depth-vignette,
+.torch-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+// Static edge-darkening vignette. Never animates, so the frame of the scene
+// stays rock steady while only the light flickers above it.
+.depth-vignette {
+    z-index: 2;
+    background: radial-gradient(
+        ellipse 95% 95% at 50% 50%,
+        rgba(0, 0, 0, 0) 40%,
+        rgba(0, 0, 0, 0.4) 72%,
+        rgba(0, 0, 0, 0.8) 100%
+    );
+}
+
+// Warm torch light that gently flickers — opacity and a tiny scale wobble on a
+// slow, irregular loop so it reads as firelight rather than a static glow. Sits
+// above the vignette; purely a light overlay, so it can't disturb the walls.
+.torch-glow {
+    z-index: 3;
+    transform-origin: 50% 55%;
+    background:
+        // main glow toward the vanishing point
+        radial-gradient(
+            ellipse 70% 55% at 50% 46%,
+            rgba(255, 170, 90, 0.16) 0%,
+            rgba(255, 150, 70, 0.07) 24%,
+            rgba(0, 0, 0, 0) 46%
+        ),
+        // faint low warmth lifting the floor near the camera
+        radial-gradient(
+            ellipse 85% 40% at 50% 92%,
+            rgba(255, 150, 80, 0.09) 0%,
+            rgba(0, 0, 0, 0) 55%
+        );
+    will-change: opacity, transform;
+    animation: torch-flicker 4.5s ease-in-out infinite;
+}
+
+@keyframes torch-flicker {
+    0% {
+        opacity: 0.92;
+        transform: scale(1);
+    }
+    18% {
+        opacity: 1;
+        transform: scale(1.015);
+    }
+    33% {
+        opacity: 0.85;
+        transform: scale(0.995);
+    }
+    50% {
+        opacity: 0.98;
+        transform: scale(1.01);
+    }
+    68% {
+        opacity: 0.8;
+        transform: scale(1);
+    }
+    82% {
+        opacity: 0.95;
+        transform: scale(1.008);
+    }
+    100% {
+        opacity: 0.92;
+        transform: scale(1);
+    }
+}
+
+// Respect reduced-motion: hold the torch at a steady brightness.
+@media (prefers-reduced-motion: reduce) {
+    .torch-glow {
+        animation: none;
+        opacity: 0.92;
+    }
+}
+
+
 
 ion-fab-button,
 .button-native,
 ion-fab {
     transform: translateZ(1100px);
     transform-style: preserve-3d;
-}
-
-.door-overlay {
-    position: absolute;
-    top: 10vh;
-    left: 0;
-    right: 0;
-    bottom: 0;
-
-    transform-style: preserve-3d;
-    z-index: 1;
-    transform: translateZ(1100px);
 }
 
 .maze,
@@ -137,15 +161,6 @@ ion-fab {
     z-index: 0;
     background-size: 100% 100%, 400px 400px;
     // animation: 10s move3 linear infinite;
-}
-
-.door-overlay:before,
-.door-overlay:after {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    content: '';
-    background-size: 200% 200%, 200px 200px;
 }
 
 /* ceiling */
@@ -198,26 +213,6 @@ ion-fab {
     background-position: center center;
 }
 
-// .sandstone-door-left:before,
-// .sandstone-door-both:before {
-//     height: 350px;
-//     width: 400px;
-//     margin: -160.5px -240px;
-//     background: black;
-//     transform: translateZ(9999000px);
-//     transform-style: preserve-3d;
-// }
-
-// .sandstone-door-right:after,
-// .sandstone-door-both:after {
-//     height: 350px;
-//     width: 400px;
-//     margin: -160.5px -181px;
-//     background: black;
-//     transform: translateZ(15000px);
-//     transform-style: preserve-3d;
-// }
-
 /* ceiling */
 .maze:before {
     z-index: -1;
@@ -245,30 +240,6 @@ ion-fab {
 .grid:after {
     transform: translateX(100px) rotateY(90deg);
 }
-
-// .door-overlay:before {
-//     background-image: linear-gradient(to left, #584a39, #050301 10%);
-//     z-index: 1;
-
-//     transform: translate(-200px) rotateY(93deg);
-//     border-right: solid 20px #584a39;
-//     border-top-left-radius: 30px;
-//     // transform: translateZ(9000px);
-//     // transform-style: preserve-3d;
-// }
-
-/* right wall */
-
-// .door-overlay:after {
-//     // z-index: 99999;
-//     z-index: 1;
-//     transform: translateX(200px) rotateY(87.5deg);
-//     border-right: solid 20px #584a39;
-//     border-top-left-radius: 30px;
-//     background-image: linear-gradient(to left, #584a39, #050301 10%);
-//     // transform: translateZ(9000px);
-//     // transform-style: preserve-3d;
-// }
 
 .flipV {
     transform: rotate(180deg);
@@ -299,6 +270,37 @@ ion-fab {
 
     z-index: 999999;
     pointer-events: none;
+
+    // Grounds the monster in the scene instead of looking pasted flat on top:
+    // a soft dark shadow for weight plus a faint warm rim that matches the
+    // torchlight. drop-shadow follows the image's alpha, so it hugs the shape.
+    filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 18px rgba(255, 140, 60, 0.25));
+
+    // Menacing entrance: lunge in from slightly below and large, settling to
+    // rest. transform-origin low-center so it rises into view. Runs once.
+    transform-origin: 50% 80%;
+    animation: monster-enter 420ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
+@keyframes monster-enter {
+    0% {
+        opacity: 0;
+        transform: translateY(10%) scale(1.18);
+    }
+    60% {
+        opacity: 1;
+        transform: translateY(-1.5%) scale(0.97);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .monster {
+        animation: none;
+    }
 }
 
 [hidden] {
