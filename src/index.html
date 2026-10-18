@@ -15,26 +15,47 @@
 
         <link rel="icon" type="image/png" href="assets/icon/favicon.png" />
 
-        <!-- Prefetch the gameplay-critical artwork (monsters + maze textures)
-             so they're cached before the player reaches the maze. This is the
-             single preload mechanism for the app; browser-native, low-priority,
-             non-blocking. Only referenced assets are listed. -->
-        <link rel="prefetch" href="assets/monsters/DivineGuardian.png" as="image" />
-        <link rel="prefetch" href="assets/monsters/Dragon.png" as="image" />
-        <link rel="prefetch" href="assets/monsters/Goblin.png" as="image" />
-        <link rel="prefetch" href="assets/monsters/Lichlord.png" as="image" />
-        <link rel="prefetch" href="assets/monsters/Naga.png" as="image" />
-        <link rel="prefetch" href="assets/monsters/Orc.png" as="image" />
-        <link rel="prefetch" href="assets/monsters/Ratman.png" as="image" />
-        <link rel="prefetch" href="assets/monsters/Treefolk.png" as="image" />
-        <link rel="prefetch" href="assets/monsters/Troll.png" as="image" />
-        <link rel="prefetch" href="assets/monsters/zombie.png" as="image" />
-        <link rel="prefetch" href="assets/sandstone-large.jpg" as="image" />
-        <link rel="prefetch" href="assets/new-sandstone-3.jpg" as="image" />
-        <link rel="prefetch" href="assets/new-sandstone-4.jpg" as="image" />
-        <link rel="prefetch" href="assets/new-sandstone-5.jpg" as="image" />
-        <link rel="prefetch" href="assets/sandy.jpg" as="image" />
-        <link rel="prefetch" href="assets/stone.jpg" as="image" />
+        <!-- Monsters: preloaded (eager/high-priority) so the first encounter
+             shows instantly. They're small (~60-130KB each) after optimization,
+             so loading them up front is cheap. -->
+        <link rel="preload" href="assets/monsters/DivineGuardian.png" as="image" />
+        <link rel="preload" href="assets/monsters/Dragon.png" as="image" />
+        <link rel="preload" href="assets/monsters/Goblin.png" as="image" />
+        <link rel="preload" href="assets/monsters/Lichlord.png" as="image" />
+        <link rel="preload" href="assets/monsters/Naga.png" as="image" />
+        <link rel="preload" href="assets/monsters/Orc.png" as="image" />
+        <link rel="preload" href="assets/monsters/Ratman.png" as="image" />
+        <link rel="preload" href="assets/monsters/Treefolk.png" as="image" />
+        <link rel="preload" href="assets/monsters/Troll.png" as="image" />
+        <link rel="preload" href="assets/monsters/zombie.png" as="image" />
+
+        <!-- Death-screen artwork (one shown at random when you lose). -->
+        <link rel="prefetch" href="assets/death/boss_goblinbigboss.png" as="image" />
+        <link rel="prefetch" href="assets/death/boss_thenightmother.png" as="image" />
+        <link rel="prefetch" href="assets/death/boss_voidelemental.png" as="image" />
+        <link rel="prefetch" href="assets/death/monster_crystalgolem.png" as="image" />
+        <link rel="prefetch" href="assets/death/monster_deepelf.png" as="image" />
+        <link rel="prefetch" href="assets/death/monster_demilich.png" as="image" />
+        <link rel="prefetch" href="assets/death/monster_devilkin.png" as="image" />
+        <link rel="prefetch" href="assets/death/monster_dragonwhelp.png" as="image" />
+        <link rel="prefetch" href="assets/death/monster_fireelemental.png" as="image" />
+        <link rel="prefetch" href="assets/death/monster_goblinveteran.png" as="image" />
+        <link rel="prefetch" href="assets/death/monster_imp.png" as="image" />
+        <link rel="prefetch" href="assets/death/monster_minotaur.png" as="image" />
+        <link rel="prefetch" href="assets/death/monster_ooze.png" as="image" />
+        <link rel="prefetch" href="assets/death/monster_ratling.png" as="image" />
+        <link rel="prefetch" href="assets/death/monster_treefolk.png" as="image" />
+        <link rel="prefetch" href="assets/death/monster_werewolfcub.png" as="image" />
+
+        <!-- Maze wall/floor/ceiling textures are shown the instant you enter
+             the maze, so fetch them eagerly (preload = high priority) rather
+             than prefetch (idle-only) to avoid pop-in. -->
+        <link rel="preload" href="assets/new-sandstone-3.jpg" as="image" />
+        <link rel="preload" href="assets/new-sandstone-4.jpg" as="image" />
+        <link rel="preload" href="assets/new-sandstone-5.jpg" as="image" />
+        <link rel="preload" href="assets/sandy.jpg" as="image" />
+        <link rel="preload" href="assets/stone.jpg" as="image" />
+        <link rel="preload" href="assets/sandstone-large.jpg" as="image" />
 
         <!-- add to homescreen for ios -->
         <meta name="apple-mobile-web-app-capable" content="yes" />
