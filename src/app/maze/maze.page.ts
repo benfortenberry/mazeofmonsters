@@ -15,6 +15,7 @@ import { XandoPage } from '../xando/xando.page';
 import { EyeballPage } from '../eyeball/eyeball.page';
 import { InstructionsPage } from '../instructions/instructions.page';
 import { ImagePreloadService } from '../../providers/imagePreloadService';
+import { GAME_IMAGES } from '../../providers/gameAssets';
 import { ToastController, Platform } from '@ionic/angular';
 @Component({
     standalone: false,
@@ -178,24 +179,11 @@ export class MazePage {
         this.getImages();
         this.wallClass = 'sandstone';
 
-        // Warm all mini-game art up front (fetch + decode) so it paints
-        // instantly the first time a game opens. The maze is the single parent
-        // that launches every mini-game, so one call here covers them all —
-        // replacing the scattered per-game decode blocks.
-        this.imagePreload.decode([
-            // gems
-            'assets/gems/aqua.png', 'assets/gems/red.png', 'assets/gems/blue.png',
-            'assets/gems/violet.png', 'assets/gems/yellow.png', 'assets/gems/green.png',
-            // orb planets
-            'assets/orb/planet-1.png', 'assets/orb/planet-3.png', 'assets/orb/planet-5.png',
-            'assets/orb/planet-9.png', 'assets/orb/planet-10.png',
-            // xando marks
-            'assets/xando/frame1.png', 'assets/xando/x.png',
-            // sword / shield / bow
-            'assets/ssb/RoundShield.png', 'assets/ssb/ShortBow.png', 'assets/ssb/LongSword.png',
-            // eyeball
-            'assets/minigames/full_yellow_2.png'
-        ]);
+        // Safety net: ensure all game art is decoded. The intro already warms
+        // everything (GAME_IMAGES) before the maze loads, so this is normally a
+        // no-op (the service dedupes) — but it guarantees readiness even if the
+        // maze is reached without passing through the intro.
+        this.imagePreload.decode(GAME_IMAGES);
 
         this.aService.loop('backgroundAudio');
     }

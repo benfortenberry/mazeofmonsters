@@ -36,7 +36,10 @@
                 Begin Maze
             </ion-button>
 
-            <p class="text fade" *ngIf="preparing">Preparing the maze&hellip;</p>
+            <div class="loader fade" *ngIf="loading">
+                <p>Preparing the maze&hellip; {{ loadPercent }}%</p>
+                <ion-progress-bar color="light" [value]="loadPercent / 100"></ion-progress-bar>
+            </div>
         </div>
 
         <div id="column2" class="intro"></div>

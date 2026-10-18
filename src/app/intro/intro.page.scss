@@ -18,6 +18,20 @@ ion-content {
     animation: fadein 3s;
 }
 
+.loader {
+    margin-top: 12px;
+
+    p {
+        color: #f7f7f7;
+        margin: 0 0 8px 0;
+    }
+
+    ion-progress-bar {
+        height: 8px;
+        border-radius: 4px;
+    }
+}
+
 .left {
     width: 50%;
     // background-image: url(../../assets/sandstone-large.jpg);
