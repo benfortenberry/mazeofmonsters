@@ -51,20 +51,6 @@ export class GemPage implements OnInit {
         this.tiles = this.shuffleList(this.tiles);
     }
 
-    // Decode the gem faces once the modal is visible so they paint instantly on
-    // the first flips (as CSS backgrounds they were otherwise fetched lazily,
-    // leaving the first couple of flipped tiles blank).
-    ionViewDidEnter() {
-        const gems = ['aqua', 'red', 'blue', 'violet', 'yellow', 'green'];
-        gems.forEach(name => {
-            const img = new Image();
-            img.src = 'assets/gems/' + name + '.png';
-            if (typeof img.decode === 'function') {
-                img.decode().catch(() => {});
-            }
-        });
-    }
-
     shuffleList(a) {
         let j, x, i;
         for (i = a.length - 1; i > 0; i--) {
