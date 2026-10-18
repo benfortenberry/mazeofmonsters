@@ -19,28 +19,28 @@ export class AppComponent {
             // mechanism), and the monster <img> fires its sound on load so the
             // growl and the visible monster stay in sync.
             this.aService.preload('backgroundAudio', 'assets/audio/theme.ogg', 0.45, true);
-            this.aService.preload('clickAudio', 'assets/audio/click11.wav', 1, true);
+            this.aService.preload('clickAudio', 'assets/audio/click11.ogg', 1, true);
 
             this.aService.preload('fire', 'assets/audio/Fire.mp3', 1, true);
-            this.aService.preload('dragon', 'assets/audio/grunt1.wav', 1, true);
-            this.aService.preload('goblin', 'assets/audio/click11.wav', 1, true);
+            this.aService.preload('dragon', 'assets/audio/grunt1.ogg', 1, true);
+            this.aService.preload('goblin', 'assets/audio/click11.ogg', 1, true);
 
-            this.aService.preload('lichlord', 'assets/audio/Magic Smite.wav', 1, true);
-            this.aService.preload('naga', 'assets/audio/painb.wav', 1, true);
-            this.aService.preload('orc', 'assets/audio/deathb.wav', 1, true);
+            this.aService.preload('lichlord', 'assets/audio/Magic Smite.ogg', 1, true);
+            this.aService.preload('naga', 'assets/audio/painb.ogg', 1, true);
+            this.aService.preload('orc', 'assets/audio/deathb.ogg', 1, true);
 
             this.aService.preload('ratman', 'assets/audio/MonsterCreaturesVoiceSound005.mp3', 1, true);
-            this.aService.preload('treefolk', 'assets/audio/2.wav', 1, true);
-            this.aService.preload('troll', 'assets/audio/3.wav', 1, true);
+            this.aService.preload('treefolk', 'assets/audio/2.ogg', 1, true);
+            this.aService.preload('troll', 'assets/audio/3.ogg', 1, true);
 
-            this.aService.preload('zombie', 'assets/audio/1.wav', 1, true);
+            this.aService.preload('zombie', 'assets/audio/1.ogg', 1, true);
 
-            this.aService.preload('loseAudio', 'assets/audio/lose music 1 - 1_0.wav', 0.5, true);
-            this.aService.preload('woopAudio', 'assets/audio/Socapex - hurt.wav', 1, true);
+            this.aService.preload('loseAudio', 'assets/audio/lose music 1 - 1_0.ogg', 0.5, true);
+            this.aService.preload('woopAudio', 'assets/audio/Socapex - hurt.ogg', 1, true);
             this.aService.preload('matchAudio', 'assets/audio/dingCling-positive.ogg', 1, true);
-            this.aService.preload('beepAudio', 'assets/audio/beep.wav', 1, true);
+            this.aService.preload('beepAudio', 'assets/audio/beep.ogg', 1, true);
             this.aService.preload('winAudio', 'assets/audio/HappyMusic.ogg', 0.5, true);
-            this.aService.preload('turnAudio', 'assets/audio/short wind sound.wav', 0.6, true);
+            this.aService.preload('turnAudio', 'assets/audio/short wind sound.ogg', 0.6, true);
         });
     }
 }
