@@ -15,6 +15,7 @@ import { GemPage } from '../gems/gems.page';
 import { EyeballPage } from '../eyeball/eyeball.page';
 import { XandoPage } from '../xando/xando.page';
 import { ProgressComponent } from '../countdown/countdown.component';
+import { InstructionsPage } from '../instructions/instructions.page';
 
 const routes: Routes = [
     {
@@ -35,7 +36,8 @@ const routes: Routes = [
         EyeballPage,
         ProgressComponent,
         CompassPage,
-        TimePage
+        TimePage,
+        InstructionsPage
     ]
 })
 export class MazePageModule {}

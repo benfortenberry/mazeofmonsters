@@ -35,6 +35,12 @@
         <ion-fab-button size="small" color="dark" (click)="openMap()"><ion-icon name="map"></ion-icon></ion-fab-button>
     </ion-fab>
 
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button size="small" color="dark" (click)="openInstructions()">
+            <ion-icon name="help"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+
     <ion-fab vertical="top" horizontal="left" slot="fixed">
         <ion-fab-button (click)="showDirection()" size="small" color="dark">
             <strong>{{ currentDirection | uppercase }}</strong>

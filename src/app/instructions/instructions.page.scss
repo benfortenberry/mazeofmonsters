@@ -1,0 +1,30 @@
+.lead {
+    font-size: 1.1rem;
+    margin-bottom: 1.2rem;
+}
+
+ul.rules {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.2rem 0;
+
+    li {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 1rem;
+        line-height: 1.4;
+
+        ion-icon {
+            font-size: 1.5rem;
+            color: var(--ion-color-light);
+            flex: 0 0 auto;
+        }
+    }
+}
+
+.hint {
+    opacity: 0.85;
+    margin-bottom: 1.4rem;
+}

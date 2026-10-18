@@ -13,6 +13,7 @@ import { GemPage } from '../gems/gems.page';
 import { OrbPage } from '../orb/orb';
 import { XandoPage } from '../xando/xando.page';
 import { EyeballPage } from '../eyeball/eyeball.page';
+import { InstructionsPage } from '../instructions/instructions.page';
 import { ToastController, Platform } from '@ionic/angular';
 @Component({
     standalone: false,
@@ -191,6 +192,17 @@ export class MazePage {
                 this.showDeath();
             }
         });
+
+        // Show the how-to-play modal automatically the first time ever. After
+        // that it's only reachable via the help (?) button.
+        try {
+            if (!localStorage.getItem('mom_instructions_seen')) {
+                localStorage.setItem('mom_instructions_seen', '1');
+                this.openInstructions();
+            }
+        } catch (e) {
+            // localStorage can throw in some privacy modes; just skip the auto-show.
+        }
     }
 
     ionViewWillLeave() {
@@ -866,6 +878,16 @@ export class MazePage {
         this.state = 'back';
         this.wallReady = false;
         this.getRoute(this.currentRoom);
+    }
+
+    async openInstructions() {
+        this.aService.play('clickAudio');
+        const modal = await this.modalController.create({
+            component: InstructionsPage,
+            backdropDismiss: true
+        });
+        this.modals.push(modal);
+        return await modal.present();
     }
 
     async openMap() {
