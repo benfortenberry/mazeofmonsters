@@ -265,14 +265,14 @@ export class EyeballPage implements OnInit {
             if (!this.closed) {
                 this.shuffle();
 
-                this.aService.play('woopAudio');
+                this.aService.play('beepAudio');
             }
         }, 3000);
 
         setTimeout(() => {
             if (!this.closed) {
                 this.shuffle();
-                this.aService.play('woopAudio');
+                this.aService.play('beepAudio');
                 this.shuffleCount++;
             }
         }, 5000);
@@ -280,7 +280,7 @@ export class EyeballPage implements OnInit {
         setTimeout(() => {
             if (!this.closed) {
                 this.shuffle();
-                this.aService.play('woopAudio');
+                this.aService.play('beepAudio');
                 this.shuffleCount++;
             }
         }, 7000);
@@ -288,7 +288,7 @@ export class EyeballPage implements OnInit {
         setTimeout(() => {
             if (!this.closed) {
                 this.shuffle();
-                this.aService.play('woopAudio');
+                this.aService.play('beepAudio');
                 this.shuffleCount++;
             }
         }, 9000);
@@ -296,7 +296,7 @@ export class EyeballPage implements OnInit {
         setTimeout(() => {
             if (!this.closed) {
                 this.shuffle();
-                this.aService.play('woopAudio');
+                this.aService.play('beepAudio');
                 this.shuffleCount++;
             }
         }, 11000);

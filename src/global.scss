@@ -1,11 +1,23 @@
 // http://ionicframework.com/docs/theming/
-@import '~@ionic/angular/css/core.css';
-@import '~@ionic/angular/css/normalize.css';
-@import '~@ionic/angular/css/structure.css';
-@import '~@ionic/angular/css/typography.css';
+@import '@ionic/angular/css/core.css';
+@import '@ionic/angular/css/normalize.css';
+@import '@ionic/angular/css/structure.css';
+@import '@ionic/angular/css/typography.css';
 
-@import '~@ionic/angular/css/padding.css';
-@import '~@ionic/angular/css/float-elements.css';
-@import '~@ionic/angular/css/text-alignment.css';
-@import '~@ionic/angular/css/text-transformation.css';
-@import '~@ionic/angular/css/flex-utils.css';
+@import '@ionic/angular/css/padding.css';
+@import '@ionic/angular/css/float-elements.css';
+@import '@ionic/angular/css/text-alignment.css';
+@import '@ionic/angular/css/text-transformation.css';
+@import '@ionic/angular/css/flex-utils.css';
+
+// Map modal: tall enough to show the full square 30x30 grid (incl. the exit at
+// the far corner) without clipping. Modal sizing must live in global CSS
+// because the modal element renders outside the component's view encapsulation.
+// Capped to the viewport so it never overflows on small screens.
+ion-modal.map-modal {
+    --height: 90vh;
+    --max-height: 640px;
+    --width: 90vw;
+    --max-width: 520px;
+    --border-radius: 8px;
+}

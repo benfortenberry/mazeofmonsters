@@ -2,18 +2,18 @@
     <div id="row1">
         <div id="column1" class="left">
             <p class="text">
-                <span class="text" *ngIf="firstLine">Hold still. The horns are setting.</span>
+                <span class="text" *ngIf="firstLine">{{ taunt.first }}</span>
 
                 <span class="text" *ngIf="secondLine">
                     <br />
                     <br />
-                    You will want to warn the next one who wanders in. You never can.
+                    {{ taunt.second }}
                 </span>
 
                 <span class="text" *ngIf="thirdLine">
                     <br />
                     <br />
-                    Welcome to Yabdib's collection.
+                    {{ taunt.third }}
                 </span>
             </p>
 

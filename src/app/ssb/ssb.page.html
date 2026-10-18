@@ -10,19 +10,15 @@
 </ion-header>
 
 <ion-content color="dark" class="ion-padding">
-    <p *ngIf="goAgain">A draw. Again.</p>
+    <!-- Score is always visible so the best-of-3 reads clearly. -->
+    <p class="score">You {{ playerScore }} &ndash; {{ cpuScore }} Me</p>
 
-    <div *ngIf="!goAgain">
-        <p *ngIf="humanTurn">
-            Shield beats bow, bow beats sword, sword beats shield. Win two rounds and I'll open the way.
+    <div *ngIf="humanTurn">
+        <p>
+            Best me at the old game and I'll open the way. Shield beats bow, bow beats sword, sword beats shield. First
+            to two wins.
         </p>
-
-        <p *ngIf="humanTurn" class="score">You {{ playerScore }} &ndash; {{ cpuScore }} Me</p>
-
-        <p *ngIf="humanTurn && lastCpuChoice">
-            Last time I chose <strong>{{ lastCpuChoice }}</strong>. Use it.
-        </p>
-        <ion-grid *ngIf="humanTurn">
+        <ion-grid>
             <ion-row>
                 <ion-col class="tile weapon hover pointer" (click)="makeChoice('sword')">
                     <img src="assets/ssb/LongSword.png" alt="sword" />
@@ -35,10 +31,12 @@
                 </ion-col>
             </ion-row>
         </ion-grid>
+    </div>
 
-        <p *ngIf="!humanTurn">I chose {{ cpuChoice }}.</p>
+    <div *ngIf="!humanTurn">
+        <p>I played {{ cpuChoice }}.</p>
 
-        <ion-grid *ngIf="!humanTurn">
+        <ion-grid>
             <ion-row>
                 <ion-col class="tile weapon">
                     <img *ngIf="isSword()" src="assets/ssb/LongSword.png" alt="sword" />
@@ -51,5 +49,10 @@
                 </ion-col>
             </ion-row>
         </ion-grid>
+
+        <!-- Per-round result, so each round of the best-of-3 reads clearly. -->
+        <p class="round-result" *ngIf="roundResult === 'win'">You take the round.</p>
+        <p class="round-result" *ngIf="roundResult === 'lose'">I take that one.</p>
+        <p class="round-result" *ngIf="roundResult === 'tie'">A tie. Choose again.</p>
     </div>
 </ion-content>

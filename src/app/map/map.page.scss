@@ -1,0 +1,118 @@
+// Data-driven 30x30 map. Only "revealed" cells (rooms visited or revealed by a
+// mini-game win) show the explored fill and their walls; unexplored space stays
+// dark so the trail reads.
+
+.map-grid {
+    display: inline-block;
+    margin: 0 auto;
+}
+
+.map-row {
+    display: flex;
+}
+
+.map-cell {
+    position: relative;
+    // Cells are a touch larger than the marker icon so the icon has clear space
+    // around it inside the room. Don't use `padding` here: on a fixed-size
+    // border-box cell it either collapses the content or (with a larger value)
+    // inflates every cell's footprint, blowing the 30-wide grid off-screen.
+    width: 14px;
+    height: 14px;
+    box-sizing: border-box;
+    // Unexplored space stays dark/empty so the explored trail reads clearly.
+    background: transparent;
+
+    &.revealed {
+        background-color: #754c2e;
+    }
+
+    // Hinted rooms: revealed by a mini-game win but not yet walked. A distinct
+    // cooler tone so the gifted escape path stands out from the brown trail the
+    // player made themselves.
+    &.hint {
+        background-color: #3f7d8c;
+    }
+
+    // Walls only drawn on revealed cells (bound that way in the template).
+    &.wall-top {
+        border-top: 1px solid #fff;
+    }
+    &.wall-right {
+        border-right: 1px solid #fff;
+    }
+    &.wall-bottom {
+        border-bottom: 1px solid #fff;
+    }
+    &.wall-left {
+        border-left: 1px solid #fff;
+    }
+
+    // The exit tile gets a warm highlight so it stands out even before the
+    // player has revealed its surroundings.
+    &.exit {
+        background-color: #b8862b;
+    }
+}
+
+.marker {
+    position: absolute;
+    // Smaller than the cell, so there's clear space around the icon within the
+    // room. Absolutely positioned, so sizing it never affects the grid layout.
+    width: 10px;
+    height: 10px;
+    // Center via negative margins (not transform) so the player marker's inline
+    // [style.transform]="rotate(...)" is free to be pure rotation and can't
+    // knock the icon off-center. transform-origin stays at the icon's middle.
+    top: 50%;
+    left: 50%;
+    margin: -5px 0 0 -5px;
+    transform-origin: center;
+    color: #fff;
+    line-height: 1;
+}
+
+.player-marker {
+    color: #ffe08a;
+    z-index: 2;
+}
+
+.exit-marker {
+    color: #fff;
+    z-index: 1;
+}
+
+// Legend lives in the header toolbar next to the close button.
+.map-legend {
+    display: inline-flex;
+    align-items: center;
+    color: #fff;
+    font-size: 13px;
+    white-space: nowrap;
+    padding-right: 6px;
+
+    ion-icon {
+        vertical-align: middle;
+        margin: 0 3px 0 10px;
+        font-size: 15px;
+    }
+
+    ion-icon[name='person'] {
+        color: #ffe08a;
+    }
+    ion-icon[name='star'] {
+        color: #b8862b;
+    }
+
+    .swatch {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        vertical-align: middle;
+        margin: 0 3px 0 10px;
+        border-radius: 2px;
+    }
+    .hint-swatch {
+        background-color: #3f7d8c;
+    }
+}

@@ -127,6 +127,10 @@ export class MazePage {
     currentRoom;
     routes;
     routeHistory = [];
+    // Rooms revealed by winning a mini-game but not yet walked. Shown on the map
+    // in a distinct "hint" colour so the gifted escape path reads as help, not
+    // as part of the player's own explored trail.
+    hintedRooms = [];
     hasLeft: Boolean = false;
     hasRight: Boolean = false;
     hasForward: Boolean = false;
@@ -153,6 +157,39 @@ export class MazePage {
     // losing costs more. Winning stays purely a reward (no penalty).
     readonly REFUSE_PENALTY = 20;
     readonly LOSE_PENALTY = 45;
+
+    // ---- Maze tuning knobs (safe to A/B during playtest) --------------------
+    // Grid size. 30x30 (900 rooms) is large and corridor-heavy; try 20x20 for a
+    // tighter, faster maze. MAZE_WIDTH/HEIGHT also drive the exit coordinate
+    // (bottom-right corner), so they stay in sync automatically.
+    readonly MAZE_WIDTH = 30;
+    readonly MAZE_HEIGHT = 30;
+
+    // Braiding factor: fraction of dead ends to open up with an extra passage
+    // after the (perfect) maze is carved. 0 = classic single-path DFS maze
+    // (long corridors, many dead ends). Higher values add loops and branches,
+    // killing dead ends so the maze feels bushier and less like one forced
+    // route. ~0.2-0.35 is a good "more branches" range. The reveal-path BFS
+    // still works with loops (it just finds a shortest path).
+    readonly BRAID_FACTOR = 0.3;
+
+    // Total starting time (seconds). The intro/instructions copy says "15
+    // minutes"; keep them in sync if you change this.
+    readonly MAZE_SECONDS = 900;
+
+    // The exit is the bottom-right corner, derived from the grid size so it
+    // stays correct if the dimensions change.
+    get exitId(): string {
+        return this.MAZE_HEIGHT - 1 + '-' + (this.MAZE_WIDTH - 1);
+    }
+
+    // Synchronous reentrancy lock for HUD overlays (map/help). Set the instant
+    // an open begins and cleared when the overlay is dismissed. The async
+    // getTop() guard can't prevent double-opens on fast repeat keypresses
+    // because there's an await-gap before the new modal is reported as "top";
+    // a plain boolean has no such gap, so a second keystroke is rejected
+    // immediately. This is why pressing "m" twice quickly opened two maps.
+    private hudOpening = false;
 
     // Shared id applied to the dismissible HUD modals (map, help). The Escape
     // handler only closes a modal carrying this id, so it can never force-close
@@ -234,8 +271,12 @@ export class MazePage {
         this.currentY = 0;
         this.currentRoom = '0-0';
         this.routeHistory = [];
+        this.hintedRooms = [];
         this.currentRoute = {};
         this.wallClass = 'sandstone';
+
+        // Clear the HUD overlay lock in case a run ends with one still flagged.
+        this.hudOpening = false;
 
         // Reset per-run encounter pools and monster state.
         this.availMiniGames = [];
@@ -277,7 +318,7 @@ export class MazePage {
 
     ionViewDidEnter() {
         this.showTime = true;
-        this.countdownService.count = 900;
+        this.countdownService.count = this.MAZE_SECONDS;
         this.countdownService.start();
         // Tear down any prior subscription before making a new one. On a reused
         // (cached) page, ionViewDidEnter runs again on each entry; without this
@@ -519,8 +560,13 @@ export class MazePage {
             if (revealed >= revealCount) {
                 break;
             }
+            // Reveal rooms the player hasn't actually walked. Track them as
+            // "hinted" (separate from visited) so the map can show the gifted
+            // escape path in a distinct colour — otherwise it just blends into
+            // the player's own trail and the reward looks like it did nothing.
             if (this.routeHistory.indexOf(roomId) === -1) {
                 this.routeHistory.push(roomId);
+                this.hintedRooms.push(roomId);
                 revealed++;
             }
         }
@@ -535,7 +581,7 @@ export class MazePage {
      * mazeData[row][col] = [top, right, bottom, left], 1 = open passage.
      */
     pathToExit(startId): string[] {
-        const exitId = '29-29';
+        const exitId = this.exitId;
         if (!this.mazeData || !startId) {
             return [];
         }
@@ -727,6 +773,9 @@ export class MazePage {
         // setTimeout(() => {
         this.alerts.push(alert);
         alert.present();
+        // Short negative sting for a mini-game loss, mirroring the win sting
+        // (matchAudio) in showWinMiniGame so win/lose feedback is symmetric.
+        this.aService.play('woopAudio');
         // }, 1000);
     }
 
@@ -795,10 +844,12 @@ export class MazePage {
             ]
         });
 
+        // Brief beat so the monster is visibly on screen (and its growl has
+        // started) before the prompt appears, but short enough to stay snappy.
         setTimeout(() => {
             this.alerts.push(alert);
             alert.present();
-        }, 1000);
+        }, 550);
     }
 
     clearAlerts() {
@@ -820,10 +871,9 @@ export class MazePage {
     }
 
     generate() {
-        // console.log('generate');
         this.currentRoom = '0-0';
         this.routes = [];
-        const disp = this.newMaze(30, 30);
+        const disp = this.newMaze(this.MAZE_WIDTH, this.MAZE_HEIGHT);
         // console.log(disp);
         this.mazeData = disp;
         // console.log(this.mazeData);
@@ -895,11 +945,18 @@ export class MazePage {
 
     getRoute(routeId) {
         if (this.routeHistory.length === 0) {
-            this.routeHistory.push('29-29');
+            this.routeHistory.push(this.exitId);
         }
         this.routeHistory.push(routeId);
 
-        if (routeId === '29-29') {
+        // Entering a room makes it genuinely visited, so it's no longer just a
+        // hint. Drop it from the hint set so the map recolours it as explored.
+        const hintIdx = this.hintedRooms.indexOf(routeId);
+        if (hintIdx !== -1) {
+            this.hintedRooms.splice(hintIdx, 1);
+        }
+
+        if (routeId === this.exitId) {
             this.showWin();
         } else {
             this.currentRoute = this.routes.find(x => x.id === routeId);
@@ -1009,7 +1066,64 @@ export class MazePage {
                 currentCell = path.pop();
             }
         }
+
+        // Braiding pass: the carve above produces a PERFECT maze (one path
+        // between any two cells, lots of dead ends, long corridors). Opening a
+        // fraction of dead ends adds loops and branches so the maze feels
+        // bushier and less like a single forced route. For each dead end (a cell
+        // with exactly one opening), with probability BRAID_FACTOR we knock out
+        // one more wall toward a valid in-grid neighbour. Uses the seeded RNG,
+        // so braided mazes stay reproducible per seed.
+        this.braid(cells, x, y);
+
         return cells;
+    }
+
+    // cells[row][col] = [top, right, bottom, left], 1 = open passage.
+    private braid(cells, x, y) {
+        if (this.BRAID_FACTOR <= 0) {
+            return;
+        }
+        for (let i = 0; i < y; i++) {
+            for (let j = 0; j < x; j++) {
+                const walls = cells[i][j];
+                const openCount = walls[0] + walls[1] + walls[2] + walls[3];
+                // Only dead ends (exactly one way in/out) are candidates.
+                if (openCount !== 1) {
+                    continue;
+                }
+                if (this.rng.next() >= this.BRAID_FACTOR) {
+                    continue;
+                }
+
+                // Candidate directions that are currently walled AND lead to an
+                // in-grid neighbour. [wallIndex, dRow, dCol, neighbourWallIndex]
+                const dirs = [
+                    [0, -1, 0, 2], // top    -> neighbour's bottom
+                    [1, 0, 1, 3], // right  -> neighbour's left
+                    [2, 1, 0, 0], // bottom -> neighbour's top
+                    [3, 0, -1, 1] // left   -> neighbour's right
+                ];
+                const options = [];
+                for (const d of dirs) {
+                    if (walls[d[0]] === 1) {
+                        continue; // already open this way
+                    }
+                    const ni = i + d[1];
+                    const nj = j + d[2];
+                    if (ni < 0 || ni >= y || nj < 0 || nj >= x) {
+                        continue; // off-grid
+                    }
+                    options.push({ ni, nj, wall: d[0], nWall: d[3] });
+                }
+                if (!options.length) {
+                    continue;
+                }
+                const pick = options[this.rng.nextInt(options.length)];
+                cells[i][j][pick.wall] = 1;
+                cells[pick.ni][pick.nj][pick.nWall] = 1;
+            }
+        }
     }
 
     moveForward() {
@@ -1096,37 +1210,35 @@ export class MazePage {
         this.getRoute(this.currentRoom);
     }
 
-    async openInstructions() {
-        this.aService.play('clickAudio');
-        const modal = await this.modalController.create({
-            component: InstructionsPage,
-            backdropDismiss: true,
-            // Tagged so the Escape key can safely dismiss it (see
-            // handleKeyboardEvent). Mini-game modals are intentionally untagged
-            // because they must run to completion and are awaited for a result.
-            id: this.HUD_MODAL_ID
-        });
-        this.modals.push(modal);
-        return await modal.present();
+    // Entry points for the on-screen FAB buttons and the first-run auto-show.
+    // Both delegate to the locked opener so every path (click, key, auto-show)
+    // is protected against stacking two overlays.
+    openInstructions() {
+        if (this.hudOpening) {
+            return;
+        }
+        this.openHudModal(InstructionsPage, {}, true);
     }
 
-    async openMap() {
-        this.aService.play('clickAudio');
-        const modal = await this.modalController.create({
-            component: MapPage,
-            backdropDismiss: false,
-            // Tagged so Escape can safely dismiss it (see handleKeyboardEvent).
-            id: this.HUD_MODAL_ID,
-            componentProps: {
+    openMap() {
+        if (this.hudOpening) {
+            return;
+        }
+        this.openHudModal(
+            MapPage,
+            {
                 currentDirection: this.currentDirection,
                 routeHistory: this.routeHistory,
+                hintedRooms: this.hintedRooms,
                 mazeData: this.mazeData,
-                currentRoom: this.currentRoom
-            }
-        });
-
-        this.modals.push(modal);
-        return await modal.present();
+                currentRoom: this.currentRoom,
+                exitId: this.exitId
+            },
+            false,
+            // Taller modal so the full square 30x30 grid (incl. the exit at the
+            // far corner) fits without being clipped.
+            'map-modal'
+        );
     }
 
     @HostListener('document:keyup', ['$event'])
@@ -1216,6 +1328,12 @@ export class MazePage {
             return;
         }
 
+        // Reject a repeat press synchronously while a HUD overlay is already
+        // opening or open. Checked before any await so there's no race window.
+        if (this.hudOpening) {
+            return;
+        }
+
         const [topModal, topAlert] = await Promise.all([
             this.modalController.getTop(),
             this.alertController.getTop()
@@ -1232,6 +1350,34 @@ export class MazePage {
             this.showDirection();
         } else if (k === 't') {
             this.showTimer();
+        }
+    }
+
+    // Open a HUD modal (map/help) behind the reentrancy lock so fast repeat
+    // keypresses can't stack two of them. The lock is held from the moment the
+    // open begins until the modal is dismissed.
+    private async openHudModal(component, componentProps: any, backdropDismiss = false, cssClass?: string) {
+        this.hudOpening = true;
+        this.aService.play('clickAudio');
+        try {
+            const modal = await this.modalController.create({
+                component,
+                backdropDismiss,
+                cssClass,
+                // Tagged so Escape can safely dismiss it (see handleKeyboardEvent).
+                id: this.HUD_MODAL_ID,
+                componentProps
+            });
+            this.modals.push(modal);
+            // Release the lock once the overlay actually closes, so the key is
+            // free again for the next open.
+            modal.onDidDismiss().then(() => {
+                this.hudOpening = false;
+            });
+            await modal.present();
+        } catch (e) {
+            // If creation/presentation fails, don't strand the lock.
+            this.hudOpening = false;
         }
     }
 }

@@ -50,7 +50,7 @@
     <ion-fab vertical="top" horizontal="end" slot="fixed">
         <ng-container *ngIf="showTime">
             <ion-fab-button (click)="showTimer()" size="small" color="dark">
-                <app-progress [value]="subscription | async"></app-progress>
+                <app-progress [value]="timeLeft" [total]="MAZE_SECONDS"></app-progress>
             </ion-fab-button>
         </ng-container>
     </ion-fab>

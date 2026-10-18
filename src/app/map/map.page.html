@@ -1,6 +1,11 @@
 <ion-header>
     <ion-toolbar color="danger">
         <ion-title>Map</ion-title>
+        <span class="map-legend" slot="end">
+            <ion-icon name="person"></ion-icon> You
+            <ion-icon name="star"></ion-icon> Exit
+            <span class="swatch hint-swatch"></span> Path
+        </span>
         <ion-buttons slot="end">
             <ion-button mode="ios" color="light" (click)="closeModal()">
                 <ion-icon slot="icon-only" name="close"></ion-icon>
@@ -10,5 +15,17 @@
 </ion-header>
 
 <ion-content color="dark" class="ion-padding">
-    <div><table id="maze" style="border-collapse: collapse" [innerHtml]="safeHtml"></table></div>
+    <div class="map-grid">
+        <div class="map-row" *ngFor="let row of grid; trackBy: trackByIndex">
+            <div [class]="cell.cssClass" *ngFor="let cell of row; trackBy: trackByIndex">
+                <ion-icon *ngIf="cell.isExit" class="marker exit-marker" name="star"></ion-icon>
+                <ion-icon
+                    *ngIf="cell.isPlayer"
+                    class="marker player-marker"
+                    name="person"
+                    [style.transform]="'rotate(' + cell.playerRotation + 'deg)'"
+                ></ion-icon>
+            </div>
+        </div>
+    </div>
 </ion-content>
